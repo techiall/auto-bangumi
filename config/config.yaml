@@ -1,0 +1,28 @@
+seasons:
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3488&subgroupid=597
+    title: Chi. Chikyuu no Undou ni Tsuite
+    alias:
+      - 地。—关于地球的运动—
+    seasonNumber: 1
+    match:
+      title:
+        - 繁日内嵌
+        - 1080p
+
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3436&subgroupid=583
+    title: Dan Da Dan
+    alias:
+      - 胆大党
+    seasonNumber: 1
+
+download:
+  path: /downloads
+  qbittorrent:
+    host: host.docker.internal
+    port: 5001
+    username: admin
+    password: adminadmin
+    ssl: false
+
+move:
+  root: E:\Bangumi
