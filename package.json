@@ -1,0 +1,26 @@
+{
+  "name": "auto-bangumi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "move": "npm run build && node dist/schedule-move.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@ctrl/qbittorrent": "^9.0.1",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.14.2",
+    "js-yaml": "^4.1.0",
+    "rss-parser": "^3.13.0"
+  }
+}

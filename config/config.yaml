@@ -1,0 +1,35 @@
+seasons:
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3488&subgroupid=597
+    title: Chi. Chikyuu no Undou ni Tsuite
+    seasonNumber: 1
+    alias:
+      - 地。—关于地球的运动—
+    match:
+      title:
+        - 繁日内嵌
+        - 1080p
+
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3436&subgroupid=583
+    title: Dan Da Dan
+    seasonNumber: 1
+    alias:
+      - 胆大党
+
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3454&subgroupid=370
+    title: Maou 2099
+    seasonNumber: 1
+    alias:
+      - 魔王 2099
+
+
+download:
+  path: /downloads
+  qBittorrent:
+    host: host.docker.internal
+    port: 5001
+    username: admin
+    password: adminadmin
+    ssl: false
+
+move:
+  root: E:\Bangumi
