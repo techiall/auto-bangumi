@@ -3,6 +3,8 @@ import { DownloadConfig } from "./config.js";
 import { TorrentState } from "@ctrl/shared-torrent";
 import * as fs from "node:fs";
 import { Episode } from "./episode.js";
+import { fetchWithRetry } from "./retry.js";
+import { logger } from "./config/winston.js";
 
 export interface QBittorrentTorrent {
     torrentHash: string
@@ -20,11 +22,15 @@ export class QBittorrentApi {
     }
 
     private createApiClient(config: DownloadConfig) {
-        return new QBittorrent({
+        const client =  new QBittorrent({
             baseUrl: `${config.qBittorrent.ssl ? "https" : "http"}://${config.qBittorrent.host}:${config.qBittorrent.port}`,
             username: config.qBittorrent.username,
             password: config.qBittorrent.password
         })
+        client.getApiVersion().then(version => {
+            logger.info(`Connected to qBittorrent ${version}`)
+        })
+        return client
     }
 
     async findByTorrent(hash: string) {
@@ -50,7 +56,7 @@ export class QBittorrentApi {
     }
 
     private async fetchEnclosure(torrentUrl: string) {
-        const buffer = await fetch(torrentUrl).then(response => response.arrayBuffer())
+        const buffer = await fetchWithRetry(torrentUrl).then(response => response.arrayBuffer())
         return new Uint8Array(buffer)
     }
 
@@ -62,14 +68,13 @@ export class QBittorrentApi {
                 await this.client.addTorrent(await this.fetchEnclosure(episode.enclosureUrl))
             }
         }
-        console.warn(`Episode ${episode.torrent} already downloaded`)
+        logger.warn(`Episode ${episode.numberDisplayString()} already downloaded`)
     }
 }
 
 export class TorrentManager {
     torrents: string[]
     private readonly configPath: string
-
 
     constructor(configPath: string | undefined = "torrents.json") {
         this.torrents = this.load(configPath)

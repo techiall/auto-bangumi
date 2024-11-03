@@ -1,6 +1,8 @@
 import { loadConfig } from "./config.js";
 import { SeasonParse } from "./season.js";
 import { QBittorrentApi, TorrentManager } from "./download.js";
+import { moveTask } from "./move.js";
+import { logger } from "./config/winston.js";
 
 
 async function main() {
@@ -15,11 +17,11 @@ async function main() {
     for (const season of seasons) {
         for (let episode of season.episodes) {
             if (manager.torrents.includes(episode.torrent)) {
-                console.warn(`Season ${season.title}(${season.alias}) ${episode.number} already downloaded`)
+                logger.warn(`${season.displayString()}E${episode.numberDisplayString()} already downloaded`)
                 continue
             }
             await api.download(episode)
-            console.log(`Downloaded ${season.title}(${season.alias}) ${episode.number} from ${episode.torrent}`)
+            logger.info(`Downloaded ${season.displayString()}E${episode.numberDisplayString()} from ${episode.torrent}`)
 
             const torrent = await api.findByTorrent(episode.torrent)
             if (!torrent) continue
@@ -28,7 +30,12 @@ async function main() {
         }
     }
     manager.export()
+
+    await moveTask()
 }
 
-main().catch(console.error)
+main().catch(logger.error)
+
+
+setInterval(moveTask, 10 * 1000 * 60) // 10 minutes
 

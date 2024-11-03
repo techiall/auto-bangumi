@@ -2,9 +2,8 @@ import path from "node:path"
 import * as fs from "node:fs"
 import jsyaml from "js-yaml"
 
-export function loadConfig(): Config {
-    const configPath = path.join('config/config.yaml')
-    return jsyaml.load(fs.readFileSync(configPath, 'utf-8')) as Config
+export function loadConfig(configPath: string | undefined = 'config/config.yaml'): Config {
+    return jsyaml.load(fs.readFileSync(path.join(configPath), 'utf-8')) as Config
 }
 
 export interface Config {

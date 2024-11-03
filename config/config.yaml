@@ -21,6 +21,14 @@ seasons:
     alias:
       - 魔王 2099
 
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3439&subgroupid=42
+    title: Natsume Yuujinchou Shichi
+    seasonNumber: 7
+    alias:
+      - 夏目友人帐 七
+    match:
+      title:
+        - '简日双语字幕'
 
 download:
   path: /downloads
