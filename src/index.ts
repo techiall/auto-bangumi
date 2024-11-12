@@ -17,7 +17,7 @@ async function main() {
     for (const season of seasons) {
         for (let episode of season.episodes) {
             if (manager.torrents.includes(episode.torrent)) {
-                logger.warn(`${season.displayString()}E${episode.numberDisplayString()} already downloaded`)
+                logger.warn(`${season.displayString()}E${episode.numberDisplayString()}(${episode.torrent}) already downloaded`)
                 continue
             }
             await api.download(episode)
