@@ -4,22 +4,7 @@ export interface Episode {
     torrent: string
     number: number
     enclosureUrl: string
-
-    numberDisplayString(): string
 }
-
-export const createEpisode = (
-    torrent: string,
-    number: number,
-    enclosureUrl: string
-): Episode => ({
-    torrent,
-    number,
-    enclosureUrl,
-    numberDisplayString() {
-        return String(this.number).padStart(2, '0')
-    }
-});
 
 export class EpisodeParse {
     private readonly episode: Item
@@ -41,7 +26,11 @@ export class EpisodeParse {
         const torrent = this.getTorrentHash(enclosureUrl)
         if (!torrent) return undefined
 
-        return createEpisode(torrent, number, enclosureUrl)
+        return {
+            torrent,
+            number,
+            enclosureUrl
+        } as Episode
     }
 
     private episodeNumberRegex = /\[(\d{2})\\]|\b(\d{2})\b/

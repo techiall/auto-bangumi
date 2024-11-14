@@ -8,28 +8,7 @@ export interface Season {
     alias: string[]
     number: number
     episodes: Episode[]
-
-    displayString(): string
-    numberDisplayString(): string
 }
-
-export const createSeason = (
-    title: string,
-    alias: string[],
-    number: number,
-    episodes: Episode[]
-): Season => ({
-    title,
-    alias,
-    number,
-    episodes,
-    displayString() {
-        return `${this.title}(${this.alias}) S${String(this.number).padStart(2, '0')}`
-    },
-    numberDisplayString(): string {
-        return String(this.number).padStart(2, '0')
-    }
-});
 
 export class SeasonParse {
     private readonly season: SeasonConfig
@@ -47,12 +26,12 @@ export class SeasonParse {
                 .filter(episode => this.matchEpisode(episode.title ?? ""))
                 .map(episode => new EpisodeParse(episode).parse())
         )
-        return createSeason(
-            this.season.title,
-            this.season.alias,
-            this.season.seasonNumber,
-            episodes.filter(episode => episode !== undefined) as Episode[]
-        )
+        return {
+            title: this.season.title,
+            alias: this.season.alias,
+            number: this.season.seasonNumber,
+            episodes: episodes.filter(episode => episode !== undefined) as Episode[]
+        } as Season
     }
 
     private matchEpisode(title: string): boolean {

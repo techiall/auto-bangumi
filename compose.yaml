@@ -1,0 +1,9 @@
+services:
+  download:
+    build:
+      context: .
+      dockerfile: Dockerfile.download
+    volumes:
+      - ./config.json:/usr/src/app/config/config.json
+      - ./db.json:/usr/src/app/db.json
+    restart: on-failure

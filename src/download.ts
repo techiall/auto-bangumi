@@ -1,7 +1,6 @@
 import { QBittorrent } from "@ctrl/qbittorrent";
 import { DownloadConfig } from "./config.js";
 import { TorrentState } from "@ctrl/shared-torrent";
-import * as fs from "node:fs";
 import { Episode } from "./episode.js";
 import { fetchWithRetry } from "./retry.js";
 import { logger } from "./config/winston.js";
@@ -22,7 +21,7 @@ export class QBittorrentApi {
     }
 
     private createApiClient(config: DownloadConfig) {
-        const client =  new QBittorrent({
+        const client = new QBittorrent({
             baseUrl: `${config.qBittorrent.ssl ? "https" : "http"}://${config.qBittorrent.host}:${config.qBittorrent.port}`,
             username: config.qBittorrent.username,
             password: config.qBittorrent.password
@@ -68,30 +67,5 @@ export class QBittorrentApi {
                 await this.client.addTorrent(await this.fetchEnclosure(episode.enclosureUrl))
             }
         }
-        logger.warn(`Episode ${episode.numberDisplayString()} already downloaded`)
     }
 }
-
-export class TorrentManager {
-    torrents: string[]
-    private readonly configPath: string
-
-    constructor(configPath: string | undefined = "torrents.json") {
-        this.torrents = this.load(configPath)
-        this.configPath = configPath
-    }
-
-    private load(configPath: string) {
-        return JSON.parse(fs.readFileSync(configPath, "utf-8")) as string[]
-    }
-
-    push(torrent: string) {
-        this.torrents.push(torrent)
-    }
-
-    export() {
-        fs.writeFileSync(this.configPath, JSON.stringify(Array.from(new Set(this.torrents)), null, 2))
-    }
-}
-
-
