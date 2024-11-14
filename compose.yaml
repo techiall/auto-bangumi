@@ -4,6 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile.download
     volumes:
-      - ./config.json:/usr/src/app/config/config.json
-      - ./db.json:/usr/src/app/db.json
+      - ./config/config.yaml:/usr/src/app/config/config.yaml
+      - ./db:/usr/src/app/db
     restart: on-failure

@@ -18,7 +18,7 @@ type Data = {
     manager: SeasonEpisodeManager[]
 }
 
-export const db = await JSONFilePreset<Data>('db.json', {
+export const db = await JSONFilePreset<Data>('db/db.json', {
     seasons: [],
     manager: []
 })

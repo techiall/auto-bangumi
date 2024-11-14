@@ -1,4 +1,3 @@
-import { moveTask } from "./move.js";
 import { db, State } from "./db.js";
 import { logger } from "./config/winston.js";
 import { loadConfig } from "./config.js";
@@ -28,5 +27,6 @@ export async function downloadTask() {
 }
 
 logger.info(`Starting download task`)
-setInterval(moveTask, 10 * 1000 * 60) // 10 minutes
+await downloadTask()
+setInterval(downloadTask, 10 * 1000 * 60) // 10 minutes
 

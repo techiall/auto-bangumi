@@ -1,9 +1,11 @@
 .idea/
 .vscode/
+.github/
 
 config/
 Dockerfile.download
 .dockerignore
+renovate.json
 
 .gitignore
 .git

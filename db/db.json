@@ -52,6 +52,11 @@
       "number": 1,
       "episodes": [
         {
+          "torrent": "bdae1ecb1460d29a6364d0d62c1585ecfd55ed35",
+          "number": 7,
+          "enclosureUrl": "https://mikanani.me/Download/20241115/bdae1ecb1460d29a6364d0d62c1585ecfd55ed35.torrent"
+        },
+        {
           "torrent": "86d868e9d5a7e0a5a422fe19e88ff2c001de643f",
           "number": 6,
           "enclosureUrl": "https://mikanani.me/Download/20241108/86d868e9d5a7e0a5a422fe19e88ff2c001de643f.torrent"
@@ -91,6 +96,11 @@
       "number": 1,
       "episodes": [
         {
+          "torrent": "198e2932bda79778db2e65cb59a1685cd5784b99",
+          "number": 6,
+          "enclosureUrl": "https://mikanani.me/Download/20241117/198e2932bda79778db2e65cb59a1685cd5784b99.torrent"
+        },
+        {
           "torrent": "1824bf81c8fbe2cc8279d0667d8bfe8175fe31e2",
           "number": 5,
           "enclosureUrl": "https://mikanani.me/Download/20241110/1824bf81c8fbe2cc8279d0667d8bfe8175fe31e2.torrent"
@@ -124,6 +134,16 @@
       ],
       "number": 7,
       "episodes": [
+        {
+          "torrent": "d9f997f29acf8ec6941cce343838962b26dde09a",
+          "number": 5,
+          "enclosureUrl": "https://mikanani.me/Download/20241118/d9f997f29acf8ec6941cce343838962b26dde09a.torrent"
+        },
+        {
+          "torrent": "a0e8c15bdf7725f3e1675e6b1224d8bdf538b33c",
+          "number": 4,
+          "enclosureUrl": "https://mikanani.me/Download/20241117/a0e8c15bdf7725f3e1675e6b1224d8bdf538b33c.torrent"
+        },
         {
           "torrent": "37f8c7b3a94365c097fab56572fb42985e692100",
           "number": 3,
@@ -308,6 +328,38 @@
         "torrent": "1f839825dbe73435658e7265947f5e395e96f642",
         "number": 7,
         "enclosureUrl": "https://mikanani.me/Download/20241111/1f839825dbe73435658e7265947f5e395e96f642.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "bdae1ecb1460d29a6364d0d62c1585ecfd55ed35",
+        "number": 7,
+        "enclosureUrl": "https://mikanani.me/Download/20241115/bdae1ecb1460d29a6364d0d62c1585ecfd55ed35.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "198e2932bda79778db2e65cb59a1685cd5784b99",
+        "number": 6,
+        "enclosureUrl": "https://mikanani.me/Download/20241117/198e2932bda79778db2e65cb59a1685cd5784b99.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "a0e8c15bdf7725f3e1675e6b1224d8bdf538b33c",
+        "number": 4,
+        "enclosureUrl": "https://mikanani.me/Download/20241117/a0e8c15bdf7725f3e1675e6b1224d8bdf538b33c.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "d9f997f29acf8ec6941cce343838962b26dde09a",
+        "number": 5,
+        "enclosureUrl": "https://mikanani.me/Download/20241118/d9f997f29acf8ec6941cce343838962b26dde09a.torrent"
       },
       "state": "moved"
     }
