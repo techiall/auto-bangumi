@@ -8,6 +8,11 @@
       "number": 1,
       "episodes": [
         {
+          "torrent": "c994c515a5ad96554fa32ad8349989733e5fea50",
+          "number": 8,
+          "enclosureUrl": "https://mikanani.me/Download/20241118/c994c515a5ad96554fa32ad8349989733e5fea50.torrent"
+        },
+        {
           "torrent": "1f839825dbe73435658e7265947f5e395e96f642",
           "number": 7,
           "enclosureUrl": "https://mikanani.me/Download/20241111/1f839825dbe73435658e7265947f5e395e96f642.torrent"
@@ -360,6 +365,14 @@
         "torrent": "d9f997f29acf8ec6941cce343838962b26dde09a",
         "number": 5,
         "enclosureUrl": "https://mikanani.me/Download/20241118/d9f997f29acf8ec6941cce343838962b26dde09a.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "c994c515a5ad96554fa32ad8349989733e5fea50",
+        "number": 8,
+        "enclosureUrl": "https://mikanani.me/Download/20241118/c994c515a5ad96554fa32ad8349989733e5fea50.torrent"
       },
       "state": "moved"
     }
