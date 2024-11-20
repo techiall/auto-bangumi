@@ -1,6 +1,6 @@
-import { JSONFilePreset } from "lowdb/node"
 import { Season } from "./season.js";
 import { Episode } from "./episode.js";
+import { JSONFilePreset } from "lowdb/node";
 
 
 export enum State {
@@ -13,7 +13,7 @@ export interface SeasonEpisodeManager {
     state: State,
 }
 
-type Data = {
+export type Data = {
     seasons: Season[],
     manager: SeasonEpisodeManager[]
 }

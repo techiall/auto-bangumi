@@ -1,11 +1,15 @@
-import { db, State } from "./db.js";
+import { Data, State } from "./db.js";
 import { logger } from "./config/winston.js";
 import { loadConfig } from "./config.js";
 import { QBittorrentApi } from "./download.js";
 import { SeasonParse } from "./season.js";
-
+import { JSONFilePreset } from "lowdb/node";
 
 export async function downloadTask() {
+    const db = await JSONFilePreset<Data>('db/db.json', {
+        seasons: [],
+        manager: []
+    })
     const config = loadConfig();
     const api = new QBittorrentApi(config.download);
 
