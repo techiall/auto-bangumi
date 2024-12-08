@@ -49,7 +49,12 @@ export class Move {
         const target = path.join(this.config.move.root, this.season.title, `Season ${numberDisplayString(this.season.number)}`);
         fs.mkdirSync(target, {recursive: true});
 
-        const src = await this.api.getTorrent(episode.torrent).then(torrent => torrent.raw.content_path);
+        const src = await this.api.getTorrent(episode.torrent).then(torrent => torrent.raw.content_path) as string;
+        if (fs.lstatSync(src).isDirectory()) {
+            logger.warn(`${this.seasonDisplayString()}E${numberDisplayString(episode.number)} is a directory, skipping move`);
+            return;
+        }
+
         const extname = path.extname(src);
         const targetPath = path.join(target, `${numberDisplayString(episode.number)}${extname}`);
 
