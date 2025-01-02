@@ -1,6 +1,17 @@
 {
   "seasons": [
     {
+      "title": "BanG Dream! Ave Mujica",
+      "number": 1,
+      "episodes": [
+        {
+          "torrent": "f2b48432ce58843f0bf9996646d522004e50f1f9",
+          "number": 1,
+          "enclosureUrl": "https://mikanani.me/Download/20250102/f2b48432ce58843f0bf9996646d522004e50f1f9.torrent"
+        }
+      ]
+    },
+    {
       "title": "Chi. Chikyuu no Undou ni Tsuite",
       "alias": [
         "地。—关于地球的运动—"
@@ -661,6 +672,14 @@
         "enclosureUrl": "https://mikanani.me/Download/20241231/69628b7b63eb4151f18ce5124d1b4a904837b47f.torrent"
       },
       "state": "downloading"
+    },
+    {
+      "episode": {
+        "torrent": "f2b48432ce58843f0bf9996646d522004e50f1f9",
+        "number": 1,
+        "enclosureUrl": "https://mikanani.me/Download/20250102/f2b48432ce58843f0bf9996646d522004e50f1f9.torrent"
+      },
+      "state": "moved"
     }
   ]
 }

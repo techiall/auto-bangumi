@@ -1,4 +1,8 @@
 seasons:
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3518&subgroupid=583
+    title: BanG Dream! Ave Mujica
+    seasonNumber: 1
+
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3488&subgroupid=597
     title: Chi. Chikyuu no Undou ni Tsuite
     seasonNumber: 1
