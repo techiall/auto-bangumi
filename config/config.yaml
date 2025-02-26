@@ -1,4 +1,10 @@
 seasons:
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3560&subgroupid=370
+    title: Ore dake Level Up na Ken
+    seasonNumber: 1
+    alias:
+      - 我独自升级 -起于暗影
+
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3518&subgroupid=583
     title: BanG Dream! Ave Mujica
     seasonNumber: 1
