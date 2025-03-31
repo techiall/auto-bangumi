@@ -8,6 +8,11 @@
       "number": 1,
       "episodes": [
         {
+          "torrent": "5d9c3c435b929a2252bbe11681f09bd888a74085",
+          "number": 25,
+          "enclosureUrl": "https://mikanani.me/Download/20250330/5d9c3c435b929a2252bbe11681f09bd888a74085.torrent"
+        },
+        {
           "torrent": "a053431e73de1081790bc12c4446cef7a5f37a7e",
           "number": 24,
           "enclosureUrl": "https://mikanani.me/Download/20250323/a053431e73de1081790bc12c4446cef7a5f37a7e.torrent"
@@ -73,6 +78,31 @@
       "title": "BanG Dream! Ave Mujica",
       "number": 1,
       "episodes": [
+        {
+          "torrent": "1fa005758791f35bbb570c11ef585156dedc30ab",
+          "number": 13,
+          "enclosureUrl": "https://mikanani.me/Download/20250330/1fa005758791f35bbb570c11ef585156dedc30ab.torrent"
+        },
+        {
+          "torrent": "c6dfa6f8652e728543120cc00272ae3644d6cdc1",
+          "number": 10,
+          "enclosureUrl": "https://mikanani.me/Download/20250330/c6dfa6f8652e728543120cc00272ae3644d6cdc1.torrent"
+        },
+        {
+          "torrent": "ffd852f1c81314adbe4fc01ede3f38168282e09a",
+          "number": 12,
+          "enclosureUrl": "https://mikanani.me/Download/20250330/ffd852f1c81314adbe4fc01ede3f38168282e09a.torrent"
+        },
+        {
+          "torrent": "aff14b9c404bca2b3d69f47b3f49d8f4a05e4f77",
+          "number": 11,
+          "enclosureUrl": "https://mikanani.me/Download/20250330/aff14b9c404bca2b3d69f47b3f49d8f4a05e4f77.torrent"
+        },
+        {
+          "torrent": "44c5133c536b26a023ffc82465aa8fe9c7db7e99",
+          "number": 13,
+          "enclosureUrl": "https://mikanani.me/Download/20250327/44c5133c536b26a023ffc82465aa8fe9c7db7e99.torrent"
+        },
         {
           "torrent": "474324b5ba704de023c5394f2f6259c1a88d25fb",
           "number": 12,
@@ -1194,6 +1224,54 @@
         "torrent": "a053431e73de1081790bc12c4446cef7a5f37a7e",
         "number": 24,
         "enclosureUrl": "https://mikanani.me/Download/20250323/a053431e73de1081790bc12c4446cef7a5f37a7e.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "44c5133c536b26a023ffc82465aa8fe9c7db7e99",
+        "number": 13,
+        "enclosureUrl": "https://mikanani.me/Download/20250327/44c5133c536b26a023ffc82465aa8fe9c7db7e99.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "5d9c3c435b929a2252bbe11681f09bd888a74085",
+        "number": 25,
+        "enclosureUrl": "https://mikanani.me/Download/20250330/5d9c3c435b929a2252bbe11681f09bd888a74085.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "1fa005758791f35bbb570c11ef585156dedc30ab",
+        "number": 13,
+        "enclosureUrl": "https://mikanani.me/Download/20250330/1fa005758791f35bbb570c11ef585156dedc30ab.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "c6dfa6f8652e728543120cc00272ae3644d6cdc1",
+        "number": 10,
+        "enclosureUrl": "https://mikanani.me/Download/20250330/c6dfa6f8652e728543120cc00272ae3644d6cdc1.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "ffd852f1c81314adbe4fc01ede3f38168282e09a",
+        "number": 12,
+        "enclosureUrl": "https://mikanani.me/Download/20250330/ffd852f1c81314adbe4fc01ede3f38168282e09a.torrent"
+      },
+      "state": "moved"
+    },
+    {
+      "episode": {
+        "torrent": "aff14b9c404bca2b3d69f47b3f49d8f4a05e4f77",
+        "number": 11,
+        "enclosureUrl": "https://mikanani.me/Download/20250330/aff14b9c404bca2b3d69f47b3f49d8f4a05e4f77.torrent"
       },
       "state": "moved"
     }
