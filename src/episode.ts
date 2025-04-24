@@ -1,47 +1,47 @@
-import { Item } from "rss-parser";
+import { Item } from 'rss-parser';
 
 export interface Episode {
-    torrent: string
-    number: number
-    enclosureUrl: string
+  torrent: string;
+  number: number;
+  enclosureUrl: string;
 }
 
 export class EpisodeParse {
-    private readonly episode: Item
+  private readonly episode: Item;
 
-    constructor(episode: Item) {
-        this.episode = episode
-    }
+  constructor(episode: Item) {
+    this.episode = episode;
+  }
 
-    async parse() {
-        const title = this.episode.title;
-        if (!title) return undefined
+  async parse() {
+    const title = this.episode.title;
+    if (!title) return undefined;
 
-        const number = this.getEpisodeNumber(title)
-        if (!number) return undefined
+    const number = this.getEpisodeNumber(title);
+    if (!number) return undefined;
 
-        const enclosureUrl = this.episode.enclosure?.url
-        if (!enclosureUrl) return undefined
+    const enclosureUrl = this.episode.enclosure?.url;
+    if (!enclosureUrl) return undefined;
 
-        const torrent = this.getTorrentHash(enclosureUrl)
-        if (!torrent) return undefined
+    const torrent = this.getTorrentHash(enclosureUrl);
+    if (!torrent) return undefined;
 
-        return {
-            torrent,
-            number,
-            enclosureUrl
-        } as Episode
-    }
+    return {
+      torrent,
+      number,
+      enclosureUrl,
+    } as Episode;
+  }
 
-    private episodeNumberRegex = /\[(\d{2})\\]|\b(\d{2})\b/
+  private episodeNumberRegex = /\[(\d{2})\\]|\b(\d{2})\b/;
 
-    private getEpisodeNumber(title: string) {
-        return Number(title.match(this.episodeNumberRegex)?.[0]) ?? undefined
-    }
+  private getEpisodeNumber(title: string) {
+    return Number(title.match(this.episodeNumberRegex)?.[0]) ?? undefined;
+  }
 
-    private getTorrentHash(torrentUrl: string) {
-        return torrentUrl.split("/").pop()?.split(".")[0]
-    }
+  private getTorrentHash(torrentUrl: string) {
+    return torrentUrl.split('/').pop()?.split('.')[0];
+  }
 }
 
 
