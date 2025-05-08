@@ -23,7 +23,7 @@
     "@ctrl/qbittorrent": "^9.6.0",
     "@types/js-yaml": "^4.0.9",
     "@types/lowdb": "^2.0.0",
-    "@types/node": "^22.15.11",
+    "@types/node": "^22.15.15",
     "js-yaml": "^4.1.0",
     "lowdb": "^7.0.1",
     "rss-parser": "^3.13.0",
