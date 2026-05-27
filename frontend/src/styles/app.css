@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family:
+    "Inter",
+    "PingFang SC",
+    "Microsoft YaHei",
+    sans-serif;
+  color: #1c1917;
+}
+
+code {
+  border-radius: 0.5rem;
+  background: rgba(231, 229, 228, 0.8);
+  padding: 0.15rem 0.4rem;
+  font-family:
+    "JetBrains Mono",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+  font-size: 0.92em;
+}
+
+a {
+  color: inherit;
+}

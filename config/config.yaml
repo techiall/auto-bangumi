@@ -1,45 +1,38 @@
 seasons:
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3560&subgroupid=370
-    title: Ore dake Level Up na Ken
+    title: 我独自升级 -起于暗影
     seasonNumber: 1
-    alias:
-      - 我独自升级 -起于暗影
-
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3518&subgroupid=583
     title: BanG Dream! Ave Mujica
     seasonNumber: 1
-
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3488&subgroupid=597
-    title: Chi. Chikyuu no Undou ni Tsuite
+    title: 地。—关于地球的运动—
     seasonNumber: 1
-    alias:
-      - 地。—关于地球的运动—
     match:
       title:
         - 繁日内嵌
         - 1080p
-
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3436&subgroupid=583
-    title: Dan Da Dan
+    title: 胆大党
     seasonNumber: 1
-    alias:
-      - 胆大党
-
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3454&subgroupid=370
-    title: Maou 2099
+    title: 魔王 2099
     seasonNumber: 1
-    alias:
-      - 魔王 2099
-
   - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3439&subgroupid=42
-    title: Natsume Yuujinchou Shichi
+    title: 夏目友人帐 七
     seasonNumber: 7
-    alias:
-      - 夏目友人帐 七
     match:
       title:
-        - '简日双语字幕'
-
+        - 简日双语字幕
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583
+    title: 欢迎来到实力至上主义教室
+    seasonNumber: 4
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=583
+    title: Re：从零开始的异世界生活 第四季 丧失篇
+    seasonNumber: 4
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3906&subgroupid=583
+    title: 身为悲剧始作俑者的最强邪恶BOSS女王为民竭心尽力。 第二季
+    seasonNumber: 2
 download:
   path: /downloads
   qBittorrent:
@@ -48,6 +41,5 @@ download:
     username: admin
     password: adminadmin
     ssl: false
-
 move:
   root: E:\Bangumi

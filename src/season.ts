@@ -5,7 +5,6 @@ import { fetchWithRetry } from './retry.js';
 
 export interface Season {
   title: string;
-  alias: string[];
   number: number;
   episodes: Episode[];
 }
@@ -28,7 +27,6 @@ export class SeasonParse {
     );
     return {
       title: this.season.title,
-      alias: this.season.alias,
       number: this.season.seasonNumber,
       episodes: episodes.filter(episode => episode !== undefined) as Episode[],
     } as Season;
@@ -39,4 +37,3 @@ export class SeasonParse {
     return this.season.match.title.every(match => title.includes(match));
   }
 }
-

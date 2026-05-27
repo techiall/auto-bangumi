@@ -1,7 +1,10 @@
 # Node.js
 node_modules/
+frontend/node_modules/
 dist/
 build/
+frontend/.output/
+frontend/.tanstack/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
