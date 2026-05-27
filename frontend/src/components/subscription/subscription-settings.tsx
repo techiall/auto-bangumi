@@ -59,7 +59,7 @@ export function SubscriptionSettings({
 
       {isOpen ? (
         <CardContent className="space-y-5">
-          <form className="grid gap-5" onSubmit={onSubmit}>
+          <form className="grid gap-7" onSubmit={onSubmit}>
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-900/70 px-4 py-3">
               <div className="min-w-0">
                 <a
@@ -91,9 +91,12 @@ export function SubscriptionSettings({
               </div>
             ) : null}
 
-            <div className="space-y-3 rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
-              <Label>字幕组</Label>
-              <div className="grid max-h-72 gap-2 overflow-y-auto pr-1">
+            <section className="space-y-4 rounded-2xl border border-slate-700 bg-slate-950/70 p-5">
+              <div>
+                <div className="text-sm font-medium text-slate-100">字幕组</div>
+                <div className="mt-1 text-xs text-slate-500">选择一个字幕组后会自动更新 RSS。</div>
+              </div>
+              <div className="grid max-h-72 gap-3 overflow-y-auto pr-1">
                 {bangumi.groups.length ? (
                   bangumi.groups.map((group) => (
                     <GroupOption
@@ -107,42 +110,49 @@ export function SubscriptionSettings({
                   <StateBox icon={<Layers3 className="size-4" />} text="没有解析到字幕组，会使用番组默认 RSS。" />
                 )}
               </div>
-            </div>
+            </section>
 
-            <div className="grid gap-4 md:grid-cols-[1fr_8rem]">
-              <Field label="标题">
-                <Input value={form.title} onChange={(event) => onFormChange({ ...form, title: event.target.value })} />
-              </Field>
+            <section className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+              <div>
+                <div className="text-sm font-medium text-slate-100">写入内容</div>
+                <div className="mt-1 text-xs text-slate-500">确认标题、季数和过滤词后写入配置。</div>
+              </div>
 
-              <Field label="季数">
+              <div className="grid gap-4 md:grid-cols-[1fr_8rem]">
+                <Field label="标题">
+                  <Input value={form.title} onChange={(event) => onFormChange({ ...form, title: event.target.value })} />
+                </Field>
+
+                <Field label="季数">
+                  <Input
+                    type="number"
+                    min="1"
+                    value={form.seasonNumber}
+                    onChange={(event) => onFormChange({ ...form, seasonNumber: event.target.value })}
+                  />
+                </Field>
+              </div>
+
+              <Field label="标题过滤">
                 <Input
-                  type="number"
-                  min="1"
-                  value={form.seasonNumber}
-                  onChange={(event) => onFormChange({ ...form, seasonNumber: event.target.value })}
+                  value={form.matchTitle}
+                  onChange={(event) => onFormChange({ ...form, matchTitle: event.target.value })}
+                  placeholder="例如 1080p, 简中"
                 />
               </Field>
-            </div>
 
-            <Field label="标题过滤">
-              <Input
-                value={form.matchTitle}
-                onChange={(event) => onFormChange({ ...form, matchTitle: event.target.value })}
-                placeholder="例如 1080p, 简中"
-              />
-            </Field>
-
-            <div className="grid gap-2">
-              <Label>RSS</Label>
-              <div className="break-all rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm leading-6 text-slate-400">
-                {form.rss}
+              <div className="grid gap-2">
+                <Label>RSS</Label>
+                <div className="break-all rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm leading-6 text-slate-400">
+                  {form.rss}
+                </div>
               </div>
-            </div>
 
-            <Button type="submit" size="lg" disabled={isSubmitting}>
-              {isSubmitting ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
-              写入配置
-            </Button>
+              <Button type="submit" size="lg" disabled={isSubmitting}>
+                {isSubmitting ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
+                写入配置
+              </Button>
+            </section>
           </form>
         </CardContent>
       ) : null}

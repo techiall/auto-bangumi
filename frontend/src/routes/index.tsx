@@ -106,6 +106,19 @@ function HomePage() {
   }
 
   async function chooseBangumi(item: MikanSearchResult) {
+    if (selectedBangumi?.id === item.id) {
+      setSelectedBangumi(null);
+      setSelectedGroupId(null);
+      setNotice(null);
+      setForm({
+        title: '',
+        seasonNumber: '1',
+        matchTitle: '',
+        rss: '',
+      });
+      return;
+    }
+
     setLoadingBangumiId(item.id);
     try {
       const detail = await fetchBangumiDetail(item.id);

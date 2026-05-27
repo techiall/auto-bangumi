@@ -1,4 +1,5 @@
 import { Check, ExternalLink, LoaderCircle, Search } from 'lucide-react';
+import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
@@ -125,19 +126,13 @@ function SearchResultItem({
           </a>
           <div className="text-sm text-slate-500">Bangumi ID: {item.id}</div>
         </div>
-        <Button
-          type="button"
-          variant={active ? 'default' : 'outline'}
-          size="sm"
-          className="shrink-0"
-          onClick={(event) => {
-            event.stopPropagation();
-            onChoose();
-          }}
-        >
-          {loading ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
-          选择
-        </Button>
+        {loading ? <LoaderCircle className="mt-1 size-4 shrink-0 animate-spin text-cyan-200" /> : null}
+        {active ? (
+          <Badge variant="outline" className="shrink-0 border-cyan-700 bg-cyan-950 text-cyan-100">
+            <Check className="mr-1 size-3.5" />
+            已选
+          </Badge>
+        ) : null}
       </div>
     </div>
   );
