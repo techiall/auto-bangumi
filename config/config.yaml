@@ -24,15 +24,18 @@ seasons:
     match:
       title:
         - 简日双语字幕
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583
-    title: 欢迎来到实力至上主义教室
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3930&subgroupid=583
+    title: 关于虽然逃走的鱼很大、但钓上来的鱼却太大了这件事
+    seasonNumber: 1
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583
+    title: 入间同学入魔了 第四季
     seasonNumber: 4
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=583
-    title: Re：从零开始的异世界生活 第四季 丧失篇
-    seasonNumber: 4
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3906&subgroupid=583
-    title: 身为悲剧始作俑者的最强邪恶BOSS女王为民竭心尽力。 第二季
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583
+    title: 杖与剑的魔剑谭 第二季
     seasonNumber: 2
+  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583
+    title: 黄泉的使者
+    seasonNumber: 1
 download:
   path: /downloads
   qBittorrent:

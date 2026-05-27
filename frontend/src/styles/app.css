@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
@@ -12,12 +12,13 @@ body {
     "PingFang SC",
     "Microsoft YaHei",
     sans-serif;
-  color: #1c1917;
+  background: #020617;
+  color: #e2e8f0;
 }
 
 code {
   border-radius: 0.5rem;
-  background: rgba(231, 229, 228, 0.8);
+  background: rgba(15, 23, 42, 0.9);
   padding: 0.15rem 0.4rem;
   font-family:
     "JetBrains Mono",
