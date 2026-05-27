@@ -20,7 +20,7 @@
     "typescript-eslint": "^8.32.1"
   },
   "dependencies": {
-    "@ctrl/qbittorrent": "^9.6.0",
+    "@ctrl/qbittorrent": "^9.12.2",
     "@types/js-yaml": "^4.0.9",
     "@types/lowdb": "^2.0.0",
     "@types/node": "^22.15.15",
