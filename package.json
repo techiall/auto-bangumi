@@ -3,14 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "exports": "./dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/index.js",
-    "api:dev": "tsx watch src/api-dev.ts",
-    "web:dev": "concurrently \"npm run api:dev\" \"npm --prefix frontend run dev\"",
-    "web": "npm --prefix frontend run build && npm --prefix frontend run start",
-    "download-task": "node dist/download-task.js"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "server:dev": "tsx watch src/server/dev-server.ts",
+    "dev": "concurrently \"npm run server:dev\" \"npm --prefix frontend run dev\""
   },
   "keywords": [],
   "author": "",
@@ -20,6 +18,9 @@
     "@types/express": "^5.0.6",
     "concurrently": "^9.2.1",
     "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
     "tsx": "^4.22.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.0"
@@ -32,7 +33,6 @@
     "express": "^5.2.1",
     "js-yaml": "^4.1.1",
     "lowdb": "^7.0.1",
-    "rss-parser": "^3.13.0",
-    "winston": "^3.19.0"
+    "rss-parser": "^3.13.0"
   }
 }

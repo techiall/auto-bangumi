@@ -19,6 +19,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# qBittorrent runtime config
+config/qbittorrent/*
+!config/qbittorrent/qBittorrent/
+config/qbittorrent/qBittorrent/*
+!config/qbittorrent/qBittorrent/qBittorrent.conf
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import { fetchWithRetry } from './retry.js';
+import { fetchWithRetry } from '../utils/fetch-with-retry.js';
 
 const MIKAN_BASE_URL = 'https://mikanani.me';
 

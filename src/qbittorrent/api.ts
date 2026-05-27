@@ -1,9 +1,10 @@
 import { QBittorrent } from '@ctrl/qbittorrent';
-import { DownloadConfig } from './config.js';
+import type { TorrentFile } from '@ctrl/qbittorrent';
+import type { QbittorrentConfig } from '../config/app-config.js';
 import { TorrentState } from '@ctrl/shared-torrent';
-import { Episode } from './episode.js';
-import { fetchWithRetry } from './retry.js';
-import { logger } from './config/winston.js';
+import type { Episode } from '../mikan/episode.js';
+import { fetchWithRetry } from '../utils/fetch-with-retry.js';
+import { logger } from '../config/logger.js';
 
 export interface QBittorrentTorrent {
   torrentHash: string;
@@ -16,17 +17,17 @@ export interface QBittorrentTorrent {
 export class QBittorrentApi {
   private readonly client: QBittorrent;
 
-  constructor(config: DownloadConfig) {
+  constructor(config: QbittorrentConfig) {
     this.client = this.createApiClient(config);
   }
 
-  private createApiClient(config: DownloadConfig) {
+  private createApiClient(config: QbittorrentConfig) {
     const client = new QBittorrent({
-      baseUrl: `${config.qBittorrent.ssl ? 'https' : 'http'}://${config.qBittorrent.host}:${config.qBittorrent.port}`,
-      username: config.qBittorrent.username,
-      password: config.qBittorrent.password,
+      baseUrl: `${config.ssl ? 'https' : 'http'}://${config.host}:${config.port}`,
+      username: config.username,
+      password: config.password,
     });
-    client.getApiVersion().then(version => {
+    client.getApiVersion().then((version) => {
       logger.info(`Connected to qBittorrent ${version}`);
     });
     return client;
@@ -54,8 +55,16 @@ export class QBittorrentApi {
     return this.client.getTorrent(hash);
   }
 
+  torrentFiles(hash: string): Promise<TorrentFile[]> {
+    return this.client.torrentFiles(hash);
+  }
+
+  removeTorrent(hash: string, deleteFiles = false): Promise<boolean> {
+    return this.client.removeTorrent(hash, deleteFiles);
+  }
+
   private async fetchEnclosure(torrentUrl: string) {
-    const buffer = await fetchWithRetry(torrentUrl).then(response => response.arrayBuffer());
+    const buffer = await fetchWithRetry(torrentUrl).then((response) => response.arrayBuffer());
     return new Uint8Array(buffer);
   }
 

@@ -12,7 +12,7 @@ export async function fetchWithRetry(
     return response;
   } catch (error: any) {
     if (retries > 0) {
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
       return fetchWithRetry(url, options, retries - 1, delay);
     }
     throw error; // If all retries fail, throw the error

@@ -1,4 +1,4 @@
-import { Item } from 'rss-parser';
+import type { Item } from 'rss-parser';
 
 export interface Episode {
   torrent: string;
@@ -33,15 +33,15 @@ export class EpisodeParse {
     } as Episode;
   }
 
-  private episodeNumberRegex = /\[(\d{2})\\]|\b(\d{2})\b/;
+  private episodeNumberRegex = /\[(\d{2})\]|\b(\d{2})\b/;
 
   private getEpisodeNumber(title: string) {
-    return Number(title.match(this.episodeNumberRegex)?.[0]) ?? undefined;
+    const matched = title.match(this.episodeNumberRegex);
+    const episodeNumber = matched?.[1] ?? matched?.[2];
+    return episodeNumber ? Number(episodeNumber) : undefined;
   }
 
   private getTorrentHash(torrentUrl: string) {
     return torrentUrl.split('/').pop()?.split('.')[0];
   }
 }
-
-

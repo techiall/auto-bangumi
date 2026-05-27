@@ -1,8 +1,6 @@
-import fs from 'node:fs';
 import path from 'node:path';
+import * as fs from 'node:fs';
 import jsyaml from 'js-yaml';
-
-const configPath = resolveConfigPath();
 
 const defaultFileServerConfig: FileServerConfig = {
   host: 'file-export',
@@ -20,68 +18,14 @@ const defaultQbittorrentConfig: QbittorrentConfig = {
   downloadPath: '/downloads',
   fileServer: defaultFileServerConfig,
 };
-export interface Config {
-  subscriptions: SubscriptionConfig[];
-  qbittorrent: QbittorrentConfig;
-  library: LibraryConfig;
-}
-
-interface ConfigFile {
-  subscriptions?: SubscriptionConfigFile[];
-  qbittorrent?: PartialQbittorrentConfig;
-  library?: string | Partial<LibraryConfig>;
-}
-
-interface SubscriptionConfigFile {
-  rss: string;
-  title: string;
-  season?: number;
-  filters?: string[];
-}
-
-export interface SubscriptionConfig {
-  rss: string;
-  title: string;
-  season: number;
-  filters?: string[];
-}
-
-type PartialQbittorrentConfig = Partial<Omit<QbittorrentConfig, 'fileServer'>> & {
-  fileServer?: Partial<FileServerConfig> | null;
-};
-
-export interface QbittorrentConfig {
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-  ssl: boolean;
-  downloadPath: string;
-  fileServer?: FileServerConfig;
-}
-
-export interface FileServerConfig {
-  host: string;
-  port: number;
-  ssl: boolean;
-  root?: string;
-  basePath?: string;
-  username?: string;
-  password?: string;
-}
-
-export interface LibraryConfig {
-  root: string;
-}
-
-export function loadConfig(): Config {
-  const loaded = jsyaml.load(fs.readFileSync(configPath, 'utf-8')) as ConfigFile;
+export function loadConfig(configPath = 'config/config.yaml'): Config {
+  const loaded = jsyaml.load(fs.readFileSync(path.join(configPath), 'utf-8')) as ConfigFile;
   return normalizeConfig(loaded);
 }
 
-export function saveConfig(config: Config) {
+export function saveConfig(config: Config, configPath = 'config/config.yaml') {
   fs.writeFileSync(
-    configPath,
+    path.join(configPath),
     jsyaml.dump(toConfigFile(normalizeConfig(config)), {
       noRefs: true,
       lineWidth: 120,
@@ -149,16 +93,56 @@ function isDefaultQbittorrent(config: QbittorrentConfig) {
   return JSON.stringify(config) === JSON.stringify(defaultQbittorrentConfig);
 }
 
-function resolveConfigPath() {
-  const candidates = [
-    path.resolve(process.cwd(), 'config/config.yaml'),
-    path.resolve(process.cwd(), '../config/config.yaml'),
-  ];
+export interface Config {
+  subscriptions: SubscriptionConfig[];
+  qbittorrent: QbittorrentConfig;
+  library: LibraryConfig;
+}
 
-  const resolved = candidates.find((candidate) => fs.existsSync(candidate));
-  if (!resolved) {
-    throw new Error('Could not locate config/config.yaml.');
-  }
+interface ConfigFile {
+  subscriptions?: SubscriptionConfigFile[];
+  qbittorrent?: PartialQbittorrentConfig;
+  library?: string | Partial<LibraryConfig>;
+}
 
-  return resolved;
+interface SubscriptionConfigFile {
+  rss: string;
+  title: string;
+  season?: number;
+  filters?: string[];
+}
+
+export interface SubscriptionConfig {
+  rss: string;
+  title: string;
+  season: number;
+  filters?: string[];
+}
+
+type PartialQbittorrentConfig = Partial<Omit<QbittorrentConfig, 'fileServer'>> & {
+  fileServer?: Partial<FileServerConfig> | null;
+};
+
+export interface QbittorrentConfig {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  ssl: boolean;
+  downloadPath: string;
+  fileServer?: FileServerConfig;
+}
+
+export interface FileServerConfig {
+  host: string;
+  port: number;
+  ssl: boolean;
+  root?: string;
+  basePath?: string;
+  username?: string;
+  password?: string;
+}
+
+export interface LibraryConfig {
+  root: string;
 }

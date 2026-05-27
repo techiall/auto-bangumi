@@ -28,8 +28,8 @@ function HomePage() {
   const [notice, setNotice] = useState<{ kind: 'success' | 'error'; message: string } | null>(null);
   const [form, setForm] = useState<SubscriptionFormState>({
     title: '',
-    seasonNumber: '1',
-    matchTitle: '',
+    season: '1',
+    filters: '',
     rss: '',
   });
 
@@ -48,8 +48,8 @@ function HomePage() {
     [selectedBangumi, selectedGroupId],
   );
 
-  const displayedSeasons = useMemo(
-    () => (config?.seasons ?? []).map((season, index) => ({ season, index })).reverse(),
+  const displayedSubscriptions = useMemo(
+    () => (config?.subscriptions ?? []).map((subscription, index) => ({ subscription, index })).reverse(),
     [config],
   );
 
@@ -57,8 +57,8 @@ function HomePage() {
     if (!selectedBangumi) return;
     setForm({
       title: selectedBangumi.title,
-      seasonNumber: '1',
-      matchTitle: '',
+      season: '1',
+      filters: '',
       rss: selectedBangumi.groups[0]?.rss ?? selectedBangumi.rss,
     });
   }, [selectedBangumi]);
@@ -112,8 +112,8 @@ function HomePage() {
       setNotice(null);
       setForm({
         title: '',
-        seasonNumber: '1',
-        matchTitle: '',
+        season: '1',
+        filters: '',
         rss: '',
       });
       return;
@@ -148,8 +148,8 @@ function HomePage() {
 
     const payload: AddSeasonPayload = {
       title: form.title.trim(),
-      seasonNumber: Number(form.seasonNumber),
-      matchTitle: splitCommaList(form.matchTitle),
+      season: Number(form.season),
+      filters: splitCommaList(form.filters),
       rss: form.rss.trim(),
     };
 
@@ -176,8 +176,7 @@ function HomePage() {
               notice.kind === 'error'
                 ? 'border-rose-900 bg-rose-950/70 text-rose-100'
                 : 'border-cyan-900 bg-cyan-950/70 text-cyan-100',
-            )}
-          >
+            )}>
             {notice.message}
           </div>
         ) : null}
@@ -214,13 +213,12 @@ function HomePage() {
         </div>
 
         <CurrentSubscriptions
-          seasons={displayedSeasons}
+          subscriptions={displayedSubscriptions}
           isLoading={isConfigLoading}
           onRefresh={() => void refreshConfig()}
           onDelete={(index) => void handleDelete(index)}
         />
       </main>
-
     </div>
   );
 

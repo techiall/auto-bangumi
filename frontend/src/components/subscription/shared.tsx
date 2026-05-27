@@ -28,8 +28,7 @@ export function GroupOption({
       className={cn(
         'grid gap-2 rounded-2xl border px-4 py-3 text-left transition-colors',
         active ? 'border-cyan-500 bg-cyan-950/80' : 'border-slate-800 bg-slate-900/70 hover:bg-slate-800',
-      )}
-    >
+      )}>
       <div className="font-medium text-slate-100">{group.name}</div>
       <div className="break-all text-xs leading-5 text-slate-500">{group.rss}</div>
     </button>

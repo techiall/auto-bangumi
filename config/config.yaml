@@ -1,48 +1,31 @@
-seasons:
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3560&subgroupid=370
-    title: 我独自升级 -起于暗影
-    seasonNumber: 1
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3518&subgroupid=583
-    title: BanG Dream! Ave Mujica
-    seasonNumber: 1
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3488&subgroupid=597
-    title: 地。—关于地球的运动—
-    seasonNumber: 1
-    match:
-      title:
-        - 繁日内嵌
-        - 1080p
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3436&subgroupid=583
-    title: 胆大党
-    seasonNumber: 1
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3454&subgroupid=370
-    title: 魔王 2099
-    seasonNumber: 1
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3439&subgroupid=42
-    title: 夏目友人帐 七
-    seasonNumber: 7
-    match:
-      title:
-        - 简日双语字幕
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3930&subgroupid=583
-    title: 关于虽然逃走的鱼很大、但钓上来的鱼却太大了这件事
-    seasonNumber: 1
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583
-    title: 入间同学入魔了 第四季
-    seasonNumber: 4
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583
-    title: 杖与剑的魔剑谭 第二季
-    seasonNumber: 2
-  - rss: https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583
-    title: 黄泉的使者
-    seasonNumber: 1
-download:
-  path: /downloads
-  qBittorrent:
-    host: host.docker.internal
-    port: 5001
-    username: admin
-    password: adminadmin
-    ssl: false
-move:
-  root: E:\Bangumi
+subscriptions:
+  - title: 我独自升级 -起于暗影
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3560&subgroupid=370
+  - title: BanG Dream! Ave Mujica
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3518&subgroupid=583
+  - title: 地。—关于地球的运动—
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3488&subgroupid=597
+    filters:
+      - 繁日内嵌
+      - 1080p
+  - title: 胆大党
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3436&subgroupid=583
+  - title: 魔王 2099
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3454&subgroupid=370
+  - title: 夏目友人帐 七
+    season: 7
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3439&subgroupid=42
+    filters:
+      - 简日双语字幕
+  - title: 关于虽然逃走的鱼很大、但钓上来的鱼却太大了这件事
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3930&subgroupid=583
+  - title: 入间同学入魔了 第四季
+    season: 4
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583
+  - title: 杖与剑的魔剑谭 第二季
+    season: 2
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583
+  - title: 黄泉的使者
+    rss: https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583
+
+library: E:\Bangumi

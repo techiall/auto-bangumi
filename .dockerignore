@@ -3,7 +3,6 @@
 .github/
 
 config/
-Dockerfile.download
 .dockerignore
 renovate.json
 
@@ -11,8 +10,12 @@ renovate.json
 .git
 
 node_modules
+frontend/node_modules
+frontend/.output
+frontend/.tanstack
 
 dist
+frontend/dist
 
 .DS_Store
 Thumbs.db

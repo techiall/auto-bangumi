@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { nitro } from 'nitro/vite';
 
 export default defineConfig({
+  logLevel: 'warn',
   server: {
     port: 3001,
     strictPort: true,
@@ -24,6 +25,8 @@ export default defineConfig({
       srcDirectory: 'src',
     }),
     viteReact(),
-    nitro(),
+    nitro({
+      logLevel: 2,
+    }),
   ],
 });

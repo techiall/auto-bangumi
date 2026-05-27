@@ -4,16 +4,16 @@ import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { StateBox } from '~/components/subscription/shared';
 import { inferMikanBangumiUrl } from '~/lib/subscription';
-import type { SeasonConfig } from '~/types';
+import type { SubscriptionConfig } from '~/types';
 
 interface CurrentSubscriptionsProps {
-  seasons: Array<{ season: SeasonConfig; index: number }>;
+  subscriptions: Array<{ subscription: SubscriptionConfig; index: number }>;
   isLoading: boolean;
   onRefresh: () => void;
   onDelete: (index: number) => void;
 }
 
-export function CurrentSubscriptions({ seasons, isLoading, onRefresh, onDelete }: CurrentSubscriptionsProps) {
+export function CurrentSubscriptions({ subscriptions, isLoading, onRefresh, onDelete }: CurrentSubscriptionsProps) {
   return (
     <Card className="p-5">
       <CardHeader className="mb-5">
@@ -30,11 +30,16 @@ export function CurrentSubscriptions({ seasons, isLoading, onRefresh, onDelete }
       <CardContent className="grid gap-3 md:grid-cols-2">
         {isLoading ? (
           <StateBox icon={<LoaderCircle className="size-4 animate-spin" />} text="正在读取配置..." />
-        ) : !seasons.length ? (
+        ) : !subscriptions.length ? (
           <StateBox icon={<Layers3 className="size-4" />} text="当前还没有订阅。" />
         ) : (
-          seasons.map(({ season, index }) => (
-            <SubscriptionCard key={`${season.rss}-${index}`} season={season} index={index} onDelete={onDelete} />
+          subscriptions.map(({ subscription, index }) => (
+            <SubscriptionCard
+              key={`${subscription.rss}-${index}`}
+              subscription={subscription}
+              index={index}
+              onDelete={onDelete}
+            />
           ))
         )}
       </CardContent>
@@ -43,15 +48,15 @@ export function CurrentSubscriptions({ seasons, isLoading, onRefresh, onDelete }
 }
 
 function SubscriptionCard({
-  season,
+  subscription,
   index,
   onDelete,
 }: {
-  season: SeasonConfig;
+  subscription: SubscriptionConfig;
   index: number;
   onDelete: (index: number) => void;
 }) {
-  const mikanUrl = inferMikanBangumiUrl(season.rss);
+  const mikanUrl = inferMikanBangumiUrl(subscription.rss);
 
   return (
     <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
@@ -62,24 +67,24 @@ function SubscriptionCard({
               href={mikanUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-slate-100 hover:text-cyan-200"
-            >
-              {season.title}
+              className="inline-flex items-center gap-1 font-medium text-slate-100 hover:text-cyan-200">
+              {subscription.title}
               <ExternalLink className="size-3.5" />
             </a>
           ) : (
-            <div className="font-medium text-slate-100">{season.title}</div>
+            <div className="font-medium text-slate-100">{subscription.title}</div>
           )}
           <div className="flex flex-wrap gap-2">
-            <Badge variant="muted">Season {season.seasonNumber}</Badge>
-            {season.match?.title?.length ? <Badge variant="outline">过滤 {season.match.title.join(' / ')}</Badge> : null}
+            <Badge variant="muted">Season {subscription.season}</Badge>
+            {subscription.filters?.length ? (
+              <Badge variant="outline">过滤 {subscription.filters.join(' / ')}</Badge>
+            ) : null}
           </div>
           <a
-            href={season.rss}
+            href={subscription.rss}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-cyan-300 hover:text-cyan-200"
-          >
+            className="inline-flex items-center gap-1 text-sm text-cyan-300 hover:text-cyan-200">
             查看 RSS
             <ExternalLink className="size-3.5" />
           </a>

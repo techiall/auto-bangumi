@@ -1,9 +1,44 @@
 services:
-  download:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Asia/Shanghai
+      WEBUI_PORT: 8080
+      TORRENTING_PORT: 6881
+    volumes:
+      - ./config/qbittorrent:/config
+      - qbittorrent-downloads:/downloads
+    restart: unless-stopped
+
+  file-export:
+    image: nginx:latest
+    volumes:
+      - qbittorrent-downloads:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  worker:
     build:
       context: .
-      dockerfile: Dockerfile.download
+      dockerfile: docker/worker.Dockerfile
+    depends_on:
+      - qbittorrent
+      - file-export
     volumes:
       - ./config/config.yaml:/usr/src/app/config/config.yaml
       - ./db:/usr/src/app/db
     restart: on-failure
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config/config.yaml:/usr/src/app/config/config.yaml
+    restart: unless-stopped
+
+volumes:
+  qbittorrent-downloads:

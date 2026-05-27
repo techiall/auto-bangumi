@@ -13,7 +13,9 @@ export function PageHero() {
           </Badge>
           <div className="space-y-2">
             <h1 className="font-serif text-4xl font-bold tracking-tight text-slate-50 md:text-5xl">订阅管理</h1>
-            <p className="max-w-2xl text-sm leading-7 text-slate-400 md:text-base">搜索番组，选择字幕组，确认后写入订阅。</p>
+            <p className="max-w-2xl text-sm leading-7 text-slate-400 md:text-base">
+              搜索番组，选择字幕组，确认后写入订阅。
+            </p>
           </div>
         </div>
 

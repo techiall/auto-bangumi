@@ -1,25 +1,21 @@
-export interface SeasonConfig {
+export interface SubscriptionConfig {
   rss: string;
   title: string;
-  seasonNumber: number;
-  match?: {
-    title?: string[];
-  };
+  season: number;
+  filters?: string[];
 }
 
 export interface AppConfig {
-  seasons: SeasonConfig[];
-  download: {
-    path: string;
-    qBittorrent: {
-      host: string;
-      port: number;
-      username: string;
-      password: string;
-      ssl: boolean;
-    };
+  subscriptions: SubscriptionConfig[];
+  qbittorrent: {
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+    ssl: boolean;
+    downloadPath: string;
   };
-  move: {
+  library: {
     root: string;
   };
 }
@@ -48,6 +44,6 @@ export interface MikanBangumiDetail {
 export interface AddSeasonPayload {
   rss: string;
   title: string;
-  seasonNumber: number;
-  matchTitle: string[];
+  season: number;
+  filters: string[];
 }

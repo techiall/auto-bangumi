@@ -11,8 +11,8 @@ import type { MikanBangumiDetail, MikanBangumiGroup } from '~/types';
 
 export interface SubscriptionFormState {
   title: string;
-  seasonNumber: string;
-  matchTitle: string;
+  season: string;
+  filters: string;
   rss: string;
 }
 
@@ -66,8 +66,7 @@ export function SubscriptionSettings({
                   href={bangumi.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex max-w-full items-center gap-1 truncate font-medium text-slate-100 hover:text-cyan-200"
-                >
+                  className="inline-flex max-w-full items-center gap-1 truncate font-medium text-slate-100 hover:text-cyan-200">
                   <span className="truncate">{bangumi.title}</span>
                   <ExternalLink className="size-3.5 shrink-0" />
                 </a>
@@ -85,8 +84,7 @@ export function SubscriptionSettings({
                   notice.kind === 'error'
                     ? 'border-rose-900 bg-rose-950/70 text-rose-100'
                     : 'border-cyan-900 bg-cyan-950/70 text-cyan-100',
-                )}
-              >
+                )}>
                 {notice.message}
               </div>
             ) : null}
@@ -120,23 +118,26 @@ export function SubscriptionSettings({
 
               <div className="grid gap-4 md:grid-cols-[1fr_8rem]">
                 <Field label="标题">
-                  <Input value={form.title} onChange={(event) => onFormChange({ ...form, title: event.target.value })} />
+                  <Input
+                    value={form.title}
+                    onChange={(event) => onFormChange({ ...form, title: event.target.value })}
+                  />
                 </Field>
 
                 <Field label="季数">
                   <Input
                     type="number"
                     min="1"
-                    value={form.seasonNumber}
-                    onChange={(event) => onFormChange({ ...form, seasonNumber: event.target.value })}
+                    value={form.season}
+                    onChange={(event) => onFormChange({ ...form, season: event.target.value })}
                   />
                 </Field>
               </div>
 
               <Field label="标题过滤">
                 <Input
-                  value={form.matchTitle}
-                  onChange={(event) => onFormChange({ ...form, matchTitle: event.target.value })}
+                  value={form.filters}
+                  onChange={(event) => onFormChange({ ...form, filters: event.target.value })}
                   placeholder="例如 1080p, 简中"
                 />
               </Field>
@@ -149,7 +150,11 @@ export function SubscriptionSettings({
               </div>
 
               <Button type="submit" size="lg" disabled={isSubmitting}>
-                {isSubmitting ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
+                {isSubmitting ? (
+                  <LoaderCircle className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Check className="mr-2 size-4" />
+                )}
                 写入配置
               </Button>
             </section>

@@ -46,8 +46,7 @@ export function SearchPanel({
           onSubmit={(event) => {
             event.preventDefault();
             onSearch();
-          }}
-        >
+          }}>
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <Input
@@ -58,7 +57,11 @@ export function SearchPanel({
             />
           </div>
           <Button type="submit" disabled={isSearchLoading || isBrowseLoading}>
-            {isSearchLoading ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Search className="mr-2 size-4" />}
+            {isSearchLoading ? (
+              <LoaderCircle className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Search className="mr-2 size-4" />
+            )}
             搜索
           </Button>
           <Button variant="outline" type="button" onClick={onBrowse} disabled={isSearchLoading || isBrowseLoading}>
@@ -110,8 +113,7 @@ function SearchResultItem({
           event.preventDefault();
           onChoose();
         }
-      }}
-    >
+      }}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 space-y-1">
           <a
@@ -119,8 +121,7 @@ function SearchResultItem({
             target="_blank"
             rel="noreferrer"
             className="inline-flex max-w-full items-center gap-1 font-medium text-slate-100 hover:text-cyan-200"
-            onClick={(event) => event.stopPropagation()}
-          >
+            onClick={(event) => event.stopPropagation()}>
             <span className="truncate">{item.title}</span>
             <ExternalLink className="size-3.5 shrink-0" />
           </a>
