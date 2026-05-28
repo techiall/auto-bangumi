@@ -12,7 +12,7 @@ This repository has two main parts:
 - Treat `config/config.yaml` as subscription and library configuration.
 - Treat `db/db.json` as runtime state only.
 - Do not reintroduce the old `seasons` plus `manager` db shape.
-- Do not expose qBittorrent or `file-export` ports unless the user asks for direct host access.
+- Do not expose qBittorrent ports unless the user asks for direct host access.
 - Prefer service name `worker` for the background job. Avoid renaming it back to `download`.
 - Keep root npm scripts project-level and minimal: `build`, `dev`, and targeted helper scripts only.
 
@@ -23,11 +23,12 @@ This repository has two main parts:
 - `src/state/db.ts`: lowdb schema and legacy db migration.
 - `src/tasks/download-task.ts`: RSS polling and qB add logic.
 - `src/tasks/move-task.ts`: completed episode transfer, library move, and qB cleanup.
-- `src/files/file-transfer.ts`: file-export URL creation and HTTP streaming.
+- `src/files/file-transfer.ts`: qB bundled file-server URL creation and HTTP streaming.
 - `src/qbittorrent/api.ts`: qBittorrent API wrapper.
 - `src/mikan/`: Mikan search, RSS parsing, and episode parsing.
 - `compose.yaml`: runtime services.
-- `docker/worker.Dockerfile`: background worker image.
+- `docker/backend.Dockerfile`: backend API and background worker image.
+- `docker/qbittorrent.Dockerfile`: custom qBittorrent plus internal download file server image.
 - `docker/web.Dockerfile`: web UI image.
 
 ## Current Config Shape
@@ -92,7 +93,7 @@ Run these after meaningful backend, frontend, Docker, config, or db changes:
 npm run build
 npm --prefix frontend run build
 docker compose config
-docker compose build worker web
+docker compose build qbittorrent backend web
 ```
 
 If only root TypeScript changed, `npm run build` is the minimum.

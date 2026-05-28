@@ -1,44 +1,47 @@
 services:
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    build:
+      context: .
+      dockerfile: docker/qbittorrent.Dockerfile
     environment:
       PUID: 1000
       PGID: 1000
       TZ: Asia/Shanghai
       WEBUI_PORT: 8080
-      TORRENTING_PORT: 6881
     volumes:
-      - ./config/qbittorrent:/config
+      - qbittorrent-config:/config
       - qbittorrent-downloads:/downloads
     restart: unless-stopped
 
-  file-export:
-    image: nginx:latest
-    volumes:
-      - qbittorrent-downloads:/usr/share/nginx/html:ro
-    restart: unless-stopped
-
-  worker:
+  backend:
     build:
       context: .
-      dockerfile: docker/worker.Dockerfile
+      dockerfile: docker/backend.Dockerfile
     depends_on:
       - qbittorrent
-      - file-export
+    environment:
+      API_PORT: 3000
+      LIBRARY_CONTAINER_ROOT: /library
+      HOST_LIBRARY_ROOT: ${HOST_LIBRARY_ROOT:-E:/Bangumi}
     volumes:
       - ./config/config.yaml:/usr/src/app/config/config.yaml
       - ./db:/usr/src/app/db
-    restart: on-failure
+      - ${HOST_LIBRARY_ROOT:-E:/Bangumi}:/library
+    command: ['node', 'dist/server/backend-server.js']
+    restart: unless-stopped
 
   web:
     build:
       context: .
       dockerfile: docker/web.Dockerfile
+    depends_on:
+      - backend
+    environment:
+      API_BASE_URL: http://backend:3000
     ports:
-      - 3000:3000
-    volumes:
-      - ./config/config.yaml:/usr/src/app/config/config.yaml
+      - '127.0.0.1:3000:3000'
     restart: unless-stopped
 
 volumes:
+  qbittorrent-config:
   qbittorrent-downloads:

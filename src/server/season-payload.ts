@@ -4,6 +4,13 @@ import { HttpError } from './http-error.js';
 export interface SeasonPayload {
   rss?: unknown;
   title?: unknown;
+  folder?: unknown;
+  season?: unknown;
+  filters?: unknown;
+}
+
+export interface SeasonUpdatePayload {
+  folder?: unknown;
   season?: unknown;
   filters?: unknown;
 }
@@ -11,6 +18,7 @@ export interface SeasonPayload {
 export function parseSeasonPayload(payload: SeasonPayload): SubscriptionConfig {
   const rss = String(payload.rss ?? '').trim();
   const title = String(payload.title ?? '').trim();
+  const folder = String(payload.folder ?? title).trim();
   const season = Number(payload.season);
   const filters = normalizeStringArray(payload.filters);
 
@@ -23,6 +31,26 @@ export function parseSeasonPayload(payload: SeasonPayload): SubscriptionConfig {
   return {
     rss,
     title,
+    folder: folder || title,
+    season,
+    filters: filters.length ? filters : undefined,
+  };
+}
+
+export function parseSeasonUpdatePayload(
+  payload: SeasonUpdatePayload,
+  current: SubscriptionConfig,
+): Pick<SubscriptionConfig, 'folder' | 'season' | 'filters'> {
+  const season = Number(payload.season);
+  const folder = String(payload.folder ?? current.folder).trim();
+  const filters = normalizeStringArray(payload.filters);
+
+  if (!Number.isInteger(season) || season <= 0) {
+    throw new HttpError(400, 'Season must be a positive integer.');
+  }
+
+  return {
+    folder: folder || current.title,
     season,
     filters: filters.length ? filters : undefined,
   };

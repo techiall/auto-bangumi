@@ -6,5 +6,5 @@ const configPath = process.env.CONFIG_PATH ?? 'config/config.yaml';
 const dbPath = process.env.DB_PATH ?? 'db/db.json';
 
 createApp({ configPath, dbPath }).listen(port, () => {
-  logger.info(`Dev server is running on http://localhost:${port}`);
+  logger.info(`API server is running on http://localhost:${port}`);
 });

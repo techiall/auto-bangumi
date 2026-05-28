@@ -2,24 +2,48 @@ import { JSONFilePreset } from 'lowdb/node';
 import type { Episode } from '../mikan/episode.js';
 import type { Season } from '../mikan/season.js';
 
-export interface ActiveEpisode extends Episode {
-  title: string;
-  season: number;
+interface EpisodeMetadataFallback {
+  title?: string;
+  folder?: string;
+  season?: number;
 }
 
-export interface CompletedEpisode {
+// db.json is a runtime state file, not a config mirror.
+// Torrent hashes are stored as map keys, while title/folder/season are resolved
+// from config.yaml through subscriptionRss so config edits do not require a db migration.
+// The optional metadata fields only preserve display context for legacy or orphaned records.
+export interface ActiveEpisodeRecord extends Omit<Episode, 'torrent'>, EpisodeMetadataFallback {
+  subscriptionRss?: string;
+}
+
+export interface ActiveEpisode extends Episode {
   title: string;
+  folder: string;
   season: number;
+  subscriptionRss?: string;
+}
+
+export interface CompletedEpisodeRecord extends EpisodeMetadataFallback {
   number: number;
   movedAt: string;
+  qbitRemovedAt?: string;
+  targetPath?: string;
+  subscriptionRss?: string;
+}
+
+export interface CompletedEpisode extends CompletedEpisodeRecord {
+  title: string;
+  folder: string;
+  season: number;
 }
 
 export interface Data {
-  active: Record<string, ActiveEpisode>;
-  completed: Record<string, CompletedEpisode>;
+  active: Record<string, ActiveEpisodeRecord>;
+  completed: Record<string, CompletedEpisodeRecord>;
 }
 
-interface EpisodeRecord extends ActiveEpisode {
+interface EpisodeRecord extends ActiveEpisodeRecord, EpisodeMetadataFallback {
+  torrent: string;
   state: 'downloading' | 'moved';
 }
 
@@ -48,28 +72,41 @@ export async function createDb(dbPath = 'db/db.json') {
   return db as Awaited<ReturnType<typeof JSONFilePreset<Data>>>;
 }
 
+export type AppDb = Awaited<ReturnType<typeof createDb>>;
+
 export function isTracked(data: Data, torrent: string) {
   return torrent in data.active || torrent in data.completed;
 }
 
-export function completeEpisode(data: Data, torrent: string, movedAt = new Date()) {
+export function completeEpisode(data: Data, torrent: string, targetPath?: string, movedAt = new Date()) {
   const episode = data.active[torrent];
   if (!episode) return;
 
   data.completed[torrent] = {
-    title: episode.title,
-    season: episode.season,
     number: episode.number,
     movedAt: movedAt.toISOString(),
+    ...(episode.subscriptionRss ? { subscriptionRss: episode.subscriptionRss } : fallbackMetadata(episode)),
+    ...(targetPath ? { targetPath } : {}),
   };
   delete data.active[torrent];
+}
+
+export function markQbittorrentRemoved(data: Data, torrent: string, removedAt = new Date()) {
+  const episode = data.completed[torrent];
+  if (!episode) return;
+
+  episode.qbitRemovedAt = removedAt.toISOString();
 }
 
 function normalizeData(data: Data | EpisodeStateData | LegacyData): Data {
   if ('active' in data && 'completed' in data) {
     return {
-      active: data.active ?? {},
-      completed: data.completed ?? {},
+      active: Object.fromEntries(
+        Object.entries(data.active ?? {}).map(([torrent, episode]) => [torrent, normalizeActiveEpisode(episode)]),
+      ),
+      completed: Object.fromEntries(
+        Object.entries(data.completed ?? {}).map(([torrent, episode]) => [torrent, normalizeCompletedEpisode(episode)]),
+      ),
     };
   }
 
@@ -86,19 +123,12 @@ function migrateEpisodeStateData(data: EpisodeStateData): Data {
   for (const [torrent, episode] of Object.entries(data.episodes ?? {})) {
     if (episode.state === 'moved') {
       next.completed[torrent] = {
-        title: episode.title,
-        season: episode.season,
         number: episode.number,
         movedAt: new Date(0).toISOString(),
+        ...fallbackMetadata(episode),
       };
     } else {
-      next.active[torrent] = {
-        torrent: episode.torrent,
-        number: episode.number,
-        enclosureUrl: episode.enclosureUrl,
-        title: episode.title,
-        season: episode.season,
-      };
+      next.active[torrent] = normalizeActiveEpisode(episode);
     }
   }
 
@@ -114,31 +144,59 @@ function migrateLegacyData(data: LegacyData): Data {
     const episode = {
       ...manager.episode,
       title: season?.title ?? 'Unknown',
+      folder: season?.folder ?? season?.title ?? 'Unknown',
       season: season?.season ?? 1,
     };
 
     if (manager.state === 'moved') {
       next.completed[episode.torrent] = {
-        title: episode.title,
-        season: episode.season,
         number: episode.number,
         movedAt: new Date(0).toISOString(),
+        ...fallbackMetadata(episode),
       };
     } else {
-      next.active[episode.torrent] = episode;
+      next.active[episode.torrent] = normalizeActiveEpisode(episode);
     }
   }
 
   return next;
 }
 
+function normalizeActiveEpisode(episode: ActiveEpisodeRecord | EpisodeRecord | ActiveEpisode): ActiveEpisodeRecord {
+  return {
+    number: episode.number,
+    enclosureUrl: episode.enclosureUrl,
+    ...(episode.subscriptionRss ? { subscriptionRss: episode.subscriptionRss } : fallbackMetadata(episode)),
+  };
+}
+
+function normalizeCompletedEpisode(episode: CompletedEpisodeRecord | CompletedEpisode): CompletedEpisodeRecord {
+  return {
+    number: episode.number,
+    movedAt: episode.movedAt,
+    ...(episode.qbitRemovedAt ? { qbitRemovedAt: episode.qbitRemovedAt } : {}),
+    ...(episode.targetPath ? { targetPath: episode.targetPath } : {}),
+    ...(episode.subscriptionRss ? { subscriptionRss: episode.subscriptionRss } : fallbackMetadata(episode)),
+  };
+}
+
+function fallbackMetadata(episode: EpisodeMetadataFallback): Required<EpisodeMetadataFallback> {
+  const title = episode.title ?? 'Unknown';
+  return {
+    title,
+    folder: episode.folder ?? title,
+    season: episode.season ?? 1,
+  };
+}
+
 function indexLegacySeasons(seasons: LegacyData['seasons']) {
-  const index = new Map<string, Pick<ActiveEpisode, 'title' | 'season'>>();
+  const index = new Map<string, Required<EpisodeMetadataFallback>>();
 
   for (const season of seasons ?? []) {
     for (const episode of season.episodes) {
       index.set(episode.torrent, {
         title: season.alias?.[0] ?? season.title,
+        folder: season.alias?.[0] ?? season.title,
         season: season.number,
       });
     }
@@ -146,5 +204,3 @@ function indexLegacySeasons(seasons: LegacyData['seasons']) {
 
   return index;
 }
-
-export const db = await createDb();

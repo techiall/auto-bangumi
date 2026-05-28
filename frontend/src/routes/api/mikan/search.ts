@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { searchBangumi } from '~/server/mikan';
+import { forwardToBackend } from '~/server/backend-api';
 
 export const Route = createFileRoute('/api/mikan/search')({
   server: {
@@ -7,7 +7,7 @@ export const Route = createFileRoute('/api/mikan/search')({
       GET: async ({ request }) => {
         const { searchParams } = new URL(request.url);
         const query = searchParams.get('q') ?? '';
-        return Response.json(await searchBangumi(query));
+        return forwardToBackend(`/api/mikan/search?q=${encodeURIComponent(query)}`, request);
       },
     },
   },

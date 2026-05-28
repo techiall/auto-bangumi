@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { loadConfig } from '~/server/config';
+import { forwardToBackend } from '~/server/backend-api';
 
 export const Route = createFileRoute('/api/config')({
   server: {
     handlers: {
-      GET: async () => Response.json(loadConfig()),
+      GET: async ({ request }) => forwardToBackend('/api/config', request),
     },
   },
 });

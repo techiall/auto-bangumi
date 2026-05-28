@@ -1,0 +1,206 @@
+import type { FormEvent } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { SubscriptionFormState } from '~/components/subscription/subscription-settings';
+import {
+  addSeason,
+  browseSeason,
+  deleteSeason,
+  fetchBangumiDetail,
+  fetchConfig,
+  searchMikan,
+  updateSeason,
+} from '~/lib/api';
+import { asMessage, splitCommaList } from '~/lib/subscription';
+import type { AddSeasonPayload, AppConfig, MikanBangumiDetail, MikanSearchResult } from '~/types';
+
+const emptyForm: SubscriptionFormState = {
+  title: '',
+  folder: '',
+  season: '1',
+  filters: '',
+  rss: '',
+};
+
+type Notice = { kind: 'success' | 'error'; message: string };
+
+export function useSubscriptionManager() {
+  const [config, setConfig] = useState<AppConfig | null>(null);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<MikanSearchResult[]>([]);
+  const [selectedBangumi, setSelectedBangumi] = useState<MikanBangumiDetail | null>(null);
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
+  const [isConfigLoading, setIsConfigLoading] = useState(true);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [isBrowseLoading, setIsBrowseLoading] = useState(false);
+  const [loadingBangumiId, setLoadingBangumiId] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const [form, setForm] = useState<SubscriptionFormState>(emptyForm);
+
+  useEffect(() => {
+    void refreshConfig();
+  }, []);
+
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(null), 3600);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
+
+  const selectedGroup = useMemo(
+    () => selectedBangumi?.groups.find((group) => group.id === selectedGroupId) ?? null,
+    [selectedBangumi, selectedGroupId],
+  );
+
+  const displayedSubscriptions = useMemo(
+    () => (config?.subscriptions ?? []).map((subscription, index) => ({ subscription, index })).reverse(),
+    [config],
+  );
+
+  useEffect(() => {
+    if (!selectedBangumi) return;
+    setForm({
+      title: selectedBangumi.title,
+      folder: selectedBangumi.folder,
+      season: '1',
+      filters: '',
+      rss: selectedBangumi.groups[0]?.rss ?? selectedBangumi.rss,
+    });
+  }, [selectedBangumi]);
+
+  useEffect(() => {
+    if (!selectedBangumi) return;
+    setForm((current) => ({
+      ...current,
+      rss: selectedGroup?.rss ?? selectedBangumi.rss,
+    }));
+  }, [selectedBangumi, selectedGroup]);
+
+  async function refreshConfig() {
+    setIsConfigLoading(true);
+    try {
+      setConfig(await fetchConfig());
+    } catch (error) {
+      showNotice(asMessage(error), 'error');
+    } finally {
+      setIsConfigLoading(false);
+    }
+  }
+
+  async function runSearch(keyword: string, source: 'search' | 'browse' = 'search') {
+    const isBrowse = source === 'browse';
+    if (isBrowse) {
+      setIsBrowseLoading(true);
+    } else {
+      setIsSearchLoading(true);
+    }
+
+    try {
+      const list = isBrowse || !keyword.trim() ? await browseSeason() : await searchMikan(keyword);
+      setResults(list);
+    } catch (error) {
+      setResults([]);
+      showNotice(asMessage(error), 'error');
+    } finally {
+      if (isBrowse) {
+        setIsBrowseLoading(false);
+      } else {
+        setIsSearchLoading(false);
+      }
+    }
+  }
+
+  async function chooseBangumi(item: MikanSearchResult) {
+    if (selectedBangumi?.id === item.id) {
+      clearSelection();
+      return;
+    }
+
+    setLoadingBangumiId(item.id);
+    try {
+      const detail = await fetchBangumiDetail(item.id);
+      setSelectedBangumi(detail);
+      setSelectedGroupId(detail.groups[0]?.id ?? null);
+    } catch (error) {
+      showNotice(asMessage(error), 'error');
+    } finally {
+      setLoadingBangumiId(null);
+    }
+  }
+
+  async function handleDelete(index: number) {
+    try {
+      setConfig(await deleteSeason(index));
+      showNotice('已从配置中移除。', 'success');
+    } catch (error) {
+      showNotice(asMessage(error), 'error');
+    }
+  }
+
+  async function handleUpdate(index: number, payload: { folder: string; season: number; filters: string[] }) {
+    try {
+      setConfig(await updateSeason(index, payload));
+      showNotice('订阅已更新。', 'success');
+    } catch (error) {
+      showNotice(asMessage(error), 'error');
+    }
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    const payload: AddSeasonPayload = {
+      title: form.title.trim(),
+      folder: form.folder.trim() || form.title.trim(),
+      season: Number(form.season),
+      filters: splitCommaList(form.filters),
+      rss: form.rss.trim(),
+    };
+
+    try {
+      setConfig(await addSeason(payload));
+      showNotice('已写入 config.yaml。', 'success');
+    } catch (error) {
+      showNotice(asMessage(error), 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  function clearSelection() {
+    setSelectedBangumi(null);
+    setSelectedGroupId(null);
+    setNotice(null);
+    setForm(emptyForm);
+  }
+
+  function showNotice(message: string, kind: Notice['kind']) {
+    setNotice({ kind, message });
+  }
+
+  return {
+    displayedSubscriptions,
+    form,
+    isBrowseLoading,
+    isConfigLoading,
+    isSearchLoading,
+    isSubmitting,
+    loadingBangumiId,
+    notice,
+    query,
+    results,
+    selectedBangumi,
+    selectedGroup,
+    selectedGroupId,
+    chooseBangumi,
+    handleDelete,
+    handleSubmit,
+    handleUpdate,
+    refreshConfig,
+    runSearch,
+    setForm,
+    setQuery,
+    setSelectedGroupId,
+  };
+}

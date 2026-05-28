@@ -1,6 +1,7 @@
 export interface SubscriptionConfig {
   rss: string;
   title: string;
+  folder: string;
   season: number;
   filters?: string[];
 }
@@ -14,9 +15,8 @@ export interface AppConfig {
     password: string;
     ssl: boolean;
     downloadPath: string;
-  };
-  library: {
-    root: string;
+    trackers?: string[];
+    trackerUrls?: string[];
   };
 }
 
@@ -36,6 +36,7 @@ export interface MikanBangumiGroup {
 export interface MikanBangumiDetail {
   id: number;
   title: string;
+  folder: string;
   url: string;
   rss: string;
   groups: MikanBangumiGroup[];
@@ -44,6 +45,54 @@ export interface MikanBangumiDetail {
 export interface AddSeasonPayload {
   rss: string;
   title: string;
+  folder: string;
   season: number;
   filters: string[];
+}
+
+export interface UpdateSeasonPayload {
+  folder: string;
+  season: number;
+  filters: string[];
+}
+
+export interface ActiveDownload {
+  torrent: string;
+  title: string;
+  folder?: string;
+  season: number;
+  subscriptionRss?: string;
+  number: number;
+  enclosureUrl: string;
+  qbit?: QbittorrentDownloadStatus;
+  qbitError?: string;
+}
+
+export interface CompletedDownload {
+  title: string;
+  folder?: string;
+  season: number;
+  number: number;
+  movedAt: string;
+  qbitRemovedAt?: string;
+  targetPath?: string;
+}
+
+export interface DownloadState {
+  active: Record<string, ActiveDownload>;
+  completed: Record<string, CompletedDownload>;
+}
+
+export interface QbittorrentDownloadStatus {
+  progress: number;
+  downloadSpeed: number;
+  uploadSpeed: number;
+  eta: number;
+  state: string;
+  stateMessage: string;
+  connectedSeeds: number;
+  connectedPeers: number;
+  totalSeeds: number;
+  totalPeers: number;
+  totalSize: number;
 }

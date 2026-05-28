@@ -1,21 +1,25 @@
 import express from 'express';
-import { loadConfig, saveConfig } from '../config/app-config.js';
 import { getBangumiDetail, searchBangumi } from '../mikan/api.js';
+import { DownloadService } from './downloads.js';
 import { HttpError } from './http-error.js';
-import { parseSeasonPayload, type SeasonPayload } from './season-payload.js';
+import { SubscriptionService } from './subscriptions.js';
 
 export interface AppOptions {
   configPath?: string;
+  dbPath?: string;
 }
 
 export function createApp(options: AppOptions = {}) {
   const app = express();
   const configPath = options.configPath ?? 'config/config.yaml';
+  const dbPath = options.dbPath ?? 'db/db.json';
+  const subscriptions = new SubscriptionService(configPath);
+  const downloads = new DownloadService(configPath, dbPath);
 
   app.use(express.json());
 
   app.get('/api/config', (_request, response) => {
-    response.json(loadConfig(configPath));
+    response.json(subscriptions.list());
   });
 
   app.get('/api/mikan/search', async (request, response) => {
@@ -33,32 +37,22 @@ export function createApp(options: AppOptions = {}) {
     response.json(await getBangumiDetail(id));
   });
 
+  app.get('/api/downloads', async (_request, response) => {
+    response.json(await downloads.state());
+  });
+
   app.post('/api/seasons', (request, response) => {
-    const season = parseSeasonPayload(request.body as SeasonPayload);
-    const config = loadConfig(configPath);
+    response.status(201).json(subscriptions.add(request.body));
+  });
 
-    if (config.subscriptions.some((existing) => existing.rss === season.rss)) {
-      response.status(409).json({ message: 'This RSS already exists in config.' });
-      return;
-    }
-
-    config.subscriptions.push(season);
-    saveConfig(config, configPath);
-    response.status(201).json(config);
+  app.patch('/api/seasons/:index', (request, response) => {
+    const index = Number(request.params.index);
+    response.json(subscriptions.update(index, request.body));
   });
 
   app.delete('/api/seasons/:index', (request, response) => {
     const index = Number(request.params.index);
-    const config = loadConfig(configPath);
-
-    if (!Number.isInteger(index) || index < 0 || index >= config.subscriptions.length) {
-      response.status(404).json({ message: 'Subscription not found.' });
-      return;
-    }
-
-    config.subscriptions.splice(index, 1);
-    saveConfig(config, configPath);
-    response.json(config);
+    response.json(subscriptions.delete(index));
   });
 
   app.use(

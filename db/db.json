@@ -1,571 +1,276 @@
 {
   "active": {
-    "69628b7b63eb4151f18ce5124d1b4a904837b47f": {
-      "torrent": "69628b7b63eb4151f18ce5124d1b4a904837b47f",
+    "f5dfaac68b42db6221147c6367695b760ae64625": {
+      "number": 3,
+      "enclosureUrl": "https://mikanani.me/Download/20260419/f5dfaac68b42db6221147c6367695b760ae64625.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
+    },
+    "977acd26ee4ba92bb584ea3b3d8ef5723e0b46b5": {
+      "number": 13,
+      "enclosureUrl": "https://mikanani.me/Download/20220926/977acd26ee4ba92bb584ea3b3d8ef5723e0b46b5.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "1c7dae3d1ce2f16c68370779afca79a107f51f86": {
+      "number": 11,
+      "enclosureUrl": "https://mikanani.me/Download/20220912/1c7dae3d1ce2f16c68370779afca79a107f51f86.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "c9a9ad202b4587f9bcc4b3bb29c5dd26ae3f52cb": {
+      "number": 10,
+      "enclosureUrl": "https://mikanani.me/Download/20220905/c9a9ad202b4587f9bcc4b3bb29c5dd26ae3f52cb.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "a6612e0acc40fc214c6d56e08c5763b162def21f": {
+      "number": 9,
+      "enclosureUrl": "https://mikanani.me/Download/20220829/a6612e0acc40fc214c6d56e08c5763b162def21f.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "d05bf27e9996355e3080f4dfb9e5cae566b5e3d2": {
+      "number": 8,
+      "enclosureUrl": "https://mikanani.me/Download/20220822/d05bf27e9996355e3080f4dfb9e5cae566b5e3d2.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "8849c25e05d6e2623b5333bc78d3a489a9b1cc59": {
+      "number": 7,
+      "enclosureUrl": "https://mikanani.me/Download/20220815/8849c25e05d6e2623b5333bc78d3a489a9b1cc59.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "380270f4b139106f9c3095e9c4241bc0ee60a38d": {
+      "number": 6,
+      "enclosureUrl": "https://mikanani.me/Download/20220808/380270f4b139106f9c3095e9c4241bc0ee60a38d.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "6dda64981c59a039db7e62ed2e2be4da6e1593c9": {
+      "number": 5,
+      "enclosureUrl": "https://mikanani.me/Download/20220801/6dda64981c59a039db7e62ed2e2be4da6e1593c9.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "cea716da47055e0217ba10aeba58581f884327a1": {
+      "number": 4,
+      "enclosureUrl": "https://mikanani.me/Download/20220725/cea716da47055e0217ba10aeba58581f884327a1.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "5974486e7d5840fd5ed79b4865581928cc08ce65": {
+      "number": 3,
+      "enclosureUrl": "https://mikanani.me/Download/20220718/5974486e7d5840fd5ed79b4865581928cc08ce65.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "f6f5f3a7968cf69c389383790dbbdb5d4da4aa33": {
+      "number": 2,
+      "enclosureUrl": "https://mikanani.me/Download/20220711/f6f5f3a7968cf69c389383790dbbdb5d4da4aa33.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "6197b405172642b094733f2fc34423893427d3a1": {
       "number": 1,
-      "enclosureUrl": "https://mikanani.me/Download/20241231/69628b7b63eb4151f18ce5124d1b4a904837b47f.torrent",
-      "title": "魔王 2099",
-      "season": 1
+      "enclosureUrl": "https://mikanani.me/Download/20220704/6197b405172642b094733f2fc34423893427d3a1.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583"
+    },
+    "b69eb9221ae40ecb9d99c1405f66f4877d6445ed": {
+      "number": 12,
+      "enclosureUrl": "https://mikanani.me/Download/20260527/b69eb9221ae40ecb9d99c1405f66f4877d6445ed.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "9a32aa4a4d64b51ac0ec589689098b45acdf8c93": {
+      "number": 11,
+      "enclosureUrl": "https://mikanani.me/Download/20260520/9a32aa4a4d64b51ac0ec589689098b45acdf8c93.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "13fb5b8209d8ec835507fd798cc3bcfa135c587f": {
+      "number": 10,
+      "enclosureUrl": "https://mikanani.me/Download/20260513/13fb5b8209d8ec835507fd798cc3bcfa135c587f.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "bc81d0db084f052e7501e9d7db3ae2b9e7f2db81": {
+      "number": 9,
+      "enclosureUrl": "https://mikanani.me/Download/20260506/bc81d0db084f052e7501e9d7db3ae2b9e7f2db81.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "342866b1b3165f1d53bcf9e40007c9fa89fcc681": {
+      "number": 8,
+      "enclosureUrl": "https://mikanani.me/Download/20260429/342866b1b3165f1d53bcf9e40007c9fa89fcc681.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "b0cc234b30d2865a1970b26d3fff5717748316fd": {
+      "number": 7,
+      "enclosureUrl": "https://mikanani.me/Download/20260422/b0cc234b30d2865a1970b26d3fff5717748316fd.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "824cc09d5cdcf7d1efba3067c173a82793c3a768": {
+      "number": 6,
+      "enclosureUrl": "https://mikanani.me/Download/20260415/824cc09d5cdcf7d1efba3067c173a82793c3a768.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "600a19c98763a3f6a8e35db589a84855fd99170e": {
+      "number": 5,
+      "enclosureUrl": "https://mikanani.me/Download/20260408/600a19c98763a3f6a8e35db589a84855fd99170e.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "05d1d41d2f35ac96142d4dc2e1aa824e7909ad57": {
+      "number": 4,
+      "enclosureUrl": "https://mikanani.me/Download/20260401/05d1d41d2f35ac96142d4dc2e1aa824e7909ad57.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "de4f7702a0bf79f194c30aa736c0e3ba8a0367e9": {
+      "number": 3,
+      "enclosureUrl": "https://mikanani.me/Download/20260401/de4f7702a0bf79f194c30aa736c0e3ba8a0367e9.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "6023a96c63aef45acbb7bb44e8e168b5390cbecc": {
+      "number": 2,
+      "enclosureUrl": "https://mikanani.me/Download/20260401/6023a96c63aef45acbb7bb44e8e168b5390cbecc.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
+    },
+    "192c6be216f338aa51f513c4841b100a5b7ba5c2": {
+      "number": 1,
+      "enclosureUrl": "https://mikanani.me/Download/20260401/192c6be216f338aa51f513c4841b100a5b7ba5c2.torrent",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3949&subgroupid=583"
     }
   },
   "completed": {
-    "19a72a5f69f0ebd53f48a0c84392e15c5b26a4d8": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 6,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "625a33f6646a25396c993667bd7de3aa46f3bd99": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 5,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "fdd7deb7a7eef8a5ef48f0a9d72817340f37d7bc": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 4,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "ece9339f0cef2d2678a99268fc4dfe9e26dba167": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 3,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "db5aa4f3a592843a925b87a665372d6ee7158d98": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 2,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "f86f7e007b552c9409df644c32007672a249186a": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 1,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "86d868e9d5a7e0a5a422fe19e88ff2c001de643f": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 6,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "65f0cbb841ed514f0a826d7112590fc19b7f4562": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 5,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "c12a00fe106ab2c727762de7b68053620885bf41": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 4,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "b508858bfa038d40d98b11336c9c8c06332096be": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 3,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "a308a3d6e4c2ac55859b5afeaa2cb36eccdf4c4d": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 2,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "a6b61f495e28abb47f3a372ca74eae6babd759e1": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 1,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "1824bf81c8fbe2cc8279d0667d8bfe8175fe31e2": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 5,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "84b6525f7d6111e5970546221fe036e7d3938d0e": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 4,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "d407d6b354692c75ba7f967359c0a5c8abd239d1": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 3,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "5ed4efda8c5f8b4905d7eaeeb1b99692b7ba3839": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 2,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "46e730a44d3b8b3ade7c1862556ebb7cbb8f25d6": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 1,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "37f8c7b3a94365c097fab56572fb42985e692100": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 3,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "383d84317cf0f596017bf1381aae8fe603486bd2": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 2,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "354fdb78c245982af505c57c1bd7aab05149ee5e": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 1,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "1f839825dbe73435658e7265947f5e395e96f642": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
+    "9cbc99fd9379c7e3cb3a04fbc17147478e66893b": {
       "number": 7,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T02:28:20.501Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\07.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "bdae1ecb1460d29a6364d0d62c1585ecfd55ed35": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 7,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "198e2932bda79778db2e65cb59a1685cd5784b99": {
-      "title": "魔王 2099",
-      "season": 1,
+    "8731e4b78eb81dcf57d93def803dcf00059566cf": {
       "number": 6,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T02:28:45.538Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\06.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "a0e8c15bdf7725f3e1675e6b1224d8bdf538b33c": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 4,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "d9f997f29acf8ec6941cce343838962b26dde09a": {
-      "title": "夏目友人帐 七",
-      "season": 7,
+    "848082edb369bc30309d87a3ec3bba38d9e9e36d": {
       "number": 5,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T02:29:58.750Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\05.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "c994c515a5ad96554fa32ad8349989733e5fea50": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 8,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+    "520b26a654a0a9fbd8df5295f14fb5bf2889de5e": {
+      "number": 4,
+      "movedAt": "2026-05-28T02:30:04.718Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\04.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "d13454183897dad4abaca39b2a8d4eb22795f415": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 8,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "517d6be8e282d468095ec2cf92cd81c061884657": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 7,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "3179ae674bb2875d7f07a1220424c6cb7906b6bb": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 6,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "297bf3d49feb284a1cb9df6279797714e0873ad6": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 7,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "12555156617dc0e1817000498367520324a5f60c": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 9,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "f001c55cd0e0ee93062996fc8fb802793f58cc8e": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 9,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "372f1d4712acd6fb760e39d2a3a3b32b337fa71a": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 10,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "3f0e65a6e8e5e4083768d484bb87578fa80863d1": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 8,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "034e7d713fa4792fce678a1a6aa46b4c2243e91b": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 8,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "f26443efc36956ea38beaf6aa5ee13de24e6901e": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 10,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "280ab2c4ad1219fb3e7010b04441702c716787ac": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 9,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "417228d5104eeef469919be483d0bde3763087b0": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 11,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "2cb74b568ba792ee0a5a4b3b1cc01a4386be2824": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 11,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "b369c74599d1be66f1bceeddd4ee5965087b3712": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 10,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "79d7fc7b4ab69a2017e65eefee885cfc1dd57df7": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 9,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "bc9f680ff0c14a837245bcfaa6888f10bcfeca9b": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 12,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "74812dfab61c407d20381f8b9d69371fff3c23de": {
-      "title": "胆大党",
-      "season": 1,
-      "number": 12,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "5af56fc625cf207b28a6e18b0d928761c7b6b184": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 11,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "48d6d458e90955277b6348ed3b797e05a305eea0": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 13,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "1d0bbbd9b988d8b64dd772a3a72c122365ec183b": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 10,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "f3aaa22ba08f3d2fcd0efff6b5cd42d037570ced": {
-      "title": "魔王 2099",
-      "season": 1,
-      "number": 12,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "f2b48432ce58843f0bf9996646d522004e50f1f9": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 1,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "8f20132341b534cd3def3a0b9614bc96d2d8c3d5": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 14,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "8dbf8b1f02c2a7766ec4cc9f774df0e5b36c8358": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
+    "254465859af9d2ff9e722052d13ebb612a03efd0": {
       "number": 2,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T02:41:24.712Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\02.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "fbb8f34d222ab06663077559f27130064a1ee60e": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 15,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "30e2ea8cc8d9aee80e44a170d05a3cba6ab1a1f1": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 3,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "21e45eb606774753ec12f995a2b40cc89e55f2a3": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 16,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "5e155c996058928a918205206f024b5288f4b1d9": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 11,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "f77c8e777aa27749e2ba5d43416bd35128bdd000": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 6,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "330ffe44945916161b0f8e75d24726215f6b66b7": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 5,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "5620e5d6c09b30a2f0533a1355d00703ff7b2481": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 4,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "58c3bf1af5679d3aed847087f1e93cc92c15e17e": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 20,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "b5ba978dc41b1bcdfd41efd7e8e4b309af2dfb3c": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
+    "e2d63f3f50e52d2c1abe4d50e363dc6f0f70f7be": {
       "number": 19,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T02:41:55.986Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\19.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "0a00fb9e72e02b626b5f38ad71358aa1d04c309a": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 18,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "bf717136ce472f2c94c227313cfed70ed561130a": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
+    "dc2415ef5d6509ef7a72350482fae962c4245472": {
       "number": 17,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T02:58:16.820Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\17.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "deada3260ecb28b5226815f6f6052152f0800ba6": {
-      "title": "夏目友人帐 七",
-      "season": 7,
-      "number": 12,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+    "f611e3d1101bbfc54689c5cf67a26e71cebc8ab4": {
+      "number": 3,
+      "movedAt": "2026-05-28T03:04:57.326Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\03.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "baf9080253ed5d90a5be6d60c67bdaee3b21732d": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 7,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+    "ee3cac5753cc75a5735f96b3abdf6ba957f5bc87": {
+      "number": 1,
+      "movedAt": "2026-05-28T03:05:35.590Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\01.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "3bb8ddbeac1b811e56c428020316e69455174103": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 21,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "2908da8f6abe1d1b1b3cab20df72662f26130cbb": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 8,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "189db915d32a6fc6cc97950287584ff74391df7b": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 20,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "0de71d574f2c57043f4927dcacee859a8a83d51b": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 19,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "a89ed888888952eab160dac0a9a56ff13edf2e39": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
+    "e31020a2c819689213dd0cd0ccf5644f4864d7bb": {
       "number": 18,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T03:14:29.021Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\18.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "d7e4c87112229fde1191e5a6e55095f408542b35": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 17,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "47baf2f21afd00f9e165b88bc34586c184ab0fdd": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
+    "d82b77524750cbc51b15af4de63c9be38419e984": {
       "number": 16,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T03:14:34.509Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\16.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "d9b43d81f645077ac70aeba5211917d5780db03a": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
+    "555bf616ea97c7a4cc2444543211ba2c18a7ba1c": {
       "number": 15,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T03:14:38.943Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\15.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "a9b5604782368561e7646c433adb56652e021713": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
+    "5cf4268cd020631fa65d120b8408683f02378ad9": {
       "number": 14,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T03:14:44.694Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\14.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "966d889ac77d736c7b4755cb01cdf813aa9b26e4": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 13,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "90c600bff2d9d06851cd8d3d005ae679864f6e7f": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 22,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "ee7da67e23b6df8b13c7ef8f079e31c8234eac0b": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 22,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "ba5bcb186b2706a6b6045699c222af47ee962256": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 21,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "a0c1ce538449b9ad247475cbe9897e014543600a": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 11,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "9d79d9aa346752fcc896133bc35df198afb9d761": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 9,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "26cffbf8d9a922a1b6f1ad31f35a7381db967be5": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 10,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "2cee5e106ce9a8511e5f85a43ec87c203d02ce91": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 9,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "ff0ff840faf6446f85be4c468c779d99cc2035c7": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 10,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "3d33a0af91e44dccaddcf97c72a4b6a1bd1375c5": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 24,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "766d86e1f6c2c6e113b15e65f696b0098b1ce3d4": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 23,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "b98b1aa0ae8108678d6197494b3d11001f917648": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 23,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "600b067ec0fe3e565bd02e8db7d4a5f8a5eac638": {
-      "title": "地。—关于地球的运动—",
-      "season": 1,
-      "number": 25,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "474324b5ba704de023c5394f2f6259c1a88d25fb": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
+    "9332bec564331977f953b754338e74c88e58a1e4": {
       "number": 12,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T03:16:14.437Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\12.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "a053431e73de1081790bc12c4446cef7a5f37a7e": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 24,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "44c5133c536b26a023ffc82465aa8fe9c7db7e99": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
+    "cb3fcf8b71be6f90f23b93a75a704c06eb956049": {
       "number": 13,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T03:16:43.635Z",
+      "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\13.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
     },
-    "5d9c3c435b929a2252bbe11681f09bd888a74085": {
-      "title": "我独自升级 -起于暗影",
-      "season": 1,
-      "number": 25,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+    "435e8c00e9864ef3513d9cc5ef1311002922188b": {
+      "number": 8,
+      "movedAt": "2026-05-28T03:18:00.783Z",
+      "targetPath": "E:\\Bangumi\\Yomi no Tsugai\\Season 01\\08.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
     },
-    "1fa005758791f35bbb570c11ef585156dedc30ab": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 13,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+    "91383733532ad0060e5786b8bd833f3d560b7ea4": {
+      "number": 7,
+      "movedAt": "2026-05-28T03:18:18.162Z",
+      "targetPath": "E:\\Bangumi\\Yomi no Tsugai\\Season 01\\07.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
     },
-    "c6dfa6f8652e728543120cc00272ae3644d6cdc1": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 10,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+    "9d597e0f8e25cf67091a8bf67ff4de3c5eb00a24": {
+      "number": 8,
+      "movedAt": "2026-05-28T03:23:05.578Z",
+      "targetPath": "E:\\Bangumi\\Mairimashita! Iruma-kun\\Season 04\\08.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3918&subgroupid=583"
     },
-    "ffd852f1c81314adbe4fc01ede3f38168282e09a": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
+    "9f39a3f5fdeaa0c341aea340024470e8d5022fc6": {
+      "number": 5,
+      "movedAt": "2026-05-28T03:23:59.595Z",
+      "targetPath": "E:\\Bangumi\\Yomi no Tsugai\\Season 01\\05.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
+    },
+    "d09cbc1ced730bc3937da49d79733da4b0c86924": {
+      "number": 6,
+      "movedAt": "2026-05-28T03:24:28.183Z",
+      "targetPath": "E:\\Bangumi\\Yomi no Tsugai\\Season 01\\06.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
+    },
+    "c544fca83284cdfe5c0ec7f1f99207b4099661aa": {
+      "number": 4,
+      "movedAt": "2026-05-28T03:25:45.659Z",
+      "targetPath": "E:\\Bangumi\\Yomi no Tsugai\\Season 01\\04.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
+    },
+    "2a17b76648a1ced7de223e96c832e609377e4e91": {
+      "number": 2,
+      "movedAt": "2026-05-28T03:26:17.365Z",
+      "targetPath": "E:\\Bangumi\\Yomi no Tsugai\\Season 01\\02.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
+    },
+    "e6c6a961ec98ab84a4638945b03ecbab69b085d5": {
+      "number": 1,
+      "movedAt": "2026-05-28T03:27:27.591Z",
+      "qbitRemovedAt": "2026-05-28T03:27:33.901Z",
+      "targetPath": "E:\\Bangumi\\Yomi no Tsugai\\Season 01\\01.mp4",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3937&subgroupid=583"
+    },
+    "5be6fc5e9f60eeb9ee50935cf43b0c4ff62dcea0": {
       "number": 12,
-      "movedAt": "1970-01-01T00:00:00.000Z"
-    },
-    "aff14b9c404bca2b3d69f47b3f49d8f4a05e4f77": {
-      "title": "BanG Dream! Ave Mujica",
-      "season": 1,
-      "number": 11,
-      "movedAt": "1970-01-01T00:00:00.000Z"
+      "movedAt": "2026-05-28T03:28:09.316Z",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=2775&subgroupid=583",
+      "targetPath": "E:\\Bangumi\\Classroom of the Elite\\Season 02\\12.mp4"
     }
   }
 }

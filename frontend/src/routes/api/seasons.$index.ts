@@ -1,21 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { loadConfig, saveConfig } from '~/server/config';
+import { forwardToBackend } from '~/server/backend-api';
 
 export const Route = createFileRoute('/api/seasons/$index')({
   server: {
     handlers: {
-      DELETE: async ({ params }) => {
-        const index = Number(params.index);
-        const config = loadConfig();
-
-        if (!Number.isInteger(index) || index < 0 || index >= config.subscriptions.length) {
-          return Response.json({ message: 'Subscription not found.' }, { status: 404 });
-        }
-
-        config.subscriptions.splice(index, 1);
-        saveConfig(config);
-        return Response.json(config);
-      },
+      PATCH: async ({ params, request }) => forwardToBackend(`/api/seasons/${params.index}`, request),
+      DELETE: async ({ params, request }) => forwardToBackend(`/api/seasons/${params.index}`, request),
     },
   },
 });

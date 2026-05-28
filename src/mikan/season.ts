@@ -9,7 +9,9 @@ const rssParser = new Parser();
 
 export interface Season {
   title: string;
+  folder: string;
   number: number;
+  subscriptionRss: string;
   episodes: Episode[];
 }
 
@@ -28,7 +30,9 @@ export class SeasonParse {
     );
     return {
       title: this.subscription.title,
+      folder: this.subscription.folder,
       number: this.subscription.season,
+      subscriptionRss: this.subscription.rss,
       episodes: episodes.filter((episode): episode is Episode => episode !== undefined),
     } as Season;
   }

@@ -3,8 +3,8 @@ import * as fs from 'node:fs';
 import jsyaml from 'js-yaml';
 
 const defaultFileServerConfig: FileServerConfig = {
-  host: 'file-export',
-  port: 80,
+  host: 'qbittorrent',
+  port: 8081,
   ssl: false,
   root: '/downloads',
 };
@@ -16,6 +16,8 @@ const defaultQbittorrentConfig: QbittorrentConfig = {
   password: 'adminadmin',
   ssl: false,
   downloadPath: '/downloads',
+  trackers: [],
+  trackerUrls: ['https://cf.trackerslist.com/all.txt'],
   fileServer: defaultFileServerConfig,
 };
 export function loadConfig(configPath = 'config/config.yaml'): Config {
@@ -39,7 +41,6 @@ function normalizeConfig(config: ConfigFile): Config {
   return {
     subscriptions: (config.subscriptions ?? []).map(normalizeSubscription),
     qbittorrent: normalizeQbittorrent(config.qbittorrent),
-    library: normalizeLibrary(config.library),
   };
 }
 
@@ -47,6 +48,7 @@ function normalizeSubscription(subscription: SubscriptionConfigFile): Subscripti
   return {
     rss: subscription.rss,
     title: subscription.title,
+    folder: subscription.folder?.trim() || subscription.title,
     season: subscription.season ?? 1,
     filters: subscription.filters?.filter((filter) => filter.length > 0) || undefined,
   };
@@ -66,26 +68,16 @@ function normalizeQbittorrent(config: PartialQbittorrentConfig | undefined): Qbi
   };
 }
 
-function normalizeLibrary(library: ConfigFile['library']): LibraryConfig {
-  if (typeof library === 'string') {
-    return { root: library };
-  }
-
-  return {
-    root: library?.root ?? '',
-  };
-}
-
 function toConfigFile(config: Config): ConfigFile {
   return {
     subscriptions: config.subscriptions.map((subscription) => ({
       title: subscription.title,
+      folder: subscription.folder,
       ...(subscription.season === 1 ? {} : { season: subscription.season }),
       rss: subscription.rss,
       ...(subscription.filters?.length ? { filters: subscription.filters } : {}),
     })),
     ...(isDefaultQbittorrent(config.qbittorrent) ? {} : { qbittorrent: config.qbittorrent }),
-    library: config.library.root,
   };
 }
 
@@ -96,18 +88,17 @@ function isDefaultQbittorrent(config: QbittorrentConfig) {
 export interface Config {
   subscriptions: SubscriptionConfig[];
   qbittorrent: QbittorrentConfig;
-  library: LibraryConfig;
 }
 
 interface ConfigFile {
   subscriptions?: SubscriptionConfigFile[];
   qbittorrent?: PartialQbittorrentConfig;
-  library?: string | Partial<LibraryConfig>;
 }
 
 interface SubscriptionConfigFile {
   rss: string;
   title: string;
+  folder?: string;
   season?: number;
   filters?: string[];
 }
@@ -115,6 +106,7 @@ interface SubscriptionConfigFile {
 export interface SubscriptionConfig {
   rss: string;
   title: string;
+  folder: string;
   season: number;
   filters?: string[];
 }
@@ -130,6 +122,8 @@ export interface QbittorrentConfig {
   password: string;
   ssl: boolean;
   downloadPath: string;
+  trackers: string[];
+  trackerUrls: string[];
   fileServer?: FileServerConfig;
 }
 
@@ -141,8 +135,4 @@ export interface FileServerConfig {
   basePath?: string;
   username?: string;
   password?: string;
-}
-
-export interface LibraryConfig {
-  root: string;
 }

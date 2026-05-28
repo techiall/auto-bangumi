@@ -4,6 +4,7 @@ import { loadConfig } from '../config/app-config.js';
 import { QBittorrentApi } from '../qbittorrent/api.js';
 import { SeasonParse } from '../mikan/season.js';
 import { runRecurringTask } from './task-runner.js';
+import { pathToFileURL } from 'node:url';
 
 const DOWNLOAD_INTERVAL_MS = 10 * 1000 * 60;
 
@@ -20,9 +21,9 @@ export async function downloadTask() {
         logger.info(`Downloading ${season.title} S${season.number}E${episode.number}`);
         await api.download(episode);
         db.data.active[episode.torrent] = {
-          ...episode,
-          title: season.title,
-          season: season.number,
+          number: episode.number,
+          enclosureUrl: episode.enclosureUrl,
+          subscriptionRss: season.subscriptionRss,
         };
         await db.write();
       }
@@ -32,5 +33,11 @@ export async function downloadTask() {
   await db.write();
 }
 
-logger.info('Starting download task');
-runRecurringTask('download task', downloadTask, DOWNLOAD_INTERVAL_MS);
+export function startDownloadTask() {
+  logger.info('Starting download task');
+  return runRecurringTask('download task', downloadTask, DOWNLOAD_INTERVAL_MS);
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  startDownloadTask();
+}

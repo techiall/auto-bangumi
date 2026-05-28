@@ -1,4 +1,11 @@
-import type { AddSeasonPayload, AppConfig, MikanBangumiDetail, MikanSearchResult } from '~/types';
+import type {
+  AddSeasonPayload,
+  AppConfig,
+  DownloadState,
+  MikanBangumiDetail,
+  MikanSearchResult,
+  UpdateSeasonPayload,
+} from '~/types';
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
@@ -45,4 +52,15 @@ export function deleteSeason(index: number) {
   return request<AppConfig>(`/api/seasons/${index}`, {
     method: 'DELETE',
   });
+}
+
+export function updateSeason(index: number, payload: UpdateSeasonPayload) {
+  return request<AppConfig>(`/api/seasons/${index}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function fetchDownloads() {
+  return request<DownloadState>('/api/downloads');
 }

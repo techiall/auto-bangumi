@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --disable-warning=DEP0205 scripts/vite.mjs dev",
-    "build": "node --disable-warning=DEP0205 scripts/vite.mjs build && tsc --noEmit",
+    "dev": "vite dev",
+    "build": "vite build && tsc --noEmit",
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {

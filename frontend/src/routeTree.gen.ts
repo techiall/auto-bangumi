@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiSeasonsRouteImport } from './routes/api/seasons'
+import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
 import { Route as ApiConfigRouteImport } from './routes/api/config'
 import { Route as ApiSeasonsIndexRouteImport } from './routes/api/seasons.$index'
 import { Route as ApiMikanSearchRouteImport } from './routes/api/mikan/search'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiSeasonsRoute = ApiSeasonsRouteImport.update({
   id: '/api/seasons',
   path: '/api/seasons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDownloadsRoute = ApiDownloadsRouteImport.update({
+  id: '/api/downloads',
+  path: '/api/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiConfigRoute = ApiConfigRouteImport.update({
@@ -50,6 +56,7 @@ const ApiMikanBangumiIdRoute = ApiMikanBangumiIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/config': typeof ApiConfigRoute
+  '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRouteWithChildren
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/seasons/$index': typeof ApiSeasonsIndexRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/config': typeof ApiConfigRoute
+  '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRouteWithChildren
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/seasons/$index': typeof ApiSeasonsIndexRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/config': typeof ApiConfigRoute
+  '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRouteWithChildren
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/seasons/$index': typeof ApiSeasonsIndexRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/api/config'
+    | '/api/downloads'
     | '/api/seasons'
     | '/api/mikan/search'
     | '/api/seasons/$index'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/api/config'
+    | '/api/downloads'
     | '/api/seasons'
     | '/api/mikan/search'
     | '/api/seasons/$index'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/api/config'
+    | '/api/downloads'
     | '/api/seasons'
     | '/api/mikan/search'
     | '/api/seasons/$index'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiConfigRoute: typeof ApiConfigRoute
+  ApiDownloadsRoute: typeof ApiDownloadsRoute
   ApiSeasonsRoute: typeof ApiSeasonsRouteWithChildren
   ApiMikanSearchRoute: typeof ApiMikanSearchRoute
   ApiMikanBangumiIdRoute: typeof ApiMikanBangumiIdRoute
@@ -121,6 +134,13 @@ declare module '@tanstack/react-router' {
       path: '/api/seasons'
       fullPath: '/api/seasons'
       preLoaderRoute: typeof ApiSeasonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/downloads': {
+      id: '/api/downloads'
+      path: '/api/downloads'
+      fullPath: '/api/downloads'
+      preLoaderRoute: typeof ApiDownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/config': {
@@ -169,6 +189,7 @@ const ApiSeasonsRouteWithChildren = ApiSeasonsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiConfigRoute: ApiConfigRoute,
+  ApiDownloadsRoute: ApiDownloadsRoute,
   ApiSeasonsRoute: ApiSeasonsRouteWithChildren,
   ApiMikanSearchRoute: ApiMikanSearchRoute,
   ApiMikanBangumiIdRoute: ApiMikanBangumiIdRoute,

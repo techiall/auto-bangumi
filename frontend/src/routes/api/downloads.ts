@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { forwardToBackend } from '~/server/backend-api';
 
-export const Route = createFileRoute('/api/seasons')({
+export const Route = createFileRoute('/api/downloads')({
   server: {
     handlers: {
-      POST: async ({ request }) => forwardToBackend('/api/seasons', request),
+      GET: async ({ request }) => forwardToBackend('/api/downloads', request),
     },
   },
 });

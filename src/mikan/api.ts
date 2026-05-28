@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { fetchWithRetry } from '../utils/fetch-with-retry.js';
+import { suggestFolderName } from './anime-title.js';
 
 const MIKAN_BASE_URL = 'https://mikanani.me';
 
@@ -19,6 +20,7 @@ export interface MikanBangumiGroup {
 export interface MikanBangumiDetail {
   id: number;
   title: string;
+  folder: string;
   url: string;
   rss: string;
   groups: MikanBangumiGroup[];
@@ -89,6 +91,7 @@ export async function getBangumiDetail(id: number): Promise<MikanBangumiDetail> 
   return {
     id,
     title,
+    folder: await suggestFolderName(title, `Bangumi-${id}`),
     url: `${MIKAN_BASE_URL}/Home/Bangumi/${id}`,
     rss,
     groups,
