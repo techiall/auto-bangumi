@@ -1,36 +1,5 @@
 {
-  "active": {
-    "590567d8a9e01367764760bfd95b2643b63d4064": {
-      "number": 6,
-      "enclosureUrl": "https://mikanani.me/Download/20260516/590567d8a9e01367764760bfd95b2643b63d4064.torrent",
-      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
-    },
-    "f22deb6f787b9b69847b0a06c87cb96eb57b4a8a": {
-      "number": 5,
-      "enclosureUrl": "https://mikanani.me/Download/20260511/f22deb6f787b9b69847b0a06c87cb96eb57b4a8a.torrent",
-      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
-    },
-    "e5a75d6a318a5eef7a90c6775873ddcac5368c65": {
-      "number": 4,
-      "enclosureUrl": "https://mikanani.me/Download/20260507/e5a75d6a318a5eef7a90c6775873ddcac5368c65.torrent",
-      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
-    },
-    "4b269ee809782d0268df463f530abf83b8156414": {
-      "number": 3,
-      "enclosureUrl": "https://mikanani.me/Download/20260426/4b269ee809782d0268df463f530abf83b8156414.torrent",
-      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
-    },
-    "c140b704613cd54bfd230b7be7830996c7fe77cc": {
-      "number": 2,
-      "enclosureUrl": "https://mikanani.me/Download/20260416/c140b704613cd54bfd230b7be7830996c7fe77cc.torrent",
-      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
-    },
-    "46a26da646eb57d84ae9cd5d3810fccab535177d": {
-      "number": 1,
-      "enclosureUrl": "https://mikanani.me/Download/20260410/46a26da646eb57d84ae9cd5d3810fccab535177d.torrent",
-      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
-    }
-  },
+  "active": {},
   "completed": {
     "9cbc99fd9379c7e3cb3a04fbc17147478e66893b": {
       "number": 7,
@@ -296,7 +265,7 @@
     "1e9b1ad07e40e57c83048d3cd264677caa2435c0": {
       "number": 7,
       "movedAt": "2026-05-28T04:37:12.062Z",
-      "targetPath": "E:\\Bangumi\\e:Zero − Starting Life in Another World\\Season 04\\07.mkv",
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\07.mkv",
       "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
     },
     "2319395f5d8661ebccf3bc80db08b06f93badd67": {
@@ -356,8 +325,8 @@
     "41151effcb273dae598932c0adffb99492182a8f": {
       "number": 8,
       "movedAt": "2026-05-28T04:49:29.288Z",
-      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231",
-      "targetPath": "E:\\Bangumi\\e:Zero − Starting Life in Another World\\Season 04\\08.mkv"
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\08.mkv",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
     },
     "4ce94b2c9f14d95845e574216d2e548f118dfe63": {
       "number": 6,
@@ -418,6 +387,48 @@
       "movedAt": "2026-05-28T03:16:43.355Z",
       "targetPath": "E:\\Bangumi\\Tsue to Tsurugi no Wistoria\\Season 02\\13.mp4",
       "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3947&subgroupid=583"
+    },
+    "590567d8a9e01367764760bfd95b2643b63d4064": {
+      "number": 6,
+      "movedAt": "2026-05-28T05:11:34.564Z",
+      "qbitRemovedAt": "2026-05-28T05:29:21.441Z",
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\06.mkv",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
+    },
+    "4b269ee809782d0268df463f530abf83b8156414": {
+      "number": 3,
+      "movedAt": "2026-05-28T05:13:43.616Z",
+      "qbitRemovedAt": "2026-05-28T05:30:36.869Z",
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\03.mkv",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
+    },
+    "f22deb6f787b9b69847b0a06c87cb96eb57b4a8a": {
+      "number": 5,
+      "movedAt": "2026-05-28T05:14:47.387Z",
+      "qbitRemovedAt": "2026-05-28T06:15:33.809Z",
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\05.mkv",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
+    },
+    "e5a75d6a318a5eef7a90c6775873ddcac5368c65": {
+      "number": 4,
+      "movedAt": "2026-05-28T05:14:55.467Z",
+      "qbitRemovedAt": "2026-05-28T05:14:55.481Z",
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\04.mkv",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
+    },
+    "46a26da646eb57d84ae9cd5d3810fccab535177d": {
+      "number": 1,
+      "movedAt": "2026-05-28T05:15:27.597Z",
+      "qbitRemovedAt": "2026-05-28T05:18:36.020Z",
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\01.mkv",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231"
+    },
+    "c140b704613cd54bfd230b7be7830996c7fe77cc": {
+      "number": 2,
+      "movedAt": "2026-05-28T05:17:54.607Z",
+      "targetPath": "E:\\Bangumi\\Re:Zero − Starting Life in Another World\\Season 04\\02.mkv",
+      "subscriptionRss": "https://mikanani.me/RSS/Bangumi?bangumiId=3951&subgroupid=1231",
+      "qbitRemovedAt": "2026-05-28T06:17:59.245Z"
     }
   }
 }
