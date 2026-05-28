@@ -1,4 +1,4 @@
-import { Activity, ArrowDownUp, FolderCheck, LoaderCircle, RefreshCcw, type LucideIcon } from 'lucide-react';
+import { Activity, ArrowDownUp, LoaderCircle, RefreshCcw, type LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
@@ -59,15 +59,19 @@ export function DownloadProgress() {
 
   return (
     <div className="grid gap-5">
-      <div className="grid gap-4 md:grid-cols-3">
-        <SummaryCard label="Active" value={activeCount} icon={loading ? LoaderCircle : Activity} spinning={loading} />
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.75fr)]">
+        <QueueSummaryCard
+          activeCount={activeCount}
+          completedCount={completedCount}
+          seedingCount={seedingCount}
+          loading={loading}
+        />
         <SummaryCard
           label="Down / Up"
           value={`${formatBytes(downloadSpeed)}/s · ${formatBytes(uploadSpeed)}/s`}
           icon={ArrowDownUp}
           compactValue
         />
-        <SummaryCard label="Moved / Seeding" value={`${completedCount} / ${seedingCount}`} icon={FolderCheck} />
       </div>
 
       <Card className="p-5">
@@ -104,6 +108,43 @@ export function DownloadProgress() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function QueueSummaryCard({
+  activeCount,
+  completedCount,
+  seedingCount,
+  loading,
+}: {
+  activeCount: number;
+  completedCount: number;
+  seedingCount: number;
+  loading: boolean;
+}) {
+  const Icon = loading ? LoaderCircle : Activity;
+
+  return (
+    <Card className="p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="text-sm text-slate-400">Queue Status</div>
+          <div className="mt-2 flex flex-wrap items-end gap-x-5 gap-y-2">
+            <div className="text-3xl font-semibold tracking-tight text-slate-50">{activeCount}</div>
+            <div className="pb-1 text-xs font-medium uppercase tracking-[0.16em] text-cyan-200">Active</div>
+            <div className="pb-1 text-sm text-slate-500">
+              <span className="font-medium text-slate-300">{completedCount}</span> Moved
+            </div>
+            <div className="pb-1 text-sm text-slate-500">
+              <span className="font-medium text-emerald-200">{seedingCount}</span> Seeding
+            </div>
+          </div>
+        </div>
+        <div className="rounded-2xl bg-slate-900 p-3 text-cyan-200">
+          <Icon className={loading ? 'size-5 animate-spin' : 'size-5'} />
+        </div>
+      </div>
+    </Card>
   );
 }
 

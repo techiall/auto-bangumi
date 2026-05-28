@@ -36,17 +36,17 @@ async function scanSubscriptions(options: DownloadTaskOptions) {
 
   for (const season of seasons) {
     for (const episode of season.episodes) {
-      if (!isTracked(db.data, episode.torrent)) {
-        logger.info(`Queueing ${season.title} S${season.number}E${episode.number}`);
-        await api.download(episode);
-        db.data.active[episode.torrent] = {
-          number: episode.number,
-          enclosureUrl: episode.enclosureUrl,
-          subscriptionRss: season.subscriptionRss,
-        };
-        queuedCount += 1;
-        await db.write();
-      }
+      if (isTracked(db.data, episode.torrent)) continue;
+
+      logger.info(`Queueing ${season.title} S${season.number}E${episode.number}`);
+      await api.download(episode);
+      db.data.active[episode.torrent] = {
+        number: episode.number,
+        enclosureUrl: episode.enclosureUrl,
+        subscriptionRss: season.subscriptionRss,
+      };
+      queuedCount += 1;
+      await db.write();
     }
   }
 

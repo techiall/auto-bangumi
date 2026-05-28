@@ -17,7 +17,7 @@ export class EpisodeParse {
     const title = this.episode.title;
     if (!title) return undefined;
 
-    const number = this.getEpisodeNumber(title);
+    const number = this.parseEpisodeNumber(title);
     if (!number) return undefined;
 
     const enclosureUrl = this.episode.enclosure?.url;
@@ -33,12 +33,20 @@ export class EpisodeParse {
     } as Episode;
   }
 
-  private episodeNumberRegex = /\[(\d{2})\]|\b(\d{2})\b/;
+  private parseEpisodeNumber(title: string) {
+    const seasonEpisode = title.match(/\bS\d{1,2}E(\d{1,3})\b/i);
+    if (seasonEpisode?.[1]) return Number(seasonEpisode[1]);
 
-  private getEpisodeNumber(title: string) {
-    const matched = title.match(this.episodeNumberRegex);
-    const episodeNumber = matched?.[1] ?? matched?.[2];
-    return episodeNumber ? Number(episodeNumber) : undefined;
+    const dashEpisode = title.match(/\s[-–—]\s*(\d{1,3})(?!\.\d)(?=\s*(?:\[|$))/u);
+    if (dashEpisode?.[1]) return Number(dashEpisode[1]);
+
+    const bracketTokens = [...title.matchAll(/\[([^\]]+)\]/g)].map((match) => match[1]?.trim() ?? '');
+    if (bracketTokens.some((token) => /^\d{1,3}\s*-\s*\d{1,3}$/.test(token))) return undefined;
+
+    const bracketEpisode = bracketTokens.find((token) => /^\d{1,3}$/.test(token));
+    if (bracketEpisode) return Number(bracketEpisode);
+
+    return undefined;
   }
 
   private getTorrentHash(torrentUrl: string) {

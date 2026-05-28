@@ -15,7 +15,7 @@ export function createApp(options: AppOptions = {}) {
   const app = express();
   const configPath = options.configPath ?? 'config/config.yaml';
   const dbPath = options.dbPath ?? 'db/db.json';
-  const subscriptions = new SubscriptionService(configPath);
+  const subscriptions = new SubscriptionService(configPath, dbPath);
   const downloads = new DownloadService(configPath, dbPath);
 
   app.use(express.json());
@@ -57,9 +57,9 @@ export function createApp(options: AppOptions = {}) {
     response.json(subscriptions.update(index, request.body));
   });
 
-  app.delete('/api/seasons/:index', (request, response) => {
+  app.delete('/api/seasons/:index', async (request, response) => {
     const index = Number(request.params.index);
-    response.json(subscriptions.delete(index));
+    response.json(await subscriptions.delete(index));
   });
 
   app.use(

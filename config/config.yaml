@@ -25,6 +25,8 @@ subscriptions:
   - title: 尖帽子的魔法工房
     folder: Tongari Boushi no Atelier
     rss: https://mikanani.me/RSS/Bangumi?bangumiId=3899&subgroupid=513
+    filters:
+      - 简体
   - title: Re：从零开始的异世界生活 第四季 丧失篇
     folder: e:Zero − Starting Life in Another World
     season: 4
