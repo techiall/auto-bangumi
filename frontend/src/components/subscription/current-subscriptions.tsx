@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Layers3, LoaderCircle, RefreshCcw, Search, Trash2, X } from 'lucide-react';
+import { Check, ChevronDown, Layers3, LoaderCircle, RefreshCcw, Rss, Search, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
@@ -152,7 +152,8 @@ function SubscriptionCard({
               target="_blank"
               rel="noreferrer"
               onClick={(event) => event.stopPropagation()}
-              className="shrink-0 rounded-full border border-cyan-800 bg-cyan-950/70 px-2.5 py-0.5 text-xs font-semibold text-cyan-200 transition-colors hover:border-cyan-500 hover:bg-cyan-900 hover:text-cyan-50">
+              className="inline-flex shrink-0 items-center gap-1 rounded-full border border-cyan-800 bg-cyan-950/70 px-2.5 py-0.5 text-xs font-semibold text-cyan-200 transition-colors hover:border-cyan-500 hover:bg-cyan-900 hover:text-cyan-50">
+              <Rss className="size-3.5" />
               RSS
             </a>
           </div>

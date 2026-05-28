@@ -11,7 +11,10 @@ export const Route = createRootRoute({
       { title: 'Bangumi Manager' },
       { name: 'description', content: 'Search Mikan and update subscriptions from a cleaner web UI.' },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+      { rel: 'stylesheet', href: appCss },
+    ],
   }),
   component: RootComponent,
 });

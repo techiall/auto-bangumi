@@ -74,10 +74,10 @@ export function SubscriptionSettings({
         </div>
       ) : null}
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(13rem,0.8fr)_minmax(0,1.2fr)]">
+      <div className="grid gap-5">
         <section className="space-y-3">
           <div className="text-sm font-medium text-slate-100">Subtitle Group</div>
-          <div className="grid max-h-80 gap-3 overflow-y-auto pr-1">
+          <div className="grid max-h-72 gap-3 overflow-y-auto pr-1 md:grid-cols-2">
             {bangumi.groups.length ? (
               bangumi.groups.map((group) => (
                 <GroupOption
@@ -97,7 +97,7 @@ export function SubscriptionSettings({
         </section>
 
         <section className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-[1fr_7rem]">
+          <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_8rem]">
             <Field label="Title">
               <Input value={form.title} onChange={(event) => onFormChange({ ...form, title: event.target.value })} />
             </Field>
@@ -112,22 +112,24 @@ export function SubscriptionSettings({
             </Field>
           </div>
 
-          <Field label="Folder">
-            <Input
-              value={form.folder}
-              onChange={(event) => onFormChange({ ...form, folder: event.target.value })}
-              placeholder="e.g. Natsume Yuujinchou"
-            />
-          </Field>
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <Field label="Folder">
+              <Input
+                value={form.folder}
+                onChange={(event) => onFormChange({ ...form, folder: event.target.value })}
+                placeholder="e.g. Natsume Yuujinchou"
+              />
+            </Field>
 
-          <Field label="Title Filters">
-            <Input
-              value={form.filters}
-              onChange={(event) => onFormChange({ ...form, filters: event.target.value })}
-              placeholder="One or more keywords, separated by commas. e.g. 1080p, CHS"
-              className="h-12 text-base"
-            />
-          </Field>
+            <Field label="Title Filters">
+              <Input
+                value={form.filters}
+                onChange={(event) => onFormChange({ ...form, filters: event.target.value })}
+                placeholder="e.g. 1080p, CHS"
+                className="h-12 text-base"
+              />
+            </Field>
+          </div>
 
           <div className="grid gap-2">
             <Label>RSS</Label>

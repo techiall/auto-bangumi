@@ -89,9 +89,9 @@ export function SearchPanel({
       <CardContent className="p-4 md:p-5">
         <div
           className={cn(
-            'min-h-[18rem] overflow-y-auto pr-1 md:min-h-[28rem] xl:min-h-[50rem]',
+            'min-h-[24rem] overflow-y-auto pr-1 md:min-h-[32rem] xl:min-h-[50rem]',
             selectedBangumiId
-              ? 'max-h-[36rem] md:max-h-[44rem] xl:max-h-[calc(100vh-7rem)]'
+              ? 'max-h-[46rem] md:max-h-[54rem] xl:max-h-[calc(100vh-7rem)]'
               : 'max-h-[30rem] md:max-h-[42rem] xl:max-h-[calc(100vh-6rem)]',
           )}>
           <div className="grid gap-3">
