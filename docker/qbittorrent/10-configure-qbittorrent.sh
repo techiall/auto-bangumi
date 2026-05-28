@@ -4,7 +4,7 @@ set -eu
 config_file=/config/qBittorrent/qBittorrent.conf
 password_hash='@ByteArray(YXV0by1iYW5ndW1pLXNhbA==:I1QozK7rFTwrsqgQC3bcZdCFSDi4h2lu+mReHz7fPa++Whd73lKo+lxsbR9W0R9E+6stXlzMzqB2iA06bvHbxg==)'
 max_active_downloads=20
-max_ratio=1
+max_ratio=3
 max_seeding_minutes=60
 
 mkdir -p /config/qBittorrent
@@ -16,7 +16,7 @@ if [ ! -f "$config_file" ]; then
 Accepted=true
 
 [BitTorrent]
-Session\GlobalMaxRatio=1
+Session\GlobalMaxRatio=3
 Session\GlobalMaxSeedingMinutes=60
 Session\MaxActiveDownloads=20
 Session\MaxActiveTorrents=20
