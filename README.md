@@ -40,16 +40,22 @@ subscriptions:
 
 `season` defaults to `1`, so first-season subscriptions can omit it.
 
-Default qBittorrent settings are built into the app:
+Default qBittorrent connection settings are built into the backend:
 
 - qBittorrent: `qbittorrent:8080`
 - qB download file server: `qbittorrent:8081`
 - qB download path: `/downloads`
-- qB credentials: `admin / adminadmin`
 - tracker list URL: `https://cf.trackerslist.com/all.txt`
-- seeding limits: ratio `1.0` or `60` minutes, then pause
 
-The qBittorrent image writes the default WebUI credentials and global seeding limits into its `/config` volume on startup. After an episode has been moved to the library, paused completed torrents are removed from qBittorrent with their source files.
+The qBittorrent image writes runtime defaults into its `/config` volume on startup:
+
+- WebUI credentials: `admin / adminadmin`
+- active download limit: `20`
+- seeding limits: ratio `3.0` or `60` minutes, then pause
+
+Keep these qBittorrent defaults in the Docker image unless you explicitly need custom runtime settings. `config/config.yaml` should stay focused on subscriptions and tracker overrides.
+
+After an episode has been moved to the library, paused completed torrents are removed from qBittorrent with their source files.
 
 You can override qB tracker sources in `config/config.yaml`:
 
