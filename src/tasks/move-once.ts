@@ -1,8 +1,8 @@
 import { logger } from '../config/logger.js';
-import { moveTask } from './move-task.js';
+import { reconcileDownloads } from './move-task.js';
 
 async function main() {
-  await moveTask();
+  await reconcileDownloads();
 }
 
 main().catch(logger.error);

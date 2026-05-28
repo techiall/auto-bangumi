@@ -30,7 +30,7 @@ export function pickDownloadedFile(contentPath: string, files: TorrentFile[]): D
   const contentPathLooksLikeFile = path.posix.extname(normalizedContentPath).length > 0;
   const remotePath = contentPathLooksLikeFile
     ? normalizedContentPath
-    : joinRemotePath(normalizedContentPath, selected.name);
+    : resolveTorrentFilePath(normalizedContentPath, selected.name);
 
   return {
     remotePath,
@@ -56,7 +56,10 @@ export function buildFileServerUrl(config: QbittorrentConfig, remotePath: string
 
 export async function copyFromFileServer(fileServer: FileServerConfig, url: string, targetPath: string) {
   const headers = authorizationHeaders(fileServer);
-  const response = await fetchWithRetry(url, { headers });
+  const response = await fetchWithRetry(url, { headers }).catch((error: unknown) => {
+    throw new Error(`Failed to copy ${url} to ${targetPath}: ${(error as Error).message}`);
+  });
+
   if (!response.body) {
     throw new Error(`File server returned an empty response body: ${url}`);
   }
@@ -76,6 +79,17 @@ function normalizeRemotePath(value: string) {
 
 function joinRemotePath(root: string, relativePath: string) {
   return `${root}/${normalizeRemotePath(relativePath).replace(/^\/+/, '')}`;
+}
+
+function resolveTorrentFilePath(contentPath: string, fileName: string) {
+  const normalizedFileName = normalizeRemotePath(fileName).replace(/^\/+/, '');
+  const contentFolderName = path.posix.basename(contentPath);
+
+  if (normalizedFileName === contentFolderName || normalizedFileName.startsWith(`${contentFolderName}/`)) {
+    return joinRemotePath(path.posix.dirname(contentPath), normalizedFileName);
+  }
+
+  return joinRemotePath(contentPath, normalizedFileName);
 }
 
 function toRelativeRemotePath(remotePath: string, root: string) {

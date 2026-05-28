@@ -4,8 +4,8 @@ import { cn } from '~/lib/utils';
 export type PageTab = 'subscriptions' | 'downloads';
 
 const tabs: Array<{ id: PageTab; label: string; icon: typeof Rss }> = [
-  { id: 'subscriptions', label: '订阅管理', icon: Rss },
-  { id: 'downloads', label: '下载进度', icon: Activity },
+  { id: 'subscriptions', label: 'Subscriptions', icon: Rss },
+  { id: 'downloads', label: 'Downloads', icon: Activity },
 ];
 
 interface PageTabsProps {

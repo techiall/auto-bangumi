@@ -131,7 +131,7 @@ export function useSubscriptionManager() {
   async function handleDelete(index: number) {
     try {
       setConfig(await deleteSeason(index));
-      showNotice('已从配置中移除。', 'success');
+      showNotice('Subscription removed.', 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
     }
@@ -140,7 +140,7 @@ export function useSubscriptionManager() {
   async function handleUpdate(index: number, payload: { folder: string; season: number; filters: string[] }) {
     try {
       setConfig(await updateSeason(index, payload));
-      showNotice('订阅已更新。', 'success');
+      showNotice('Subscription updated.', 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
     }
@@ -160,7 +160,10 @@ export function useSubscriptionManager() {
 
     try {
       setConfig(await addSeason(payload));
-      showNotice('已写入 config.yaml。', 'success');
+      showNotice('Subscription saved.', 'success');
+      setSelectedBangumi(null);
+      setSelectedGroupId(null);
+      setForm(emptyForm);
     } catch (error) {
       showNotice(asMessage(error), 'error');
     } finally {
@@ -202,5 +205,6 @@ export function useSubscriptionManager() {
     setForm,
     setQuery,
     setSelectedGroupId,
+    clearSelection,
   };
 }

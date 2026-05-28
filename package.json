@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "build:frontend": "npm --prefix frontend run build",
+    "check": "npm run build && npm run build:frontend && npm run format:check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "server:dev": "tsx watch src/server/dev-server.ts",
@@ -14,15 +16,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
+    "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
     "concurrently": "^9.2.1",
-    "eslint": "^9.39.4",
+    "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
     "prettier": "^3.8.3",
     "tsx": "^4.22.3",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.0"
   },
   "dependencies": {

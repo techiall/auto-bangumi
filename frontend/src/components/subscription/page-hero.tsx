@@ -10,8 +10,10 @@ export function PageHero() {
             Auto Bangumi
           </Badge>
           <div className="space-y-2">
-            <h1 className="font-serif text-4xl font-bold tracking-tight text-slate-50 md:text-5xl">控制台</h1>
-            <p className="max-w-2xl text-sm leading-7 text-slate-400 md:text-base">订阅管理和下载状态。</p>
+            <h1 className="font-serif text-4xl font-bold tracking-tight text-slate-50 md:text-5xl">Console</h1>
+            <p className="max-w-2xl text-sm leading-7 text-slate-400 md:text-base">
+              Manage Mikan subscriptions and monitor download activity.
+            </p>
           </div>
         </div>
       </CardContent>

@@ -18,7 +18,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    const message = typeof data?.message === 'string' ? data.message : 'Request failed';
+    const message = typeof data?.message === 'string' ? data.message : `Request failed (${response.status})`;
     throw new Error(message);
   }
 

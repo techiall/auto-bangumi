@@ -6,7 +6,7 @@ export function splitCommaList(input: string) {
 }
 
 export function asMessage(error: unknown) {
-  return error instanceof Error ? error.message : '发生了未知错误。';
+  return error instanceof Error ? error.message : 'An unknown error occurred.';
 }
 
 export function inferMikanBangumiUrl(rss: string) {

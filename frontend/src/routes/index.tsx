@@ -67,6 +67,7 @@ function HomePage() {
                       onGroupSelect={subscriptions.setSelectedGroupId}
                       onFormChange={subscriptions.setForm}
                       onSubmit={(event) => void subscriptions.handleSubmit(event)}
+                      onCancel={subscriptions.clearSelection}
                     />
                   ) : null
                 }
@@ -74,6 +75,7 @@ function HomePage() {
                 onSearch={() => void subscriptions.runSearch(subscriptions.query)}
                 onBrowse={() => void subscriptions.runSearch('', 'browse')}
                 onChoose={(item) => void subscriptions.chooseBangumi(item)}
+                onClearSelection={subscriptions.clearSelection}
               />
 
               <div className="grid gap-5 xl:sticky xl:top-5">

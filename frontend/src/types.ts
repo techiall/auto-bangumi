@@ -76,6 +76,8 @@ export interface CompletedDownload {
   movedAt: string;
   qbitRemovedAt?: string;
   targetPath?: string;
+  qbit?: QbittorrentDownloadStatus;
+  qbitError?: string;
 }
 
 export interface DownloadState {
@@ -85,9 +87,11 @@ export interface DownloadState {
 
 export interface QbittorrentDownloadStatus {
   progress: number;
+  ratio: number;
   downloadSpeed: number;
   uploadSpeed: number;
   eta: number;
+  seedingTime: number;
   state: string;
   stateMessage: string;
   connectedSeeds: number;
@@ -95,4 +99,5 @@ export interface QbittorrentDownloadStatus {
   totalSeeds: number;
   totalPeers: number;
   totalSize: number;
+  totalUploaded: number;
 }

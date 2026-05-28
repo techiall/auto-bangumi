@@ -21,9 +21,11 @@ export interface QBittorrentTorrent {
 
 export interface QBittorrentTorrentStatus {
   progress: number;
+  ratio: number;
   downloadSpeed: number;
   uploadSpeed: number;
   eta: number;
+  seedingTime: number;
   state: string;
   stateMessage: string;
   connectedSeeds: number;
@@ -31,6 +33,7 @@ export interface QBittorrentTorrentStatus {
   totalSeeds: number;
   totalPeers: number;
   totalSize: number;
+  totalUploaded: number;
 }
 
 export class QBittorrentApi {
@@ -177,9 +180,11 @@ export class QBittorrentApi {
   private toTorrentStatus(torrent: NormalizedTorrent): QBittorrentTorrentStatus {
     return {
       progress: torrent.progress,
+      ratio: torrent.ratio,
       downloadSpeed: torrent.downloadSpeed,
       uploadSpeed: torrent.uploadSpeed,
       eta: torrent.eta,
+      seedingTime: Number(torrent.raw.seeding_time ?? 0),
       state: torrent.state,
       stateMessage: torrent.stateMessage,
       connectedSeeds: torrent.connectedSeeds,
@@ -187,6 +192,7 @@ export class QBittorrentApi {
       totalSeeds: torrent.totalSeeds,
       totalPeers: torrent.totalPeers,
       totalSize: torrent.totalSize,
+      totalUploaded: torrent.totalUploaded,
     };
   }
 }

@@ -1,20 +1,20 @@
 export async function fetchWithRetry(
   url: string,
   options: RequestInit = {},
-  retries: number = 3,
-  delay: number = 1000,
+  retries = 3,
+  delayMs = 1000,
 ): Promise<Response> {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP ${response.status} for ${url}`);
     }
     return response;
-  } catch (error: any) {
+  } catch (error) {
     if (retries > 0) {
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      return fetchWithRetry(url, options, retries - 1, delay);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return fetchWithRetry(url, options, retries - 1, delayMs);
     }
-    throw error; // If all retries fail, throw the error
+    throw error;
   }
 }

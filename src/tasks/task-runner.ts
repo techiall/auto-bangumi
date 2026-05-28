@@ -13,7 +13,7 @@ export function runRecurringTask(taskName: string, task: () => Promise<void>, in
     try {
       await task();
     } catch (error) {
-      logger.error(error);
+      logger.error(`${taskName} failed: ${(error as Error).message}`);
     } finally {
       running = false;
     }

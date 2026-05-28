@@ -1,6 +1,6 @@
 import { logger } from '../config/logger.js';
 import { startDownloadTask } from '../tasks/download-task.js';
-import { startMoveTask } from '../tasks/move-task.js';
+import { startDownloadReconciliation } from '../tasks/move-task.js';
 import { createApp } from './app.js';
 
 const port = Number(process.env.API_PORT ?? 3000);
@@ -11,5 +11,5 @@ createApp({ configPath, dbPath }).listen(port, () => {
   logger.info(`Backend server is running on http://localhost:${port}`);
 });
 
-startDownloadTask();
-startMoveTask();
+startDownloadTask({ configPath, dbPath });
+startDownloadReconciliation();

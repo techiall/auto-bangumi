@@ -1,4 +1,4 @@
-import { Check, ExternalLink, Layers3, LoaderCircle } from 'lucide-react';
+import { Check, ExternalLink, Layers3, LoaderCircle, X } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
@@ -26,6 +26,7 @@ interface SubscriptionSettingsProps {
   onGroupSelect: (groupId: number) => void;
   onFormChange: (form: SubscriptionFormState) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onCancel: () => void;
 }
 
 export function SubscriptionSettings({
@@ -38,10 +39,13 @@ export function SubscriptionSettings({
   onGroupSelect,
   onFormChange,
   onSubmit,
+  onCancel,
 }: SubscriptionSettingsProps) {
   return (
-    <form className="grid gap-4 rounded-2xl border border-slate-800 bg-slate-950/80 p-4" onSubmit={onSubmit}>
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-900/70 px-4 py-3">
+    <form
+      className="grid gap-4 rounded-2xl border border-cyan-900/70 bg-slate-950/90 p-4 shadow-[0_16px_44px_rgba(8,145,178,0.1)]"
+      onSubmit={onSubmit}>
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <a
             href={bangumi.url}
@@ -54,7 +58,7 @@ export function SubscriptionSettings({
           <div className="mt-1 text-sm text-slate-500">Bangumi ID: {bangumi.id}</div>
         </div>
         <Badge variant="outline" className="border-cyan-800 bg-cyan-950 text-cyan-100">
-          {selectedGroup ? selectedGroup.name : '未选择字幕组'}
+          {selectedGroup ? selectedGroup.name : 'No subtitle group selected'}
         </Badge>
       </div>
 
@@ -70,68 +74,80 @@ export function SubscriptionSettings({
         </div>
       ) : null}
 
-      <section className="space-y-3">
-        <div className="text-sm font-medium text-slate-100">字幕组</div>
-        <div className="grid max-h-48 gap-3 overflow-y-auto pr-1">
-          {bangumi.groups.length ? (
-            bangumi.groups.map((group) => (
-              <GroupOption
-                key={group.id}
-                group={group}
-                active={group.id === selectedGroupId}
-                onClick={() => onGroupSelect(group.id)}
+      <div className="grid gap-4 lg:grid-cols-[minmax(13rem,0.8fr)_minmax(0,1.2fr)]">
+        <section className="space-y-3">
+          <div className="text-sm font-medium text-slate-100">Subtitle Group</div>
+          <div className="grid max-h-80 gap-3 overflow-y-auto pr-1">
+            {bangumi.groups.length ? (
+              bangumi.groups.map((group) => (
+                <GroupOption
+                  key={group.id}
+                  group={group}
+                  active={group.id === selectedGroupId}
+                  onClick={() => onGroupSelect(group.id)}
+                />
+              ))
+            ) : (
+              <StateBox
+                icon={<Layers3 className="size-4" />}
+                text="No subtitle groups found. The default bangumi RSS will be used."
               />
-            ))
-          ) : (
-            <StateBox icon={<Layers3 className="size-4" />} text="没有解析到字幕组，会使用番组默认 RSS。" />
-          )}
-        </div>
-      </section>
+            )}
+          </div>
+        </section>
 
-      <section className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-[1fr_7rem]">
-          <Field label="标题">
-            <Input value={form.title} onChange={(event) => onFormChange({ ...form, title: event.target.value })} />
-          </Field>
+        <section className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-[1fr_7rem]">
+            <Field label="Title">
+              <Input value={form.title} onChange={(event) => onFormChange({ ...form, title: event.target.value })} />
+            </Field>
 
-          <Field label="季数">
+            <Field label="Season">
+              <Input
+                type="number"
+                min="1"
+                value={form.season}
+                onChange={(event) => onFormChange({ ...form, season: event.target.value })}
+              />
+            </Field>
+          </div>
+
+          <Field label="Folder">
             <Input
-              type="number"
-              min="1"
-              value={form.season}
-              onChange={(event) => onFormChange({ ...form, season: event.target.value })}
+              value={form.folder}
+              onChange={(event) => onFormChange({ ...form, folder: event.target.value })}
+              placeholder="e.g. Natsume Yuujinchou"
             />
           </Field>
-        </div>
 
-        <Field label="文件夹">
-          <Input
-            value={form.folder}
-            onChange={(event) => onFormChange({ ...form, folder: event.target.value })}
-            placeholder="例如 Natsume Yuujinchou"
-          />
-        </Field>
+          <Field label="Title Filters">
+            <Input
+              value={form.filters}
+              onChange={(event) => onFormChange({ ...form, filters: event.target.value })}
+              placeholder="One or more keywords, separated by commas. e.g. 1080p, CHS"
+              className="h-12 text-base"
+            />
+          </Field>
 
-        <Field label="标题过滤">
-          <Input
-            value={form.filters}
-            onChange={(event) => onFormChange({ ...form, filters: event.target.value })}
-            placeholder="例如 1080p, 简中"
-          />
-        </Field>
-
-        <div className="grid gap-2">
-          <Label>RSS</Label>
-          <div className="max-h-24 overflow-y-auto break-all rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm leading-6 text-slate-400">
-            {form.rss}
+          <div className="grid gap-2">
+            <Label>RSS</Label>
+            <div className="max-h-24 overflow-y-auto break-all rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm leading-6 text-slate-400">
+              {form.rss}
+            </div>
           </div>
-        </div>
 
-        <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
-          写入配置
-        </Button>
-      </section>
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button type="button" variant="outline" size="lg" className="w-fit" onClick={onCancel}>
+              <X className="mr-2 size-4" />
+              Cancel
+            </Button>
+            <Button type="submit" size="lg" className="w-fit" disabled={isSubmitting}>
+              {isSubmitting ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
+              Save
+            </Button>
+          </div>
+        </section>
+      </div>
     </form>
   );
 }

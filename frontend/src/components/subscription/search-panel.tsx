@@ -1,4 +1,4 @@
-import { Check, LoaderCircle, Search } from 'lucide-react';
+import { Check, LoaderCircle, Search, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
@@ -19,6 +19,7 @@ interface SearchPanelProps {
   onSearch: () => void;
   onBrowse: () => void;
   onChoose: (item: MikanSearchResult) => void;
+  onClearSelection: () => void;
 }
 
 export function SearchPanel({
@@ -33,16 +34,23 @@ export function SearchPanel({
   onSearch,
   onBrowse,
   onChoose,
+  onClearSelection,
 }: SearchPanelProps) {
   return (
-    <Card className="p-5">
-      <CardHeader className="mb-5">
-        <div className="flex min-w-0 items-center gap-3">
-          <CardTitle>找番组</CardTitle>
-          {results.length ? <span className="text-sm text-slate-500">{results.length} 个结果</span> : null}
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-5">
+    <Card className="overflow-hidden">
+      <div className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 p-4 backdrop-blur md:p-5">
+        <CardHeader className="mb-3 md:mb-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <CardTitle>Find Bangumi</CardTitle>
+            {results.length ? <span className="text-sm text-slate-500">{results.length} results</span> : null}
+          </div>
+          {selectedBangumiId ? (
+            <Button variant="outline" size="sm" onClick={onClearSelection}>
+              <X className="mr-2 size-4" />
+              Clear
+            </Button>
+          ) : null}
+        </CardHeader>
         <form
           className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] 2xl:grid-cols-[minmax(0,1fr)_auto_auto]"
           onSubmit={(event) => {
@@ -54,7 +62,7 @@ export function SearchPanel({
             <Input
               value={query}
               onChange={(event) => onQueryChange(event.target.value)}
-              placeholder="输入番名，例如 Ave Mujica"
+              placeholder="Search by title, e.g. Ave Mujica"
               className="pl-9"
             />
           </div>
@@ -64,7 +72,7 @@ export function SearchPanel({
             ) : (
               <Search className="mr-2 size-4" />
             )}
-            搜索
+            Search
           </Button>
           <Button
             variant="outline"
@@ -73,14 +81,18 @@ export function SearchPanel({
             onClick={onBrowse}
             disabled={isSearchLoading || isBrowseLoading}>
             {isBrowseLoading ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : null}
-            查看本季番组
+            Current Season
           </Button>
         </form>
+      </div>
 
+      <CardContent className="p-4 md:p-5">
         <div
           className={cn(
-            'min-h-[44rem] overflow-y-auto pr-1',
-            selectedBangumiId ? 'max-h-[calc(100vh-8rem)]' : 'max-h-[calc(100vh-7rem)]',
+            'min-h-[18rem] overflow-y-auto pr-1 md:min-h-[28rem] xl:min-h-[50rem]',
+            selectedBangumiId
+              ? 'max-h-[36rem] md:max-h-[44rem] xl:max-h-[calc(100vh-7rem)]'
+              : 'max-h-[30rem] md:max-h-[42rem] xl:max-h-[calc(100vh-6rem)]',
           )}>
           <div className="grid gap-3">
             {results.map((item) => (
@@ -91,9 +103,7 @@ export function SearchPanel({
                   loading={loadingBangumiId === item.id}
                   onChoose={() => onChoose(item)}
                 />
-                {selectedBangumiId === item.id && settingsSlot ? (
-                  <div className="rounded-3xl border border-cyan-900/70 bg-cyan-950/20 p-2">{settingsSlot}</div>
-                ) : null}
+                {selectedBangumiId === item.id && settingsSlot ? <div>{settingsSlot}</div> : null}
               </div>
             ))}
           </div>
@@ -118,7 +128,9 @@ function SearchResultItem({
     <div
       className={cn(
         'cursor-pointer rounded-2xl border p-4 transition-colors',
-        active ? 'border-cyan-500 bg-cyan-950/70' : 'border-slate-800 bg-slate-900/70 hover:bg-slate-800',
+        active
+          ? 'border-cyan-500 bg-cyan-950/70 shadow-[0_0_0_1px_rgba(34,211,238,0.2)]'
+          : 'border-slate-800 bg-slate-900/70 hover:bg-slate-800',
       )}
       role="button"
       tabIndex={0}
@@ -135,7 +147,7 @@ function SearchResultItem({
             href={item.url}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex max-w-full items-center rounded-lg font-medium text-slate-100 transition-colors hover:text-cyan-200"
+            className="inline-flex max-w-full items-center rounded-lg font-medium text-slate-100 underline decoration-slate-700 underline-offset-4 transition-colors hover:text-cyan-200 hover:decoration-cyan-400"
             onClick={(event) => event.stopPropagation()}>
             <span className="truncate">{item.title}</span>
           </a>
@@ -146,8 +158,7 @@ function SearchResultItem({
         {loading ? <LoaderCircle className="mt-1 size-4 shrink-0 animate-spin text-cyan-200" /> : null}
         {active ? (
           <Badge variant="outline" className="shrink-0 border-cyan-700 bg-cyan-950 text-cyan-100">
-            <Check className="mr-1 size-3.5" />
-            已选
+            <Check className="size-3.5" />
           </Badge>
         ) : null}
       </div>

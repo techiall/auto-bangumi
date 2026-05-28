@@ -1,8 +1,10 @@
 import express from 'express';
+import { logger } from '../config/logger.js';
 import { getBangumiDetail, searchBangumi } from '../mikan/api.js';
 import { DownloadService } from './downloads.js';
 import { HttpError } from './http-error.js';
 import { SubscriptionService } from './subscriptions.js';
+import { downloadTask } from '../tasks/download-task.js';
 
 export interface AppOptions {
   configPath?: string;
@@ -42,7 +44,12 @@ export function createApp(options: AppOptions = {}) {
   });
 
   app.post('/api/seasons', (request, response) => {
-    response.status(201).json(subscriptions.add(request.body));
+    const config = subscriptions.add(request.body);
+    response.status(201).json(config);
+
+    void downloadTask({ configPath, dbPath }).catch((error: unknown) => {
+      logger.warn(`Immediate subscription scan failed: ${(error as Error).message}`);
+    });
   });
 
   app.patch('/api/seasons/:index', (request, response) => {

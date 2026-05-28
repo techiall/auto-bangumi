@@ -3,10 +3,12 @@ set -eu
 
 config_file=/config/qBittorrent/qBittorrent.conf
 password_hash='@ByteArray(YXV0by1iYW5ndW1pLXNhbA==:I1QozK7rFTwrsqgQC3bcZdCFSDi4h2lu+mReHz7fPa++Whd73lKo+lxsbR9W0R9E+6stXlzMzqB2iA06bvHbxg==)'
+max_active_downloads=20
 max_ratio=1
 max_seeding_minutes=60
 
 mkdir -p /config/qBittorrent
+rm -f /config/qBittorrent/lockfile
 
 if [ ! -f "$config_file" ]; then
   cat > "$config_file" <<'EOF'
@@ -16,6 +18,9 @@ Accepted=true
 [BitTorrent]
 Session\GlobalMaxRatio=1
 Session\GlobalMaxSeedingMinutes=60
+Session\MaxActiveDownloads=20
+Session\MaxActiveTorrents=20
+Session\QueueingSystemEnabled=true
 Session\ShareLimitAction=Stop
 
 [Preferences]
@@ -95,9 +100,15 @@ remove_config_value 'Preferences' 'WebUIPassword_PBKDF2'
 remove_config_value 'Preferences' 'WebUIPort'
 remove_config_value 'Preferences' 'WebUIServerDomains'
 remove_config_value 'Preferences' 'WebUIUsername'
+remove_config_value 'BitTorrent' 'SessionGlobalMaxRatio'
+remove_config_value 'BitTorrent' 'SessionGlobalMaxSeedingMinutes'
+remove_config_value 'BitTorrent' 'SessionShareLimitAction'
 
 set_config_value 'BitTorrent' 'Session\\GlobalMaxRatio' "$max_ratio"
 set_config_value 'BitTorrent' 'Session\\GlobalMaxSeedingMinutes' "$max_seeding_minutes"
+set_config_value 'BitTorrent' 'Session\\MaxActiveDownloads' "$max_active_downloads"
+set_config_value 'BitTorrent' 'Session\\MaxActiveTorrents' "$max_active_downloads"
+set_config_value 'BitTorrent' 'Session\\QueueingSystemEnabled' 'true'
 set_config_value 'BitTorrent' 'Session\\ShareLimitAction' 'Stop'
 set_preference 'Downloads\\SavePath' '/downloads/'
 set_preference 'WebUI\\Address' '*'
@@ -106,4 +117,4 @@ set_preference 'WebUI\\Port' '8080'
 set_preference 'WebUI\\ServerDomains' '*'
 set_preference 'WebUI\\Username' 'admin'
 
-echo '[custom-init] qBittorrent WebUI credentials and seeding limits configured'
+echo '[custom-init] qBittorrent WebUI credentials, queueing, and seeding limits configured'
