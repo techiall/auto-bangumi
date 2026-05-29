@@ -8,7 +8,7 @@ It includes a small web UI for managing Mikan subscriptions without editing `con
 
 - Searches Mikan bangumi and writes subscriptions to `config/config.yaml`.
 - Polls subscribed RSS feeds and sends new torrents to qBittorrent.
-- Reconciles completed qBittorrent tasks when the downloads page refreshes, with a background fallback watcher.
+- Streams download progress to the web UI over WebSocket, with HTTP kept as a fallback endpoint.
 - Pulls completed files through qBittorrent's bundled internal file server instead of reading qBittorrent paths directly.
 - Moves completed episodes to `library/<title>/Season NN/`.
 - Removes the qBittorrent task and downloaded source file after a successful move.
@@ -79,7 +79,7 @@ Open:
 http://localhost:3000
 ```
 
-The browser talks to the web service only. The web service forwards `/api/*` requests to the internal `backend` service.
+The browser talks to the web service only. The web service forwards `/api/*` HTTP requests and `/api/downloads/ws` WebSocket traffic to the internal `backend` service.
 
 The backend mounts `config/config.yaml`, `db/db.json`, and the media library. The media library is deployment config, not app config: compose mounts `${HOST_LIBRARY_ROOT:-E:/Bangumi}` to `/library`, and `LIBRARY_CONTAINER_ROOT=/library` tells the backend where to write from inside the container.
 
@@ -114,7 +114,7 @@ npm run build
 node dist/tasks/move-once.js
 ```
 
-In Docker, `backend` starts a fallback move watcher automatically. The downloads page also triggers the same move reconciliation before returning progress, so completed items move promptly while the page is open. Override the fallback interval with `MOVE_INTERVAL_MS` if needed.
+In Docker, `backend` starts a fallback move watcher automatically. The downloads page receives progress over WebSocket, and each state refresh also triggers move reconciliation so completed items move promptly while the page is open. Override the fallback interval with `MOVE_INTERVAL_MS` if needed.
 
 Build everything:
 

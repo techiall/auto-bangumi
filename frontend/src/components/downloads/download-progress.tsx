@@ -1,5 +1,5 @@
-import { Activity, ArrowDownUp, LoaderCircle, RefreshCcw, type LucideIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { Activity, ArrowDownUp, Info, LoaderCircle, RefreshCcw, type LucideIcon } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
@@ -12,7 +12,7 @@ import {
   formatTime,
   normalizeProgress,
 } from '~/components/downloads/download-format';
-import { fetchDownloads } from '~/lib/api';
+import { downloadsWebSocketUrl, fetchDownloads } from '~/lib/api';
 import { asMessage } from '~/lib/subscription';
 import type { ActiveDownload, CompletedDownload, DownloadState } from '~/types';
 
@@ -20,20 +20,59 @@ type DownloadRow =
   | ({ hash: string; state: 'active' } & ActiveDownload)
   | ({ hash: string; state: 'completed' } & CompletedDownload);
 type CompletedDownloadRow = { hash: string; state: 'completed' } & CompletedDownload;
+type DownloadMessage = { type: 'state'; data: DownloadState } | { type: 'error'; message: string };
 
 export function DownloadProgress() {
   const [data, setData] = useState<DownloadState>({ active: {}, completed: {} });
   const [loading, setLoading] = useState(true);
   const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    void refresh();
-    const timer = window.setInterval(() => {
-      void refresh({ silent: true });
-    }, 2000);
+    let disposed = false;
+    let reconnectTimer: number | undefined;
 
-    return () => window.clearInterval(timer);
+    const connect = () => {
+      if (disposed) return;
+      const socket = new WebSocket(downloadsWebSocketUrl());
+      socketRef.current = socket;
+
+      socket.addEventListener('message', (event) => {
+        const message = parseDownloadMessage(event.data);
+        if (!message) return;
+
+        if (message.type === 'state') {
+          setData(message.data);
+          setLastUpdatedAt(new Date());
+          setError(null);
+          setLoading(false);
+          return;
+        }
+
+        setError(message.message);
+        setLoading(false);
+      });
+
+      socket.addEventListener('error', () => {
+        setError('Download status stream is unavailable.');
+        setLoading(false);
+      });
+
+      socket.addEventListener('close', () => {
+        if (socketRef.current === socket) socketRef.current = null;
+        if (!disposed) reconnectTimer = window.setTimeout(connect, 3000);
+      });
+    };
+
+    connect();
+
+    return () => {
+      disposed = true;
+      if (reconnectTimer) window.clearTimeout(reconnectTimer);
+      socketRef.current?.close();
+      socketRef.current = null;
+    };
   }, []);
 
   const rows = useMemo(() => buildRows(data), [data]);
@@ -45,6 +84,12 @@ export function DownloadProgress() {
   const seedingCount = Object.values(data.completed).filter((item) => item.qbit && !item.qbitRemovedAt).length;
 
   async function refresh(options: { silent?: boolean } = {}) {
+    const socket = socketRef.current;
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send('refresh');
+      return;
+    }
+
     if (!options.silent) setLoading(true);
     setError(null);
     try {
@@ -107,6 +152,8 @@ export function DownloadProgress() {
           )}
         </CardContent>
       </Card>
+
+      <StatusNotes />
     </div>
   );
 }
@@ -180,6 +227,38 @@ function SummaryCard({
         </div>
       </div>
     </Card>
+  );
+}
+
+function StatusNotes() {
+  return (
+    <div className="rounded-2xl border border-slate-800/80 bg-slate-950/55 px-4 py-3 text-xs text-slate-500">
+      <div className="mb-2 flex items-center gap-2 font-semibold uppercase tracking-[0.16em] text-slate-400">
+        <Info className="size-3.5 text-cyan-300" />
+        Status Notes
+      </div>
+      <div className="grid gap-2">
+        <StatusNote label="Active" text="Tracked in db.json and expected to exist in qBittorrent." />
+        <StatusNote
+          label="Seeding"
+          text="Moved to the library, still present in qB until ratio or time limit is reached."
+        />
+        <StatusNote label="Moved" text="Copied into the library and no longer visible in qBittorrent." />
+        <StatusNote label="Cleaned" text="Moved, then removed from qBittorrent together with its source files." />
+        <StatusNote label="Not found" text="An active db record exists, but qB currently has no matching torrent." />
+        <StatusNote label="qB unavailable" text="The backend could not read qB status during this refresh." />
+      </div>
+    </div>
+  );
+}
+
+function StatusNote({ label, text }: { label: string; text: string }) {
+  return (
+    <div className="min-w-0">
+      <span className="font-medium text-slate-300">{label}</span>
+      <span className="mx-1 text-slate-700">-</span>
+      <span>{text}</span>
+    </div>
   );
 }
 
@@ -324,6 +403,20 @@ function Metric({ label, value }: { label: string; value: string }) {
       </div>
     </div>
   );
+}
+
+function parseDownloadMessage(value: unknown): DownloadMessage | null {
+  if (typeof value !== 'string') return null;
+
+  try {
+    const parsed = JSON.parse(value) as Partial<DownloadMessage>;
+    if (parsed.type === 'state' && parsed.data) return parsed as DownloadMessage;
+    if (parsed.type === 'error' && typeof parsed.message === 'string') return parsed as DownloadMessage;
+  } catch {
+    return null;
+  }
+
+  return null;
 }
 
 function statusLabel(row: DownloadRow) {

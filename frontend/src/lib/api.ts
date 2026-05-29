@@ -71,3 +71,8 @@ export function refreshRssFeeds() {
 export function fetchDownloads() {
   return request<DownloadState>('/api/downloads');
 }
+
+export function downloadsWebSocketUrl() {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${protocol}//${window.location.host}/api/downloads/ws`;
+}
