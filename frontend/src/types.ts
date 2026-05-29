@@ -56,6 +56,12 @@ export interface UpdateSeasonPayload {
   filters: string[];
 }
 
+export interface RssRefreshResult {
+  subscriptionCount: number;
+  parsedSubscriptionCount: number;
+  queuedCount: number;
+}
+
 export interface ActiveDownload {
   torrent: string;
   title: string;

@@ -4,6 +4,7 @@ import type {
   DownloadState,
   MikanBangumiDetail,
   MikanSearchResult,
+  RssRefreshResult,
   UpdateSeasonPayload,
 } from '~/types';
 
@@ -58,6 +59,12 @@ export function updateSeason(index: number, payload: UpdateSeasonPayload) {
   return request<AppConfig>(`/api/seasons/${index}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
+  });
+}
+
+export function refreshRssFeeds() {
+  return request<RssRefreshResult>('/api/rss/refresh', {
+    method: 'POST',
   });
 }
 

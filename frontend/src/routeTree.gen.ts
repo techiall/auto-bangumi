@@ -14,6 +14,7 @@ import { Route as ApiSeasonsRouteImport } from './routes/api/seasons'
 import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
 import { Route as ApiConfigRouteImport } from './routes/api/config'
 import { Route as ApiSeasonsIndexRouteImport } from './routes/api/seasons.$index'
+import { Route as ApiRssRefreshRouteImport } from './routes/api/rss/refresh'
 import { Route as ApiMikanSearchRouteImport } from './routes/api/mikan/search'
 import { Route as ApiMikanBangumiIdRouteImport } from './routes/api/mikan/bangumi.$id'
 
@@ -42,6 +43,11 @@ const ApiSeasonsIndexRoute = ApiSeasonsIndexRouteImport.update({
   path: '/$index',
   getParentRoute: () => ApiSeasonsRoute,
 } as any)
+const ApiRssRefreshRoute = ApiRssRefreshRouteImport.update({
+  id: '/api/rss/refresh',
+  path: '/api/rss/refresh',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMikanSearchRoute = ApiMikanSearchRouteImport.update({
   id: '/api/mikan/search',
   path: '/api/mikan/search',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRouteWithChildren
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/seasons/$index': typeof ApiSeasonsIndexRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRouteWithChildren
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/seasons/$index': typeof ApiSeasonsIndexRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRouteWithChildren
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/seasons/$index': typeof ApiSeasonsIndexRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/api/downloads'
     | '/api/seasons'
     | '/api/mikan/search'
+    | '/api/rss/refresh'
     | '/api/seasons/$index'
     | '/api/mikan/bangumi/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/api/downloads'
     | '/api/seasons'
     | '/api/mikan/search'
+    | '/api/rss/refresh'
     | '/api/seasons/$index'
     | '/api/mikan/bangumi/$id'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/api/downloads'
     | '/api/seasons'
     | '/api/mikan/search'
+    | '/api/rss/refresh'
     | '/api/seasons/$index'
     | '/api/mikan/bangumi/$id'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   ApiDownloadsRoute: typeof ApiDownloadsRoute
   ApiSeasonsRoute: typeof ApiSeasonsRouteWithChildren
   ApiMikanSearchRoute: typeof ApiMikanSearchRoute
+  ApiRssRefreshRoute: typeof ApiRssRefreshRoute
   ApiMikanBangumiIdRoute: typeof ApiMikanBangumiIdRoute
 }
 
@@ -157,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSeasonsIndexRouteImport
       parentRoute: typeof ApiSeasonsRoute
     }
+    '/api/rss/refresh': {
+      id: '/api/rss/refresh'
+      path: '/api/rss/refresh'
+      fullPath: '/api/rss/refresh'
+      preLoaderRoute: typeof ApiRssRefreshRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/mikan/search': {
       id: '/api/mikan/search'
       path: '/api/mikan/search'
@@ -192,6 +212,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDownloadsRoute: ApiDownloadsRoute,
   ApiSeasonsRoute: ApiSeasonsRouteWithChildren,
   ApiMikanSearchRoute: ApiMikanSearchRoute,
+  ApiRssRefreshRoute: ApiRssRefreshRoute,
   ApiMikanBangumiIdRoute: ApiMikanBangumiIdRoute,
 }
 export const routeTree = rootRouteImport

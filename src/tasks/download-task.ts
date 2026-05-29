@@ -14,7 +14,13 @@ export interface DownloadTaskOptions {
   dbPath?: string;
 }
 
-let currentSubscriptionScan: Promise<void> | undefined;
+export interface SubscriptionScanResult {
+  subscriptionCount: number;
+  parsedSubscriptionCount: number;
+  queuedCount: number;
+}
+
+let currentSubscriptionScan: Promise<SubscriptionScanResult> | undefined;
 
 export async function downloadTask(options: DownloadTaskOptions = {}) {
   if (currentSubscriptionScan) return currentSubscriptionScan;
@@ -26,7 +32,7 @@ export async function downloadTask(options: DownloadTaskOptions = {}) {
   return currentSubscriptionScan;
 }
 
-async function scanSubscriptions(options: DownloadTaskOptions) {
+async function scanSubscriptions(options: DownloadTaskOptions): Promise<SubscriptionScanResult> {
   const db = await createDb(options.dbPath);
   const config = loadConfig(options.configPath);
   const api = new QBittorrentApi(config.qbittorrent);
@@ -53,6 +59,12 @@ async function scanSubscriptions(options: DownloadTaskOptions) {
   if (queuedCount) {
     logger.info(`Subscription scan queued ${queuedCount} new episode${queuedCount === 1 ? '' : 's'}`);
   }
+
+  return {
+    subscriptionCount: config.subscriptions.length,
+    parsedSubscriptionCount: seasons.length,
+    queuedCount,
+  };
 }
 
 async function parseSubscribedSeasons(subscriptions: SubscriptionConfig[]) {

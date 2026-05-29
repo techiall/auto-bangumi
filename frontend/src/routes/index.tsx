@@ -83,7 +83,9 @@ function HomePage() {
                   <CurrentSubscriptions
                     subscriptions={subscriptions.displayedSubscriptions}
                     isLoading={subscriptions.isConfigLoading}
-                    onRefresh={() => void subscriptions.refreshConfig()}
+                    isRssRefreshing={subscriptions.isRssRefreshing}
+                    onReload={() => void subscriptions.refreshConfig()}
+                    onRefreshRss={() => void subscriptions.refreshRss()}
                     onDelete={(index) => void subscriptions.handleDelete(index)}
                     onUpdate={(index, payload) => void subscriptions.handleUpdate(index, payload)}
                   />
@@ -95,7 +97,9 @@ function HomePage() {
               <CurrentSubscriptions
                 subscriptions={subscriptions.displayedSubscriptions}
                 isLoading={subscriptions.isConfigLoading}
-                onRefresh={() => void subscriptions.refreshConfig()}
+                isRssRefreshing={subscriptions.isRssRefreshing}
+                onReload={() => void subscriptions.refreshConfig()}
+                onRefreshRss={() => void subscriptions.refreshRss()}
                 onDelete={(index) => void subscriptions.handleDelete(index)}
                 onUpdate={(index, payload) => void subscriptions.handleUpdate(index, payload)}
               />

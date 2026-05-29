@@ -10,7 +10,9 @@ import type { SubscriptionConfig } from '~/types';
 interface CurrentSubscriptionsProps {
   subscriptions: Array<{ subscription: SubscriptionConfig; index: number }>;
   isLoading: boolean;
-  onRefresh: () => void;
+  isRssRefreshing: boolean;
+  onReload: () => void;
+  onRefreshRss: () => void;
   onDelete: (index: number) => void;
   onUpdate: (index: number, payload: { folder: string; season: number; filters: string[] }) => void;
 }
@@ -18,7 +20,9 @@ interface CurrentSubscriptionsProps {
 export function CurrentSubscriptions({
   subscriptions,
   isLoading,
-  onRefresh,
+  isRssRefreshing,
+  onReload,
+  onRefreshRss,
   onDelete,
   onUpdate,
 }: CurrentSubscriptionsProps) {
@@ -41,10 +45,16 @@ export function CurrentSubscriptions({
           <CardTitle>Current Subscriptions</CardTitle>
           <div className="mt-1 text-sm text-slate-500">{subscriptions.length} saved</div>
         </div>
-        <Button variant="outline" size="sm" onClick={onRefresh}>
-          <RefreshCcw className="mr-2 size-4" />
-          Refresh
-        </Button>
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={onReload} disabled={isLoading}>
+            <RefreshCcw className={isLoading ? 'mr-2 size-4 animate-spin' : 'mr-2 size-4'} />
+            Reload
+          </Button>
+          <Button variant="soft" size="sm" onClick={onRefreshRss} disabled={isRssRefreshing}>
+            {isRssRefreshing ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Rss className="mr-2 size-4" />}
+            Refresh RSS
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="grid gap-3">
         <div className="relative">

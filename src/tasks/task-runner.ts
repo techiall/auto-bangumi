@@ -1,6 +1,6 @@
 import { logger } from '../config/logger.js';
 
-export function runRecurringTask(taskName: string, task: () => Promise<void>, intervalMs: number) {
+export function runRecurringTask(taskName: string, task: () => Promise<unknown>, intervalMs: number) {
   let running = false;
 
   const run = async () => {

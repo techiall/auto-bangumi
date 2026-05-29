@@ -7,6 +7,7 @@ import {
   deleteSeason,
   fetchBangumiDetail,
   fetchConfig,
+  refreshRssFeeds,
   searchMikan,
   updateSeason,
 } from '~/lib/api';
@@ -32,6 +33,7 @@ export function useSubscriptionManager() {
   const [isConfigLoading, setIsConfigLoading] = useState(true);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isBrowseLoading, setIsBrowseLoading] = useState(false);
+  const [isRssRefreshing, setIsRssRefreshing] = useState(false);
   const [loadingBangumiId, setLoadingBangumiId] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -84,6 +86,19 @@ export function useSubscriptionManager() {
       showNotice(asMessage(error), 'error');
     } finally {
       setIsConfigLoading(false);
+    }
+  }
+
+  async function refreshRss() {
+    setIsRssRefreshing(true);
+    try {
+      const result = await refreshRssFeeds();
+      await refreshConfig();
+      showNotice(formatRssRefreshMessage(result.queuedCount), 'success');
+    } catch (error) {
+      showNotice(asMessage(error), 'error');
+    } finally {
+      setIsRssRefreshing(false);
     }
   }
 
@@ -187,6 +202,7 @@ export function useSubscriptionManager() {
     form,
     isBrowseLoading,
     isConfigLoading,
+    isRssRefreshing,
     isSearchLoading,
     isSubmitting,
     loadingBangumiId,
@@ -201,10 +217,19 @@ export function useSubscriptionManager() {
     handleSubmit,
     handleUpdate,
     refreshConfig,
+    refreshRss,
     runSearch,
     setForm,
     setQuery,
     setSelectedGroupId,
     clearSelection,
   };
+}
+
+function formatRssRefreshMessage(queuedCount: number) {
+  if (queuedCount > 0) {
+    return `RSS refreshed. Queued ${queuedCount} new episode${queuedCount === 1 ? '' : 's'}.`;
+  }
+
+  return 'RSS refreshed. No new episodes found.';
 }

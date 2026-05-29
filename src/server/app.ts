@@ -43,6 +43,10 @@ export function createApp(options: AppOptions = {}) {
     response.json(await downloads.state());
   });
 
+  app.post('/api/rss/refresh', async (_request, response) => {
+    response.json(await downloadTask({ configPath, dbPath }));
+  });
+
   app.post('/api/seasons', (request, response) => {
     const config = subscriptions.add(request.body);
     response.status(201).json(config);
