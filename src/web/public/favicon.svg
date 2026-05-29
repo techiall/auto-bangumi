@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Bangumi Manager">
+  <defs>
+    <linearGradient id="bg" x1="10" y1="6" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22d3ee" />
+      <stop offset="0.55" stop-color="#0f172a" />
+      <stop offset="1" stop-color="#10b981" />
+    </linearGradient>
+    <linearGradient id="mark" x1="18" y1="18" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8fafc" />
+      <stop offset="1" stop-color="#a7f3d0" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#020617" />
+  <rect x="5" y="5" width="54" height="54" rx="15" fill="url(#bg)" />
+  <path
+    fill="url(#mark)"
+    d="M18 20.5c0-2.5 2-4.5 4.5-4.5h12.8c7.2 0 12.7 4.6 12.7 11.1 0 3.7-1.8 6.6-4.8 8.4L49 48H39.5l-4.8-10.6H26V48h-8V20.5Zm8 4.3v5.8h8.4c3.2 0 5.2-1.1 5.2-3 0-1.8-2-2.8-5.2-2.8H26Z"
+  />
+  <circle cx="47" cy="17" r="5" fill="#67e8f9" opacity="0.9" />
+</svg>

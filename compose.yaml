@@ -1,0 +1,40 @@
+services:
+  qbittorrent:
+    build:
+      context: .
+      dockerfile: docker/qbittorrent.Dockerfile
+    volumes:
+      - qbittorrent-config:/config
+      - qbittorrent-downloads:/downloads
+    restart: unless-stopped
+
+  server:
+    build:
+      context: .
+      dockerfile: docker/app.Dockerfile
+    init: true
+    depends_on:
+      - qbittorrent
+    environment:
+      LIBRARY_DISPLAY_ROOT: ${HOST_LIBRARY_ROOT}
+    volumes:
+      - ./db:/usr/src/app/db
+    ports:
+      - '127.0.0.1:3000:3000'
+    restart: unless-stopped
+
+  agent:
+    build:
+      context: .
+      dockerfile: docker/agent.Dockerfile
+    depends_on:
+      - server
+    environment:
+      LIBRARY_DISPLAY_ROOT: ${HOST_LIBRARY_ROOT}
+    volumes:
+      - ${HOST_LIBRARY_ROOT}:/library
+    restart: unless-stopped
+
+volumes:
+  qbittorrent-config:
+  qbittorrent-downloads:

@@ -1,0 +1,33 @@
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/newsreader';
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+  --font-sans: 'Geist Variable', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Newsreader Variable', Georgia, serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  background: #020617;
+  color: #e2e8f0;
+}
+
+.font-serif {
+  font-family: var(--font-display);
+}
+
+code {
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 0.15rem 0.4rem;
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.92em;
+}
+
+a {
+  color: inherit;
+}

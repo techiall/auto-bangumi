@@ -1,0 +1,15 @@
+{
+  "name": "auto-bangumi-agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/node": "^25.9.1",
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,40 @@
+# Node.js
+node_modules/
+agent/node_modules/
+dist/
+build/
+.output/
+.tanstack/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.env
+/.env.local
+deploy/split/server/.env
+deploy/split/server/db/
+deploy/split/agent/.env
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+
+# Runtime state
+db/*.sqlite
+db/*.sqlite-*
+library/
+deploy/split/agent/library/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
