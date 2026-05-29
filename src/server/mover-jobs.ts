@@ -7,6 +7,7 @@ import { completeEpisode, markQbittorrentRemoved, withDb } from './state/db.js';
 import type { AppDb, MoveJob, MoveJobRecord } from './state/db.js';
 import { resolveActiveEpisodeMetadata } from './state/episode-metadata.js';
 import { HttpError } from './http-error.js';
+import { fetchWithRetry } from './utils/fetch-with-retry.js';
 
 const DEFAULT_LEASE_MS = 15 * 60 * 1000;
 
@@ -96,6 +97,14 @@ export class MoverJobService {
     });
   }
 
+  async openSource(hash: string) {
+    const config = await loadConfig(this.dbPath);
+    const job = await withDb(this.dbPath, (db) => ({ ...this.findJob(db, hash) }));
+    return fetchWithRetry(buildFileServerUrl(config.qbittorrent, job.sourceRemotePath), {
+      headers: fileServerAuthorizationHeaders(config.qbittorrent.fileServer),
+    });
+  }
+
   async syncReadyJobs() {
     const config = await loadConfig(this.dbPath);
     const api = new QBittorrentApi(config.qbittorrent);
@@ -157,8 +166,8 @@ export class MoverJobService {
       folder: job.folder,
       season: job.season,
       episode: job.number,
-      sourceUrl: buildFileServerUrl(config.qbittorrent, job.sourceRemotePath),
-      sourceHeaders: fileServerAuthorizationHeaders(config.qbittorrent.fileServer),
+      sourceUrl: `/api/mover/jobs/${encodeURIComponent(hash)}/source`,
+      sourceHeaders: {},
       targetRelativePath: job.targetRelativePath,
       attempts: job.attempts,
     };

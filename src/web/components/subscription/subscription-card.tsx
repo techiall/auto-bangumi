@@ -8,14 +8,14 @@ import type { SubscriptionConfig, UpdateSeasonPayload } from '~/types';
 
 interface SubscriptionCardProps {
   subscription: SubscriptionConfig;
-  index: number;
-  onDelete: (index: number) => void;
-  onUpdate: (index: number, payload: UpdateSeasonPayload) => void;
+  subscriptionKey: string;
+  onDelete: (subscriptionKey: string) => void;
+  onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
 }
 
 export const SubscriptionCard = memo(function SubscriptionCard({
   subscription,
-  index,
+  subscriptionKey,
   onDelete,
   onUpdate,
 }: SubscriptionCardProps) {
@@ -41,7 +41,7 @@ export const SubscriptionCard = memo(function SubscriptionCard({
     const nextSeason = Number(season);
     if (!Number.isInteger(nextSeason) || nextSeason <= 0) return;
 
-    onUpdate(index, {
+    onUpdate(subscriptionKey, {
       folder: folder.trim() || subscription.title,
       season: nextSeason,
       filters: splitCommaList(filters),
@@ -51,7 +51,7 @@ export const SubscriptionCard = memo(function SubscriptionCard({
   }
 
   function toggleArchive() {
-    onUpdate(index, {
+    onUpdate(subscriptionKey, {
       folder: subscription.folder,
       season: subscription.season,
       filters: subscription.filters ?? [],
@@ -142,7 +142,11 @@ export const SubscriptionCard = memo(function SubscriptionCard({
             </Field>
           </div>
           <div className="mt-3 flex flex-wrap justify-between gap-2">
-            <Button variant="danger" size="sm" className="w-fit whitespace-nowrap" onClick={() => onDelete(index)}>
+            <Button
+              variant="danger"
+              size="sm"
+              className="w-fit whitespace-nowrap"
+              onClick={() => onDelete(subscriptionKey)}>
               <Trash2 className="mr-2 size-4" />
               Delete
             </Button>

@@ -8,13 +8,13 @@ import { SubscriptionCard } from '~/components/subscription/subscription-card';
 import type { SubscriptionConfig, UpdateSeasonPayload } from '~/types';
 
 interface CurrentSubscriptionsProps {
-  subscriptions: Array<{ subscription: SubscriptionConfig; index: number }>;
+  subscriptions: Array<{ subscription: SubscriptionConfig; key: string }>;
   isLoading: boolean;
   isRssRefreshing: boolean;
   onReload: () => void;
   onRefreshRss: () => void;
-  onDelete: (index: number) => void;
-  onUpdate: (index: number, payload: UpdateSeasonPayload) => void;
+  onDelete: (subscriptionKey: string) => void;
+  onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
 }
 
 export function CurrentSubscriptions({
@@ -90,13 +90,13 @@ function SubscriptionListState({
   onDelete,
   onUpdate,
 }: {
-  subscriptions: Array<{ subscription: SubscriptionConfig; index: number }>;
-  filteredSubscriptions: Array<{ subscription: SubscriptionConfig; index: number }>;
+  subscriptions: Array<{ subscription: SubscriptionConfig; key: string }>;
+  filteredSubscriptions: Array<{ subscription: SubscriptionConfig; key: string }>;
   isLoading: boolean;
   showArchived: boolean;
   onToggleArchived: () => void;
-  onDelete: (index: number) => void;
-  onUpdate: (index: number, payload: UpdateSeasonPayload) => void;
+  onDelete: (subscriptionKey: string) => void;
+  onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
 }) {
   if (isLoading) return <StateBox icon={<LoaderCircle className="size-4 animate-spin" />} text="Loading config..." />;
   if (!subscriptions.length) return <StateBox icon={<Layers3 className="size-4" />} text="No subscriptions yet." />;
@@ -109,11 +109,11 @@ function SubscriptionListState({
   return (
     <>
       {activeSubscriptions.length ? (
-        activeSubscriptions.map(({ subscription, index }) => (
+        activeSubscriptions.map(({ subscription, key }) => (
           <SubscriptionCard
-            key={`${subscription.rss}-${index}`}
+            key={key}
             subscription={subscription}
-            index={index}
+            subscriptionKey={key}
             onDelete={onDelete}
             onUpdate={onUpdate}
           />
@@ -148,11 +148,11 @@ function SubscriptionListState({
 
           {showArchived ? (
             <div className="grid gap-3 border-t border-slate-800/80 bg-slate-950/36 p-3">
-              {archivedSubscriptions.map(({ subscription, index }) => (
+              {archivedSubscriptions.map(({ subscription, key }) => (
                 <SubscriptionCard
-                  key={`${subscription.rss}-${index}`}
+                  key={key}
                   subscription={subscription}
-                  index={index}
+                  subscriptionKey={key}
                   onDelete={onDelete}
                   onUpdate={onUpdate}
                 />
@@ -165,10 +165,7 @@ function SubscriptionListState({
   );
 }
 
-function filterSubscriptions(
-  subscriptions: Array<{ subscription: SubscriptionConfig; index: number }>,
-  filter: string,
-) {
+function filterSubscriptions(subscriptions: Array<{ subscription: SubscriptionConfig; key: string }>, filter: string) {
   const keyword = filter.trim().toLowerCase();
   if (!keyword) return subscriptions;
 

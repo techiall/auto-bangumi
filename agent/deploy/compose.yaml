@@ -1,7 +1,7 @@
 services:
   agent:
     build:
-      context: ../../..
+      context: ../..
       dockerfile: docker/agent.Dockerfile
     environment:
       DOWNLOAD_SERVER_URL: ${DOWNLOAD_SERVER_URL}

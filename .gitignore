@@ -10,9 +10,10 @@ yarn-debug.log*
 yarn-error.log*
 /.env
 /.env.local
-deploy/split/server/.env
-deploy/split/server/db/
-deploy/split/agent/.env
+agent/.env
+deploy/server/.env
+deploy/server/db/
+agent/deploy/.env
 
 # TypeScript
 *.tsbuildinfo
@@ -25,7 +26,7 @@ logs/
 db/*.sqlite
 db/*.sqlite-*
 library/
-deploy/split/agent/library/
+agent/deploy/library/
 
 # OS
 .DS_Store

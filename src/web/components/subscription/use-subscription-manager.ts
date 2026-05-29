@@ -54,7 +54,7 @@ export function useSubscriptionManager() {
   );
 
   const displayedSubscriptions = useMemo(
-    () => (config?.subscriptions ?? []).map((subscription, index) => ({ subscription, index })).reverse(),
+    () => (config?.subscriptions ?? []).map((subscription) => ({ subscription, key: subscription.rss })).reverse(),
     [config],
   );
 
@@ -141,18 +141,18 @@ export function useSubscriptionManager() {
     }
   }
 
-  async function handleDelete(index: number) {
+  async function handleDelete(rss: string) {
     try {
-      setConfig(await deleteSeason(index));
+      setConfig(await deleteSeason(rss));
       showNotice('Subscription removed.', 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
     }
   }
 
-  async function handleUpdate(index: number, payload: UpdateSeasonPayload) {
+  async function handleUpdate(rss: string, payload: UpdateSeasonPayload) {
     try {
-      setConfig(await updateSeason(index, payload));
+      setConfig(await updateSeason(rss, payload));
       showNotice('Subscription updated.', 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');

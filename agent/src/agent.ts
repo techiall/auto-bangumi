@@ -62,12 +62,26 @@ class MoveAgent {
 
   private async moveJob(job: MoverJob) {
     const targetPath = safeJoin(this.libraryRoot, job.targetRelativePath);
+    const temporaryPath = `${targetPath}.part-${process.pid}`;
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
 
-    const response = await fetchWithRetry(job.sourceUrl, { headers: job.sourceHeaders ?? {} });
-    if (!response.body) throw new Error(`Source returned an empty body: ${job.sourceUrl}`);
+    const sourceUrl = new URL(job.sourceUrl, this.downloadServerUrl);
+    const response = await fetchWithRetry(sourceUrl, {
+      headers: {
+        ...this.authorizationHeaders(),
+        ...(job.sourceHeaders ?? {}),
+      },
+    });
+    if (!response.body) throw new Error(`Source returned an empty body: ${sourceUrl.toString()}`);
 
-    await pipeline(Readable.fromWeb(response.body as ReadableStream), createWriteStream(targetPath));
+    try {
+      await pipeline(Readable.fromWeb(response.body as ReadableStream), createWriteStream(temporaryPath));
+      await fs.rename(temporaryPath, targetPath);
+    } catch (error) {
+      await fs.rm(temporaryPath, { force: true });
+      throw error;
+    }
+
     const displayTargetPath = this.displayPath(job.targetRelativePath);
     await this.request(`/api/mover/jobs/${job.id}/complete`, {
       method: 'POST',
@@ -90,7 +104,7 @@ class MoveAgent {
       ...init,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.token}`,
+        ...this.authorizationHeaders(),
         ...(init.headers ?? {}),
       },
     });
@@ -111,6 +125,12 @@ class MoveAgent {
     }
 
     return safeJoin(this.libraryDisplayRoot, normalized);
+  }
+
+  private authorizationHeaders() {
+    return {
+      Authorization: `Bearer ${this.token}`,
+    };
   }
 }
 

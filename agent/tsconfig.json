@@ -4,7 +4,7 @@
     "lib": ["ES2024"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "./dist",
     "types": ["node"],
     "strict": true,
@@ -15,5 +15,5 @@
     "sourceMap": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["*.ts"]
+  "include": ["src/**/*.ts"]
 }

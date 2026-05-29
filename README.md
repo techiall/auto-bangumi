@@ -104,6 +104,7 @@ Install dependencies:
 npm install
 npm --prefix agent install
 cp .env.example .env
+cp agent/.env.example agent/.env
 ```
 
 Start the server and web UI for development:
@@ -123,21 +124,19 @@ Run a local library agent after building:
 
 ```bash
 cd agent
-export DOWNLOAD_SERVER_URL=http://localhost:3001
-export LIBRARY_CONTAINER_ROOT=D:/Media/Bangumi
 node dist/agent.js
 ```
 
 In Docker, `server` starts RSS polling and move-job sync automatically. The downloads page receives progress over WebSocket, and each state refresh also asks the server to refresh move jobs so completed items become available to the agent promptly.
 
-For split-machine deployment, see `deploy/split/README.md`.
+For split-machine deployment, see `deploy/README.md`.
 
 Build everything:
 
 ```bash
 npm run build
 npm run build:web
-npm --prefix agent run build
+npm --prefix agent run check
 ```
 
 ## State

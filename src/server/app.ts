@@ -1,5 +1,8 @@
 import express from 'express';
 import { timingSafeEqual } from 'node:crypto';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import type { ReadableStream } from 'node:stream/web';
 import { logger } from './config/logger.js';
 import { getBangumiDetail, searchBangumi } from './mikan/api.js';
 import { DownloadService } from './downloads.js';
@@ -77,6 +80,27 @@ export function createApp(options: AppOptions = {}) {
     moverJobs.complete(request.params.hash, request.body).then((result) => response.json(result), next);
   });
 
+  app.get('/api/mover/jobs/:hash/source', async (request, response, next) => {
+    if (!isAuthorizedMoverRequest(request, moverToken)) {
+      response.status(401).json({ message: 'Unauthorized mover request.' });
+      return;
+    }
+
+    try {
+      const source = await moverJobs.openSource(request.params.hash);
+      if (!source.body) throw new HttpError(502, 'Download source returned an empty body.');
+
+      const contentType = source.headers.get('content-type');
+      const contentLength = source.headers.get('content-length');
+      if (contentType) response.setHeader('content-type', contentType);
+      if (contentLength) response.setHeader('content-length', contentLength);
+
+      await pipeline(Readable.fromWeb(source.body as ReadableStream), response);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.post('/api/mover/jobs/:hash/fail', (request, response, next) => {
     if (!isAuthorizedMoverRequest(request, moverToken)) {
       response.status(401).json({ message: 'Unauthorized mover request.' });
@@ -99,14 +123,12 @@ export function createApp(options: AppOptions = {}) {
     });
   });
 
-  app.patch('/api/seasons/:index', async (request, response) => {
-    const index = Number(request.params.index);
-    response.json(await subscriptions.update(index, request.body));
+  app.patch('/api/seasons/:rss', async (request, response) => {
+    response.json(await subscriptions.update(request.params.rss, request.body));
   });
 
-  app.delete('/api/seasons/:index', async (request, response) => {
-    const index = Number(request.params.index);
-    response.json(await subscriptions.delete(index));
+  app.delete('/api/seasons/:rss', async (request, response) => {
+    response.json(await subscriptions.delete(request.params.rss));
   });
 
   app.use(

@@ -9,9 +9,11 @@ This repository has two runtime parts:
 
 - Default compose startup should need only `cp .env.example .env` before `docker compose up -d --build`.
 - `.env.example` must be safe to copy directly to `.env` for single-machine Docker startup.
+- `agent/.env.example` must be safe to copy directly to `agent/.env` for local agent runs.
 - `MOVER_API_TOKEN` must not be exposed to the browser; default compose can use the built-in local fallback because the server API is not published.
 - `/api/config` must not return qBittorrent credentials or other server-side secrets.
-- Keep advanced qB/server and agent split-machine overrides under `deploy/split/`.
+- Keep advanced download-server split-machine overrides under `deploy/server/`.
+- Keep advanced library-agent split-machine overrides under `agent/deploy/`.
 - Treat `db/state.sqlite` as runtime state only.
 - Treat `db/state.sqlite` as the source of truth for subscriptions and download state.
 - Do not add runtime compatibility for legacy `db/db.json` or `config/config.yaml` formats.
@@ -24,22 +26,23 @@ This repository has two runtime parts:
 
 - `src/server/config/app-config.ts`: server config loader and qBittorrent defaults.
 - `src/server/config/env.ts`: dotenv loader for download-side server env.
-- `agent/env.ts`: dotenv loader for library-side agent env.
+- `agent/src/env.ts`: dotenv loader for library-side agent env.
+- `agent/.env.example`: local library-agent env example.
 - `src/web/`: React + TanStack Start web UI and web-side API proxy.
 - `src/server/state/db.ts`: SQLite state store.
 - `src/server/tasks/download-task.ts`: RSS polling and qB add logic.
 - `src/server/`: download-side API, RSS refresh endpoint, download status, and move-job queue.
-- `agent/agent.ts`: library-side mover that claims move jobs and writes files to `/library`.
+- `agent/src/agent.ts`: library-side mover that claims move jobs and writes files to `/library`.
 - `src/server/move-job-sync.ts`: move-job sync and qB cleanup after successful agent reports.
 - `src/server/files/file-transfer.ts`: qB bundled file-server URL creation and HTTP streaming.
 - `src/server/qbittorrent/api.ts`: qBittorrent API wrapper.
 - `src/server/mikan/`: Mikan search, RSS parsing, and episode parsing.
 - `compose.yaml`: runtime services.
-- `deploy/split/server/compose.yaml`: download-side split-machine services.
-- `deploy/split/server/.env.example`: download-side split-machine env example.
-- `deploy/split/agent/compose.yaml`: library-side split-machine agent.
-- `deploy/split/agent/.env.example`: library-side split-machine env example.
-- `deploy/split/README.md`: split-machine deployment guide.
+- `deploy/server/compose.yaml`: download-side split-machine services.
+- `deploy/server/.env.example`: download-side split-machine env example.
+- `agent/deploy/compose.yaml`: library-side split-machine agent.
+- `agent/deploy/.env.example`: library-side split-machine env example.
+- `deploy/README.md`: split-machine deployment guide.
 - `docker/app.Dockerfile`: combined download-side server and web image.
 - `docker/agent.Dockerfile`: library-side agent image.
 - `docker/qbittorrent.Dockerfile`: custom qBittorrent plus internal download file server image.
@@ -104,7 +107,7 @@ Run these after meaningful server, agent, web, Docker, config, or db changes:
 ```bash
 npm run build
 npm run build:web
-npm --prefix agent run build
+npm --prefix agent run check
 docker compose config
 docker compose build qbittorrent server agent
 ```

@@ -9,14 +9,14 @@ Do this only on a trusted LAN or VPN. Do not publish qBittorrent or the internal
 The download server runs qBittorrent and the combined server/web app. qBittorrent uses the project defaults from the custom image.
 
 ```bash
-cd deploy/split/server
+cd deploy/server
 cp .env.example .env
 ```
 
 Edit `.env`:
 
 ```env
-MOVER_API_TOKEN=replace-with-a-long-random-token
+MOVER_API_TOKEN=z2HRn3D4ZvcmK27VJ32qAT8M1PV7VMSbOow7OpuKqV4
 SERVER_API_BIND=127.0.0.1
 ```
 
@@ -36,23 +36,23 @@ docker compose up -d --build
 
 The web UI listens on `http://localhost:3000`. The mover API listens on `SERVER_API_BIND:3001`.
 
-The split download server stores its SQLite state in `deploy/split/server/db/`, separate from the root single-machine `db/` folder.
+The split download server stores its SQLite state in `deploy/server/db/`, separate from the root single-machine `db/` folder.
 
-If you want to open the web UI from another machine, change the `3000` port binding in `deploy/split/server/compose.yaml` from `127.0.0.1:3000:3000` to a private LAN/VPN address.
+If you want to open the web UI from another machine, change the `3000` port binding in `deploy/server/compose.yaml` from `127.0.0.1:3000:3000` to a private LAN/VPN address.
 
 ## Library Agent
 
 The library agent runs near the media library and pulls completed files from the download server.
 
 ```bash
-cd deploy/split/agent
+cd agent/deploy
 cp .env.example .env
 ```
 
 Edit `.env`:
 
 ```env
-MOVER_API_TOKEN=replace-with-the-download-server-token
+MOVER_API_TOKEN=z2HRn3D4ZvcmK27VJ32qAT8M1PV7VMSbOow7OpuKqV4
 DOWNLOAD_SERVER_URL=http://download-server:3001
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```

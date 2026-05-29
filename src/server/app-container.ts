@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 import { logger } from './config/logger.js';
 
 interface ChildProcessConfig {
@@ -8,7 +8,7 @@ interface ChildProcessConfig {
   env?: NodeJS.ProcessEnv;
 }
 
-const children = [
+const children: ChildProcess[] = [
   startChild({
     name: 'server',
     command: 'node',
@@ -30,10 +30,11 @@ const children = [
 ];
 
 let shuttingDown = false;
+let shutdownTimer: NodeJS.Timeout | undefined;
 
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
   process.on(signal, () => {
-    shutdown(signal);
+    shutdown(signal, 0);
   });
 }
 
@@ -49,21 +50,48 @@ function startChild(config: ChildProcessConfig) {
   child.stdout?.on('data', (data: Buffer) => writeChildOutput(config.name, data));
   child.stderr?.on('data', (data: Buffer) => writeChildOutput(config.name, data));
   child.on('exit', (code, signal) => {
-    if (shuttingDown) return;
+    if (shuttingDown) {
+      exitWhenChildrenStopped();
+      return;
+    }
 
     logger.error(`${config.name} exited unexpectedly${formatExit(code, signal)}`);
-    shutdown('SIGTERM');
-    process.exitCode = code ?? 1;
+    shutdown('SIGTERM', code ?? 1);
+  });
+
+  child.on('error', (error) => {
+    logger.error(`${config.name} failed to start: ${error.message}`);
+    shutdown('SIGTERM', 1);
   });
 
   return child;
 }
 
-function shutdown(signal: NodeJS.Signals) {
+function shutdown(signal: NodeJS.Signals, exitCode: number) {
+  process.exitCode = exitCode;
+  if (shuttingDown) return;
+
   shuttingDown = true;
   for (const child of children) {
-    if (!child.killed) child.kill(signal);
+    if (isRunning(child)) child.kill(signal);
   }
+
+  shutdownTimer = setTimeout(() => {
+    process.exit(process.exitCode ?? exitCode);
+  }, 5_000);
+  shutdownTimer.unref();
+  exitWhenChildrenStopped();
+}
+
+function exitWhenChildrenStopped() {
+  if (!children.every((child) => !isRunning(child))) return;
+
+  if (shutdownTimer) clearTimeout(shutdownTimer);
+  process.exit(process.exitCode ?? 0);
+}
+
+function isRunning(child: ChildProcess) {
+  return child.exitCode === null && child.signalCode === null && !child.killed;
 }
 
 function writeChildOutput(name: string, data: Buffer) {

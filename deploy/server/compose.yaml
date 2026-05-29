@@ -1,7 +1,7 @@
 services:
   qbittorrent:
     build:
-      context: ../../..
+      context: ../..
       dockerfile: docker/qbittorrent.Dockerfile
     volumes:
       - qbittorrent-config:/config
@@ -10,7 +10,7 @@ services:
 
   server:
     build:
-      context: ../../..
+      context: ../..
       dockerfile: docker/app.Dockerfile
     init: true
     depends_on:

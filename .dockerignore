@@ -8,6 +8,10 @@ renovate.json
 
 .gitignore
 .git
+.env
+.env.*
+agent/.env
+agent/.env.*
 
 node_modules
 agent/node_modules
