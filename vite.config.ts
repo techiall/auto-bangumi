@@ -8,15 +8,15 @@ export default defineConfig({
   root: '.',
   publicDir: 'src/web/public',
   server: {
-    port: 3001,
+    port: 3000,
     strictPort: true,
     proxy: {
       '/api/downloads/ws': {
-        target: 'ws://127.0.0.1:3000',
+        target: 'ws://127.0.0.1:3001',
         ws: true,
       },
       '/api': {
-        target: 'http://127.0.0.1:3000',
+        target: 'http://127.0.0.1:3001',
         changeOrigin: true,
       },
     },
