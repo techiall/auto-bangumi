@@ -1,4 +1,5 @@
 import './env.js';
+import { randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createWriteStream } from 'node:fs';
@@ -55,33 +56,37 @@ class MoveAgent {
 
   private async moveJob(job: MoverJob) {
     const targetPath = safeJoin(this.config.libraryRoot, job.targetRelativePath);
-    const temporaryPath = `${targetPath}.part-${process.pid}`;
-    await fs.mkdir(path.dirname(targetPath), { recursive: true });
-
-    const sourceUrl = new URL(job.sourceUrl, this.config.downloadServerUrl);
-    const response = await fetchWithRetry(
-      sourceUrl,
-      {
-        headers: {
-          ...this.authorizationHeaders(),
-          ...(job.sourceHeaders ?? {}),
-        },
-      },
-      2,
-      1000,
-      this.config.transferTimeoutMs,
-    );
-    if (!response.body) throw new Error(`Source returned an empty body: ${sourceUrl.toString()}`);
-
-    const contentLength = Number(response.headers.get('content-length'));
-    const progress = new MoveProgress(job, Number.isFinite(contentLength) && contentLength > 0 ? contentLength : 0);
-    logger.info(`Moving ${formatJob(job)} to ${this.displayPath(job.targetRelativePath)}`);
+    const targetDirectory = path.dirname(targetPath);
+    const temporaryPath = createTemporaryPath(targetPath);
+    const displayTargetPath = this.displayPath(job.targetRelativePath);
 
     try {
+      await fs.mkdir(targetDirectory, { recursive: true });
+      await cleanupTemporaryFiles(targetPath);
+
+      const sourceUrl = new URL(job.sourceUrl, this.config.downloadServerUrl);
+      const response = await fetchWithRetry(
+        sourceUrl,
+        {
+          headers: {
+            ...this.authorizationHeaders(),
+            ...(job.sourceHeaders ?? {}),
+          },
+        },
+        2,
+        1000,
+        this.config.transferTimeoutMs,
+      );
+      if (!response.body) throw new Error(`Source returned an empty body: ${sourceUrl.toString()}`);
+
+      const contentLength = Number(response.headers.get('content-length'));
+      const progress = new MoveProgress(job, Number.isFinite(contentLength) && contentLength > 0 ? contentLength : 0);
+      logger.info(`Moving ${formatJob(job)} to ${displayTargetPath}`);
+
       await pipeline(
         Readable.fromWeb(response.body as ReadableStream),
         progress.stream(),
-        createWriteStream(temporaryPath),
+        createWriteStream(temporaryPath, { flags: 'wx', mode: 0o644 }),
         {
           signal: AbortSignal.timeout(this.config.transferTimeoutMs),
         },
@@ -90,10 +95,9 @@ class MoveAgent {
       await fs.rename(temporaryPath, targetPath);
     } catch (error) {
       await fs.rm(temporaryPath, { force: true });
-      throw error;
+      throw withWritableLibraryHint(error, displayTargetPath);
     }
 
-    const displayTargetPath = this.displayPath(job.targetRelativePath);
     await this.request(`/api/mover/jobs/${job.id}/complete`, {
       method: 'POST',
       body: JSON.stringify({ targetPath, displayTargetPath }),
@@ -161,6 +165,42 @@ function safeJoin(root: string, relativePath: string) {
   }
 
   return target;
+}
+
+function createTemporaryPath(targetPath: string) {
+  const uniqueSuffix = `${process.pid}-${Date.now()}-${randomUUID().slice(0, 8)}`;
+  return `${targetPath}.part-${uniqueSuffix}`;
+}
+
+async function cleanupTemporaryFiles(targetPath: string) {
+  const targetDirectory = path.dirname(targetPath);
+  const targetFileName = path.basename(targetPath);
+  const entries = await fs.readdir(targetDirectory).catch((error: NodeJS.ErrnoException) => {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  });
+
+  await Promise.all(
+    entries
+      .filter((entry) => entry.startsWith(`${targetFileName}.part-`))
+      .map(async (entry) => {
+        const temporaryPath = path.join(targetDirectory, entry);
+        await fs.rm(temporaryPath, { force: true }).catch((error: unknown) => {
+          logger.warn(`Failed to remove stale temporary file ${temporaryPath}: ${(error as Error).message}`);
+        });
+      }),
+  );
+}
+
+function withWritableLibraryHint(error: unknown, displayTargetPath: string) {
+  if (!(error instanceof Error)) return error;
+
+  const code = (error as NodeJS.ErrnoException).code;
+  if (code !== 'EACCES' && code !== 'EPERM') return error;
+
+  return new Error(
+    `${error.message}. The library mount is not writable for the mover agent. Check the host folder permissions for ${displayTargetPath}.`,
+  );
 }
 
 class MoveProgress {

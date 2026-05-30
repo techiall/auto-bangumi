@@ -19,6 +19,4 @@ COPY --from=builder /usr/src/app/agent/package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 COPY --from=builder /usr/src/app/agent/dist ./dist
 
-USER node
-
 CMD ["node", "dist/agent.js"]
