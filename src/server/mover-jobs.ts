@@ -1,9 +1,8 @@
 import { loadConfig } from './config/app-config.js';
-import { logger } from './config/logger.js';
 import { buildFileServerUrl, fileServerAuthorizationHeaders, pickDownloadedFile } from './files/file-transfer.js';
 import { createLibraryTargetRelativePath } from './library/library-path.js';
 import { QBittorrentApi } from './qbittorrent/api.js';
-import { completeEpisode, markQbittorrentRemoved, withDb } from './state/db.js';
+import { completeEpisode, withDb } from './state/db.js';
 import type { AppDb, MoveJob, MoveJobRecord } from './state/db.js';
 import { resolveActiveEpisodeMetadata } from './state/episode-metadata.js';
 import { HttpError } from './http-error.js';
@@ -51,8 +50,7 @@ export class MoverJobService {
   }
 
   async complete(hash: string, payload: unknown) {
-    const config = await loadConfig(this.dbPath);
-    const result = await withDb(this.dbPath, async (db) => {
+    return withDb(this.dbPath, async (db) => {
       const job = this.findJob(db, hash);
       const targetPath = parseDisplayTargetPath(payload) || job.targetRelativePath;
 
@@ -60,19 +58,6 @@ export class MoverJobService {
       await db.write();
       return { ok: true };
     });
-
-    const api = new QBittorrentApi(config.qbittorrent);
-    try {
-      await api.removeTorrent(hash, true);
-      await withDb(this.dbPath, async (db) => {
-        markQbittorrentRemoved(db.data, hash);
-        await db.write();
-      });
-    } catch (error) {
-      logger.warn(`Moved ${hash}, but failed to remove qBittorrent source files: ${(error as Error).message}`);
-    }
-
-    return result;
   }
 
   async fail(hash: string, payload: unknown) {

@@ -160,7 +160,7 @@ export class QBittorrentApi {
         return this.state === TorrentState.seeding;
       },
       canCleanupDownloadedFiles(): boolean {
-        return this.state === TorrentState.seeding || ['pausedUP', 'stoppedUP'].includes(rawState);
+        return ['pausedUP', 'stoppedUP'].includes(rawState);
       },
     };
   }
