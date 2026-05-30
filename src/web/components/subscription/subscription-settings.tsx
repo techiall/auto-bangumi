@@ -49,7 +49,7 @@ export function SubscriptionSettings({
 
   return (
     <form
-      className="grid gap-4 rounded-2xl border border-cyan-800/70 bg-slate-950/82 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_16px_44px_rgba(8,145,178,0.1)]"
+      className="grid min-w-0 gap-4 overflow-hidden rounded-2xl border border-cyan-800/70 bg-slate-950/82 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_16px_44px_rgba(8,145,178,0.1)]"
       onSubmit={onSubmit}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
@@ -81,9 +81,9 @@ export function SubscriptionSettings({
       ) : null}
 
       <div className="grid gap-5">
-        <section className="space-y-3">
+        <section className="min-w-0 space-y-3">
           <div className="text-sm font-medium text-slate-100">Subtitle Group</div>
-          <div className="grid max-h-72 gap-2 overflow-y-auto pr-1 md:grid-cols-2">
+          <div className="grid max-h-72 min-w-0 grid-cols-[repeat(auto-fit,minmax(min(17rem,100%),1fr))] gap-2 overflow-x-hidden overflow-y-auto pr-1">
             {bangumi.groups.length ? (
               bangumi.groups.map((group) => (
                 <GroupOption
@@ -102,7 +102,7 @@ export function SubscriptionSettings({
           </div>
         </section>
 
-        <section className="space-y-4">
+        <section className="min-w-0 space-y-4">
           <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_8rem]">
             <Field id={titleId} label="Title">
               <Input
@@ -123,7 +123,7 @@ export function SubscriptionSettings({
             </Field>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
             <Field id={folderId} label="Folder">
               <Input
                 id={folderId}
@@ -144,12 +144,12 @@ export function SubscriptionSettings({
             </Field>
           </div>
 
-          <div className="flex flex-wrap justify-end gap-2">
-            <Button type="button" variant="outline" size="lg" className="w-fit" onClick={onCancel}>
+          <div className="grid gap-2 sm:flex sm:flex-wrap sm:justify-end">
+            <Button type="button" variant="outline" size="lg" className="w-full sm:w-fit" onClick={onCancel}>
               <X className="mr-2 size-4" />
               Cancel
             </Button>
-            <Button type="submit" size="lg" className="w-fit" disabled={isSubmitting}>
+            <Button type="submit" size="lg" className="w-full sm:w-fit" disabled={isSubmitting}>
               {isSubmitting ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
               Save
             </Button>

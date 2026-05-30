@@ -11,7 +11,7 @@ export function SubscriptionsPage() {
     <>
       {manager.notice && !manager.selectedBangumi ? <NoticeBanner notice={manager.notice} /> : null}
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(21rem,0.88fr)_minmax(27rem,1.12fr)] xl:items-start">
+      <div className="grid min-w-0 gap-5 2xl:grid-cols-[minmax(0,1fr)_minmax(26rem,0.9fr)] 2xl:items-start">
         <SearchPanel
           query={manager.query}
           results={manager.results}
@@ -42,7 +42,7 @@ export function SubscriptionsPage() {
           onClearSelection={manager.clearSelection}
         />
 
-        <div className="xl:sticky xl:top-5">
+        <div className="min-w-0 2xl:sticky 2xl:top-5">
           <CurrentSubscriptions
             subscriptions={manager.displayedSubscriptions}
             isLoading={manager.isConfigLoading}

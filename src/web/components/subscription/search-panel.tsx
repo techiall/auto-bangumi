@@ -37,7 +37,7 @@ export function SearchPanel({
   onClearSelection,
 }: SearchPanelProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="min-w-0 overflow-hidden">
       <div className="sticky top-0 z-10 border-b border-slate-800/80 bg-slate-950/88 p-4 backdrop-blur md:p-5">
         <CardHeader className="mb-3 flex-col sm:flex-row sm:items-start md:mb-4">
           <div className="flex min-w-0 items-center gap-3">
@@ -52,12 +52,12 @@ export function SearchPanel({
           ) : null}
         </CardHeader>
         <form
-          className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] 2xl:grid-cols-[minmax(0,1fr)_auto_auto]"
+          className="grid min-w-0 gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto]"
           onSubmit={(event) => {
             event.preventDefault();
             onSearch();
           }}>
-          <div className="relative">
+          <div className="relative min-w-0">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <Input
               value={query}
@@ -66,7 +66,7 @@ export function SearchPanel({
               className="pl-9"
             />
           </div>
-          <Button type="submit" disabled={isSearchLoading || isBrowseLoading}>
+          <Button type="submit" className="w-full md:w-auto" disabled={isSearchLoading || isBrowseLoading}>
             {isSearchLoading ? (
               <LoaderCircle className="mr-2 size-4 animate-spin" />
             ) : (
@@ -77,7 +77,7 @@ export function SearchPanel({
           <Button
             variant="outline"
             type="button"
-            className="lg:col-span-2 2xl:col-span-1"
+            className="w-full md:w-auto"
             onClick={onBrowse}
             disabled={isSearchLoading || isBrowseLoading}>
             {isBrowseLoading ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : null}
@@ -89,7 +89,7 @@ export function SearchPanel({
       <CardContent className={cn(results.length || selectedBangumiId ? 'p-4 md:p-5' : 'p-3 md:p-4')}>
         <div
           className={cn(
-            'overflow-y-auto pr-1',
+            'min-w-0 overflow-x-hidden overflow-y-auto pr-1',
             results.length || selectedBangumiId
               ? 'min-h-[24rem] md:min-h-[30rem] xl:min-h-[calc(100vh-13.5rem)]'
               : 'min-h-0',
@@ -100,16 +100,16 @@ export function SearchPanel({
                 : 'max-h-none',
           )}>
           {results.length ? (
-            <div className="grid gap-3">
+            <div className="grid min-w-0 gap-3">
               {results.map((item) => (
-                <div key={item.id} className="grid gap-3">
+                <div key={item.id} className="grid min-w-0 gap-3">
                   <SearchResultItem
                     item={item}
                     active={selectedBangumiId === item.id}
                     loading={loadingBangumiId === item.id}
                     onChoose={() => onChoose(item)}
                   />
-                  {selectedBangumiId === item.id && settingsSlot ? <div>{settingsSlot}</div> : null}
+                  {selectedBangumiId === item.id && settingsSlot ? <div className="min-w-0">{settingsSlot}</div> : null}
                 </div>
               ))}
             </div>
@@ -140,7 +140,7 @@ function SearchResultItem({
   return (
     <div
       className={cn(
-        'cursor-pointer rounded-2xl border px-4 py-3 transition-colors',
+        'min-w-0 cursor-pointer rounded-2xl border px-4 py-3 transition-colors',
         '[contain-intrinsic-size:4rem] [content-visibility:auto]',
         active
           ? 'border-cyan-500/90 bg-cyan-950/64 shadow-[0_0_0_1px_rgba(34,211,238,0.18)]'
@@ -155,7 +155,7 @@ function SearchResultItem({
           onChoose();
         }
       }}>
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <a
             href={item.url}

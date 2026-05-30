@@ -2,14 +2,14 @@ import './env.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createWriteStream } from 'node:fs';
-import { Readable } from 'node:stream';
+import { Readable, Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import type { ReadableStream } from 'node:stream/web';
 import { pathToFileURL } from 'node:url';
 import { basicAuthorizationHeader } from './auth.js';
 import { loadAgentConfig } from './config.js';
 import { fetchWithRetry } from './fetch-with-retry.js';
-import { formatInterval } from './format.js';
+import { formatBytes, formatInterval } from './format.js';
 import { logger } from './logger.js';
 import { runRecurringTask } from './task-runner.js';
 import type { AgentConfig, ClaimedJobs, MoverJob } from './types.js';
@@ -69,14 +69,24 @@ class MoveAgent {
       },
       2,
       1000,
-      this.config.apiTimeoutMs,
+      this.config.transferTimeoutMs,
     );
     if (!response.body) throw new Error(`Source returned an empty body: ${sourceUrl.toString()}`);
 
+    const contentLength = Number(response.headers.get('content-length'));
+    const progress = new MoveProgress(job, Number.isFinite(contentLength) && contentLength > 0 ? contentLength : 0);
+    logger.info(`Moving ${formatJob(job)} to ${this.displayPath(job.targetRelativePath)}`);
+
     try {
-      await pipeline(Readable.fromWeb(response.body as ReadableStream), createWriteStream(temporaryPath), {
-        signal: AbortSignal.timeout(this.config.transferTimeoutMs),
-      });
+      await pipeline(
+        Readable.fromWeb(response.body as ReadableStream),
+        progress.stream(),
+        createWriteStream(temporaryPath),
+        {
+          signal: AbortSignal.timeout(this.config.transferTimeoutMs),
+        },
+      );
+      progress.finish();
       await fs.rename(temporaryPath, targetPath);
     } catch (error) {
       await fs.rm(temporaryPath, { force: true });
@@ -151,6 +161,50 @@ function safeJoin(root: string, relativePath: string) {
   }
 
   return target;
+}
+
+class MoveProgress {
+  private readonly startedAt = Date.now();
+  private lastLoggedAt = this.startedAt;
+  private transferredBytes = 0;
+
+  constructor(
+    private readonly job: MoverJob,
+    private readonly totalBytes: number,
+  ) {}
+
+  stream() {
+    return new Transform({
+      transform: (chunk: Buffer, _encoding, callback) => {
+        this.transferredBytes += chunk.length;
+        this.log(false);
+        callback(null, chunk);
+      },
+    });
+  }
+
+  finish() {
+    this.log(true);
+  }
+
+  private log(force: boolean) {
+    const now = Date.now();
+    if (!force && now - this.lastLoggedAt < 5_000) return;
+
+    this.lastLoggedAt = now;
+    const elapsedSeconds = Math.max((now - this.startedAt) / 1000, 0.001);
+    const speed = this.transferredBytes / elapsedSeconds;
+    const percent =
+      this.totalBytes > 0 ? `${Math.min(100, (this.transferredBytes / this.totalBytes) * 100).toFixed(0)}% · ` : '';
+    const total = this.totalBytes > 0 ? ` / ${formatBytes(this.totalBytes)}` : '';
+    logger.info(
+      `Moving ${formatJob(this.job)} ${percent}${formatBytes(this.transferredBytes)}${total} · ${formatBytes(speed)}/s`,
+    );
+  }
+}
+
+function formatJob(job: MoverJob) {
+  return `${job.title} S${job.season}E${job.episode}`;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

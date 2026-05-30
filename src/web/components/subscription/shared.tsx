@@ -25,7 +25,7 @@ export function GroupOption({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors',
+        'flex min-w-0 items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors',
         active ? 'border-cyan-500 bg-cyan-950/70' : 'border-slate-800 bg-slate-900/54 hover:bg-slate-900',
       )}>
       <button type="button" onClick={onClick} className="min-w-0 flex-1 text-left">
