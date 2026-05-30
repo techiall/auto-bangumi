@@ -2,6 +2,7 @@ import type express from 'express';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import type { ReadableStream } from 'node:stream/web';
+import { logger } from '../config/logger.js';
 import { HttpError } from '../http-error.js';
 import { MoverJobService } from '../mover-jobs.js';
 
@@ -33,6 +34,11 @@ export function registerMoverRoutes(app: express.Express, moverJobs: MoverJobSer
 
       await pipeline(Readable.fromWeb(source.body as ReadableStream), response);
     } catch (error) {
+      if (response.headersSent) {
+        logger.warn(`Move source stream ended early for ${request.params.hash}: ${(error as Error).message}`);
+        return;
+      }
+
       next(error);
     }
   });

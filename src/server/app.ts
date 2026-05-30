@@ -90,6 +90,8 @@ function apiErrorHandler(
   response: express.Response,
   _next: express.NextFunction,
 ) {
+  if (response.headersSent) return;
+
   const message = error instanceof Error ? error.message : 'Unknown error';
   const status = error instanceof HttpError ? error.status : 500;
   response.status(status).json({ message });
