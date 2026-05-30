@@ -86,13 +86,18 @@ export function SearchPanel({
         </form>
       </div>
 
-      <CardContent className="p-4 md:p-5">
+      <CardContent className={cn(results.length || selectedBangumiId ? 'p-4 md:p-5' : 'p-3 md:p-4')}>
         <div
           className={cn(
-            'min-h-[30rem] overflow-y-auto pr-1 md:min-h-[36rem] xl:min-h-[calc(100vh-13.5rem)]',
+            'overflow-y-auto pr-1',
+            results.length || selectedBangumiId
+              ? 'min-h-[24rem] md:min-h-[30rem] xl:min-h-[calc(100vh-13.5rem)]'
+              : 'min-h-0',
             selectedBangumiId
               ? 'max-h-[48rem] md:max-h-[58rem] xl:max-h-[calc(100vh-13.5rem)]'
-              : 'max-h-[36rem] md:max-h-[46rem] xl:max-h-[calc(100vh-13.5rem)]',
+              : results.length
+                ? 'max-h-[36rem] md:max-h-[46rem] xl:max-h-[calc(100vh-13.5rem)]'
+                : 'max-h-none',
           )}>
           {results.length ? (
             <div className="grid gap-3">
@@ -110,7 +115,7 @@ export function SearchPanel({
             </div>
           ) : (
             <div
-              className="grid min-h-[20rem] place-items-center rounded-2xl border border-dashed border-slate-800/80 bg-slate-950/34 px-6"
+              className="grid min-h-24 place-items-center rounded-2xl border border-dashed border-slate-800/80 bg-slate-950/34 px-6 md:min-h-28"
               aria-label="No search results">
               <Search className="size-6 text-slate-700" aria-hidden="true" />
             </div>

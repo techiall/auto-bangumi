@@ -11,7 +11,7 @@ export function SubscriptionsPage() {
     <>
       {manager.notice && !manager.selectedBangumi ? <NoticeBanner notice={manager.notice} /> : null}
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.08fr)_minmax(25rem,0.92fr)] xl:items-start">
+      <div className="grid gap-5 xl:grid-cols-[minmax(21rem,0.88fr)_minmax(27rem,1.12fr)] xl:items-start">
         <SearchPanel
           query={manager.query}
           results={manager.results}

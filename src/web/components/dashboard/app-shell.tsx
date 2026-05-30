@@ -15,14 +15,21 @@ export function AppShell({ activeTab, children, onTabChange, onLogout }: AppShel
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_32rem),linear-gradient(180deg,#020617,#0f172a_48%,#111827)]">
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-4 overflow-hidden px-3 py-4 sm:px-4 md:px-6 md:py-5">
-        <header className="flex min-w-0 flex-col gap-4 overflow-hidden rounded-3xl border border-slate-800/90 bg-slate-950/72 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur md:flex-row md:items-center md:justify-between md:p-5">
+        <header className="flex min-w-0 flex-col gap-4 overflow-hidden rounded-3xl border border-slate-800/90 bg-slate-950/72 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-5">
           <PageHero />
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex min-w-0 flex-col gap-2 md:items-end">
+            <div className="flex items-center justify-end gap-2 text-xs text-slate-500">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 rounded-full px-2.5 text-xs text-slate-500 hover:text-slate-100"
+                onClick={onLogout}>
+                <LogOut className="h-3.5 w-3.5" />
+                Sign out
+              </Button>
+            </div>
             <PageTabs activeTab={activeTab} onChange={onTabChange} />
-            <Button type="button" variant="ghost" size="sm" onClick={onLogout} title="Sign out">
-              <LogOut className="h-4 w-4" />
-              <span className="sr-only">Sign out</span>
-            </Button>
           </div>
         </header>
         {children}
