@@ -44,6 +44,13 @@ export function createApp(options: AppOptions = {}) {
     response.json(await downloads.state(subscriptionRss ? { subscriptionRss } : undefined));
   });
 
+  app.post('/api/downloads', async (request, response) => {
+    const action = String(request.body?.action ?? '').trim();
+    if (action !== 'retryMove') throw new HttpError(400, 'Unsupported download action.');
+
+    response.json(await moverJobs.retry(readMoveHash(request.body)));
+  });
+
   registerMoverRoutes(app, moverJobs);
 
   app.post('/api/rss/refresh', async (_request, response) => {
@@ -102,4 +109,12 @@ function readRssQuery(request: express.Request) {
   const rss = String(request.query.rss ?? '').trim();
   if (!rss) throw new HttpError(400, 'RSS is required.');
   return rss;
+}
+
+function readMoveHash(body: unknown) {
+  if (!body || typeof body !== 'object') throw new HttpError(400, 'Move hash is required.');
+
+  const hash = String((body as { hash?: unknown }).hash ?? '').trim();
+  if (!hash) throw new HttpError(400, 'Move hash is required.');
+  return hash;
 }

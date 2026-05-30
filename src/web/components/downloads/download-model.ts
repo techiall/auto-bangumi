@@ -12,11 +12,13 @@ export function buildDownloadRows(data: DownloadState): DownloadRow[] {
   const completedHashes = new Set(Object.keys(data.completed));
   const activeRows = Object.entries(data.active)
     .filter(([hash]) => !moveJobHashes.has(hash) && !completedHashes.has(hash))
-    .map(([hash, episode]): DownloadRow => ({
-      ...episode,
-      hash,
-      state: 'active',
-    }));
+    .map(
+      ([hash, episode]): DownloadRow => ({
+        ...episode,
+        hash,
+        state: 'active',
+      }),
+    );
 
   const completedRows = Object.entries(data.completed)
     .map(
@@ -43,12 +45,10 @@ export function buildDownloadRows(data: DownloadState): DownloadRow[] {
 
 export function splitDownloadRows(rows: DownloadRow[]) {
   const attentionRows = rows.filter(isAttentionRow);
-  const activeRows = rows.filter((row) => row.state === 'active' && !isAttentionRow(row) && !isQbSeedingRow(row));
-  const moveJobRows = rows.filter((row): row is MoveJobDownloadRow => row.state === 'moveJob' && !isAttentionRow(row));
+  const moveJobRows = rows.filter(isMovingRow);
   const seedingRows = rows.filter(isSeedingRow);
-  const historyRows = rows.filter(
-    (row): row is CompletedDownloadRow => row.state === 'completed' && !isSeedingRow(row),
-  );
+  const activeRows = rows.filter(isActiveDownloadRow);
+  const historyRows = rows.filter((row): row is CompletedDownloadRow => row.state === 'completed');
 
   return { attentionRows, activeRows, moveJobRows, seedingRows, historyRows };
 }
@@ -57,10 +57,10 @@ export function summarizeDownloadRows(rows: DownloadRow[]): DownloadSummary {
   const qbitItems = rows.filter((item) => item.qbit);
 
   return {
-    activeCount: rows.filter((row) => row.state === 'active' && !isAttentionRow(row) && !isQbSeedingRow(row)).length,
-    moveJobCount: rows.filter((row) => row.state === 'moveJob').length,
+    activeCount: rows.filter(isActiveDownloadRow).length,
+    moveJobCount: rows.filter(isMovingRow).length,
     attentionCount: rows.filter(isAttentionRow).length,
-    completedCount: rows.filter((row) => row.state === 'completed' && !isSeedingRow(row)).length,
+    completedCount: rows.filter((row) => row.state === 'completed').length,
     seedingCount: rows.filter(isSeedingRow).length,
     downloadSpeed: qbitItems.reduce((sum, item) => sum + (item.qbit?.downloadSpeed ?? 0), 0),
     uploadSpeed: qbitItems.reduce((sum, item) => sum + (item.qbit?.uploadSpeed ?? 0), 0),
@@ -95,16 +95,28 @@ export function isAttentionRow(row: DownloadRow) {
   if (row.qbitError) return true;
   if (row.state === 'moveJob' && row.status === 'failed') return true;
   if (row.state === 'active' && !row.qbit) return true;
+  if (row.state === 'moveJob' && !row.qbit) return true;
   return false;
 }
 
-function isSeedingRow(row: DownloadRow) {
-  return !isAttentionRow(row) && isQbSeedingRow(row);
+export function isSeedingRow(row: DownloadRow) {
+  return !isRemovedFromQb(row) && hasQbSeedingStatus(row);
 }
 
-export function isQbSeedingRow(row: DownloadRow) {
+function isMovingRow(row: DownloadRow): row is MoveJobDownloadRow {
+  return row.state === 'moveJob' && row.status === 'moving';
+}
+
+function isActiveDownloadRow(row: DownloadRow) {
+  return row.state === 'active' && Boolean(row.qbit) && !row.qbitError && !isSeedingRow(row);
+}
+
+function isRemovedFromQb(row: DownloadRow) {
+  return row.state === 'completed' && Boolean(row.qbitRemovedAt);
+}
+
+function hasQbSeedingStatus(row: DownloadRow) {
   if (!row.qbit) return false;
-  if (row.state === 'completed' && row.qbitRemovedAt) return false;
 
   const stateText = `${row.qbit.state} ${row.qbit.stateMessage}`.toLowerCase();
   return row.qbit.progress >= 1 || stateText.includes('seed');

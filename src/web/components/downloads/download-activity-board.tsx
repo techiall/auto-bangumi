@@ -15,6 +15,8 @@ interface DownloadActivityBoardProps {
   lastUpdatedAt: Date | null;
   selectedSubscriptionTitle?: string;
   onRefresh: () => void;
+  onRetryMove: (hash: string) => void;
+  retryingMoveHashes: Set<string>;
 }
 
 export function DownloadActivityBoard({
@@ -24,6 +26,8 @@ export function DownloadActivityBoard({
   lastUpdatedAt,
   selectedSubscriptionTitle,
   onRefresh,
+  onRetryMove,
+  retryingMoveHashes,
 }: DownloadActivityBoardProps) {
   const [showHistory, setShowHistory] = useState(false);
   const { attentionRows, activeRows, moveJobRows, seedingRows, historyRows } = splitDownloadRows(rows);
@@ -58,6 +62,8 @@ export function DownloadActivityBoard({
           rows={attentionRows}
           emptyText="No problems need your attention."
           tone="attention"
+          onRetryMove={onRetryMove}
+          retryingMoveHashes={retryingMoveHashes}
         />
 
         <PrimarySection
@@ -66,14 +72,18 @@ export function DownloadActivityBoard({
           rows={activeRows}
           emptyText="No active downloads right now."
           tone="active"
+          onRetryMove={onRetryMove}
+          retryingMoveHashes={retryingMoveHashes}
         />
 
         <PrimarySection
           title="Move Jobs"
           icon={<Truck className="size-4" />}
           rows={moveJobRows}
-          emptyText="No episodes are waiting for the library agent."
+          emptyText="No files are being moved right now."
           tone="move"
+          onRetryMove={onRetryMove}
+          retryingMoveHashes={retryingMoveHashes}
         />
 
         <PrimarySection
@@ -82,6 +92,8 @@ export function DownloadActivityBoard({
           rows={seedingRows}
           emptyText="No qB seeding episodes right now."
           tone="seeding"
+          onRetryMove={onRetryMove}
+          retryingMoveHashes={retryingMoveHashes}
         />
 
         <section className="overflow-hidden rounded-2xl border border-dashed border-slate-800/90 bg-slate-950/28">
@@ -129,12 +141,16 @@ function PrimarySection({
   rows,
   emptyText,
   tone,
+  onRetryMove,
+  retryingMoveHashes,
 }: {
   title: string;
   icon: ReactNode;
   rows: DownloadRow[];
   emptyText: string;
   tone: 'attention' | 'active' | 'move' | 'seeding';
+  onRetryMove: (hash: string) => void;
+  retryingMoveHashes: Set<string>;
 }) {
   const toneClass = {
     attention: 'text-amber-200',
@@ -142,6 +158,7 @@ function PrimarySection({
     move: 'text-sky-200',
     seeding: 'text-emerald-200',
   }[tone];
+  const retryMoveHandler = tone === 'attention' ? onRetryMove : undefined;
 
   return (
     <section className="grid gap-3">
@@ -162,7 +179,12 @@ function PrimarySection({
           }>
           <div className="grid gap-3">
             {rows.map((row) => (
-              <DownloadRecord key={row.hash} row={row} />
+              <DownloadRecord
+                key={row.hash}
+                row={row}
+                onRetryMove={retryMoveHandler}
+                retrying={retryingMoveHashes.has(row.hash)}
+              />
             ))}
           </div>
         </div>

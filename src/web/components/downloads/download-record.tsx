@@ -1,5 +1,7 @@
 import { memo } from 'react';
+import { RotateCcw } from 'lucide-react';
 import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
 import {
   formatBytes,
   formatDuration,
@@ -8,13 +10,21 @@ import {
   formatRatio,
   normalizeProgress,
 } from '~/components/downloads/download-format';
-import { isQbSeedingRow } from '~/components/downloads/download-model';
+import { isSeedingRow } from '~/components/downloads/download-model';
 import type { CompletedDownloadRow, DownloadRow } from '~/components/downloads/download-types';
 
-export const DownloadRecord = memo(function DownloadRecord({ row }: { row: DownloadRow }) {
+export const DownloadRecord = memo(function DownloadRecord({
+  row,
+  onRetryMove,
+  retrying = false,
+}: {
+  row: DownloadRow;
+  onRetryMove?: (hash: string) => void;
+  retrying?: boolean;
+}) {
   const qbit = row.qbit;
   const isCompleted = row.state === 'completed';
-  const isSeeding = isQbSeedingRow(row);
+  const isSeeding = isSeedingRow(row);
   const season = row.season ?? 1;
 
   return (
@@ -33,7 +43,7 @@ export const DownloadRecord = memo(function DownloadRecord({ row }: { row: Downl
         <div className="grid gap-3">
           {isSeeding ? <SeedingCell row={row} /> : null}
           {row.state === 'active' && !isSeeding ? <ProgressCell row={row} /> : null}
-          {row.state === 'moveJob' ? <MoveJobCell row={row} /> : null}
+          {row.state === 'moveJob' ? <MoveJobCell row={row} onRetryMove={onRetryMove} retrying={retrying} /> : null}
           <QbittorrentMeta row={row} />
         </div>
       </div>
@@ -134,17 +144,39 @@ function ProgressCell({ row }: { row: DownloadRow & { state: 'active' } }) {
   );
 }
 
-function MoveJobCell({ row }: { row: DownloadRow & { state: 'moveJob' } }) {
+function MoveJobCell({
+  row,
+  onRetryMove,
+  retrying,
+}: {
+  row: DownloadRow & { state: 'moveJob' };
+  onRetryMove?: (hash: string) => void;
+  retrying?: boolean;
+}) {
   const toneClass =
     row.status === 'failed' ? 'text-rose-200' : row.status === 'moving' ? 'text-sky-100' : 'text-slate-300';
   const title =
     row.status === 'failed' ? 'Move Failed' : row.status === 'moving' ? 'Moving to Library' : 'Ready for Agent';
+  const retryMove = row.status === 'failed' ? onRetryMove : undefined;
 
   return (
     <div className="grid gap-2 rounded-xl border border-slate-800 bg-slate-950/70 p-3">
       <div className="flex items-center justify-between gap-3 text-xs">
         <span className={`font-medium ${toneClass}`}>{title}</span>
-        <span className="font-semibold text-slate-400">Attempt {row.attempts}</span>
+        {retryMove ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 rounded-lg px-2 text-xs"
+            disabled={retrying}
+            onClick={() => retryMove(row.hash)}>
+            <RotateCcw className={retrying ? 'mr-1.5 size-3.5 animate-spin' : 'mr-1.5 size-3.5'} />
+            {retrying ? 'Retrying' : 'Retry move'}
+          </Button>
+        ) : (
+          <span className="font-semibold text-slate-400">Attempt {row.attempts}</span>
+        )}
       </div>
       <div className="text-xs text-slate-500">
         {row.status === 'moving'
@@ -200,7 +232,7 @@ function QbittorrentMeta({ row }: { row: DownloadRow }) {
 
   return (
     <div className="grid gap-2 text-xs sm:grid-cols-2">
-      {isQbSeedingRow(row) ? (
+      {isSeedingRow(row) ? (
         <>
           <Metric label="Time" value={formatDuration(qbit.seedingTime)} />
           <Metric label="Upload" value={`${formatBytes(qbit.uploadSpeed)}/s`} />

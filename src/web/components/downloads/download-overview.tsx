@@ -27,7 +27,7 @@ export function DownloadOverview({ summary, loading }: DownloadOverviewProps) {
         <section className="min-w-0 rounded-2xl border border-slate-800/70 bg-slate-950/42 p-4">
           <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
             <Icon className={loading ? 'size-4 animate-spin text-cyan-200' : 'size-4 text-cyan-200'} />
-            Queue Focus
+            Activity Views
           </div>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
             <QueueStat

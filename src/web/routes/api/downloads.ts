@@ -8,6 +8,7 @@ export const Route = createFileRoute('/api/downloads')({
         const { search } = new URL(request.url);
         return forwardToServer(`/api/downloads${search}`, request);
       },
+      POST: async ({ request }) => forwardToServer('/api/downloads', request),
     },
   },
 });

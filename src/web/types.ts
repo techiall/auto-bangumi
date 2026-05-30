@@ -9,6 +9,7 @@ export type {
   MikanSearchResult,
   MoveJobDownload,
   QbittorrentDownloadStatus,
+  RetryMoveResult,
   RssRefreshResult,
   SubscriptionConfig,
   UpdateSeasonPayload,

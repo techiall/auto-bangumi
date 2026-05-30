@@ -75,6 +75,27 @@ export class MoverJobService {
     });
   }
 
+  async retry(hash: string) {
+    return withDb(this.dbPath, async (db) => {
+      const job = this.findJob(db, hash);
+      if (job.status !== 'failed') throw new HttpError(409, 'Only failed move jobs can be retried.');
+
+      job.status = 'ready';
+      job.attempts = 0;
+      job.updatedAt = new Date().toISOString();
+      delete job.error;
+      delete job.leaseExpiresAt;
+      await db.write();
+
+      return {
+        ok: true,
+        hash,
+        status: job.status,
+        attempts: job.attempts,
+      };
+    });
+  }
+
   async openSource(hash: string) {
     const config = await loadConfig(this.dbPath);
     const job = await withDb(this.dbPath, (db) => ({ ...this.findJob(db, hash) }));

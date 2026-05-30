@@ -4,6 +4,7 @@ import type {
   DownloadState,
   MikanBangumiDetail,
   MikanSearchResult,
+  RetryMoveResult,
   RssRefreshResult,
   UpdateSeasonPayload,
 } from '~/types';
@@ -79,6 +80,13 @@ export function refreshRssFeeds() {
 export function fetchDownloads(subscriptionRss?: string) {
   const query = subscriptionRss ? `?subscription=${encodeURIComponent(subscriptionRss)}` : '';
   return request<DownloadState>(`/api/downloads${query}`);
+}
+
+export function retryMoveJob(hash: string) {
+  return request<RetryMoveResult>('/api/downloads', {
+    method: 'POST',
+    body: JSON.stringify({ action: 'retryMove', hash }),
+  });
 }
 
 export function downloadsWebSocketUrl() {

@@ -57,6 +57,13 @@ export interface RssRefreshResult {
   queuedCount: number;
 }
 
+export interface RetryMoveResult {
+  ok: true;
+  hash: string;
+  status: 'ready';
+  attempts: number;
+}
+
 export interface ActiveDownload {
   torrent: string;
   title: string;
