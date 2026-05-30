@@ -40,14 +40,14 @@ export function DownloadProgress({
 
   return (
     <div className="grid gap-5">
-      <DownloadOverview summary={summary} loading={downloads.loading} />
-
       <DownloadScopePicker
         allSummary={allSummary}
         summaries={subscriptionSummaries}
         selectedSubscriptionRss={selectedSubscriptionRss}
         onSelect={onSelectSubscription}
       />
+
+      <DownloadOverview summary={summary} loading={downloads.loading} />
 
       <DownloadActivityBoard
         rows={scopedRows}
