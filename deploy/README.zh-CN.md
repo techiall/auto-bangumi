@@ -10,7 +10,7 @@
 - `deploy/agent/`：媒体库节点，运行入库 Agent，并把宿主机媒体库目录挂载到容器内的 `/library`。
 - `SERVER_USERNAME` 和 `SERVER_PASSWORD`：Web UI 和远程 Agent 共用的 Basic Auth 登录凭据。
 
-只在可信的 LAN 或 VPN 内开放 Server API。不要把 qBittorrent 或它的内部文件服务直接暴露到公网。
+只在可信的 LAN 或 VPN 内开放 Web/API 入口。不要把 qBittorrent 或它的内部文件服务直接暴露到公网。
 
 ## 1. 配置下载节点
 
@@ -24,7 +24,6 @@ cp .env.example .env
 ```env
 SERVER_USERNAME=admin
 SERVER_PASSWORD=<两端使用同一个密码>
-SERVER_API_BIND=<可信 LAN 或 VPN 地址>
 ```
 
 可以用下面的命令生成一个随机密码：
@@ -42,10 +41,8 @@ docker compose up -d
 默认地址：
 
 - Web UI：`http://localhost:3000`
-- Agent API：`http://SERVER_API_BIND:3001`
+- Agent API：复用 `http://<下载节点地址>:3000`，路径是 `/api/mover/*`
 - SQLite 状态文件：`deploy/server/db/state.sqlite`
-
-如果需要从其他机器访问 Web UI，把 `deploy/server/compose.yaml` 中 `3000` 端口的绑定地址从 `127.0.0.1` 改成可信 LAN/VPN 地址。
 
 ## 2. 配置媒体库节点
 
@@ -59,7 +56,7 @@ cp .env.example .env
 ```env
 SERVER_USERNAME=admin
 SERVER_PASSWORD=<两端使用同一个密码>
-DOWNLOAD_SERVER_URL=http://<下载节点地址>:3001
+DOWNLOAD_SERVER_URL=http://<下载节点地址>:3000
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```
 

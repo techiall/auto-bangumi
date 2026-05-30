@@ -7,7 +7,7 @@ export function loadAgentConfig(): AgentConfig {
 
   return {
     apiTimeoutMs: envNumber('MOVE_AGENT_API_TIMEOUT_MS', 15_000),
-    downloadServerUrl: normalizeBaseUrl(process.env.DOWNLOAD_SERVER_URL ?? 'http://server:3001'),
+    downloadServerUrl: normalizeBaseUrl(process.env.DOWNLOAD_SERVER_URL ?? 'http://server:3000'),
     jobAttempts: envNumber('MOVE_AGENT_JOB_ATTEMPTS', 2),
     jobLimit: envNumber('MOVE_AGENT_LIMIT', 1),
     libraryDisplayRoot: process.env.LIBRARY_DISPLAY_ROOT?.trim() || libraryRoot,

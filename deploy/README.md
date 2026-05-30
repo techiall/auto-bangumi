@@ -12,7 +12,7 @@ Use the root `compose.yaml` for a normal single-machine image-based setup. Use t
 - `deploy/agent/`: library machine. Runs only the mover agent and mounts the host media folder at `/library`.
 - `SERVER_USERNAME` and `SERVER_PASSWORD`: Basic Auth credentials shared by the web UI and remote agent.
 
-Only expose the server API on a trusted LAN or VPN. Do not publish qBittorrent or its internal file server.
+Only expose the web/API endpoint on a trusted LAN or VPN. Do not publish qBittorrent or its internal file server.
 
 ## 1. Download Server Machine
 
@@ -26,7 +26,6 @@ Edit `.env`:
 ```env
 SERVER_USERNAME=admin
 SERVER_PASSWORD=<same-password-on-both-machines>
-SERVER_API_BIND=<private-lan-or-vpn-address>
 ```
 
 Generate a password:
@@ -44,10 +43,8 @@ docker compose up -d
 Endpoints:
 
 - Web UI: `http://localhost:3000`
-- Agent API: `http://SERVER_API_BIND:3001`
+- Agent API: same `http://<download-server>:3000` endpoint, under `/api/mover/*`
 - SQLite state: `deploy/server/db/state.sqlite`
-
-If another machine must open the web UI, change the `3000` bind in `deploy/server/compose.yaml` from `127.0.0.1` to a trusted LAN/VPN address.
 
 ## 2. Library Agent Machine
 
@@ -61,7 +58,7 @@ Edit `.env`:
 ```env
 SERVER_USERNAME=admin
 SERVER_PASSWORD=<same-password-on-both-machines>
-DOWNLOAD_SERVER_URL=http://<download-server-private-address>:3001
+DOWNLOAD_SERVER_URL=http://<download-server-private-address>:3000
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```
 

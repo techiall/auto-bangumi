@@ -16,11 +16,9 @@ export async function forwardToServer(path: string, request?: Request) {
     body,
   });
 
-  return new Response(await response.text(), {
+  return new Response(response.body, {
     status: response.status,
-    headers: {
-      'Content-Type': response.headers.get('Content-Type') ?? 'application/json',
-    },
+    headers: response.headers,
   });
 }
 

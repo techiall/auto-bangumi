@@ -14,13 +14,10 @@ services:
     environment:
       SERVER_USERNAME: ${SERVER_USERNAME}
       SERVER_PASSWORD: ${SERVER_PASSWORD}
-      MOVER_API_PORT: 3002
     volumes:
       - ./db:/usr/src/app/db
     ports:
-      # Bind this to a private LAN/VPN address for a remote library agent.
-      - '${SERVER_API_BIND}:3001:3002'
-      - '127.0.0.1:3000:3000'
+      - '3000:3000'
     restart: unless-stopped
 
 volumes:

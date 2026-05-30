@@ -14,11 +14,16 @@ import { Route as ApiSeasonsRouteImport } from './routes/api/seasons'
 import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
 import { Route as ApiConfigRouteImport } from './routes/api/config'
 import { Route as ApiRssRefreshRouteImport } from './routes/api/rss/refresh'
+import { Route as ApiMoverJobsRouteImport } from './routes/api/mover/jobs'
 import { Route as ApiMikanSearchRouteImport } from './routes/api/mikan/search'
 import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
+import { Route as ApiMoverJobsClaimRouteImport } from './routes/api/mover/jobs/claim'
 import { Route as ApiMikanBangumiIdRouteImport } from './routes/api/mikan/bangumi.$id'
+import { Route as ApiMoverJobsHashSourceRouteImport } from './routes/api/mover/jobs/$hash/source'
+import { Route as ApiMoverJobsHashFailRouteImport } from './routes/api/mover/jobs/$hash/fail'
+import { Route as ApiMoverJobsHashCompleteRouteImport } from './routes/api/mover/jobs/$hash/complete'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -45,6 +50,11 @@ const ApiRssRefreshRoute = ApiRssRefreshRouteImport.update({
   path: '/api/rss/refresh',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMoverJobsRoute = ApiMoverJobsRouteImport.update({
+  id: '/api/mover/jobs',
+  path: '/api/mover/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMikanSearchRoute = ApiMikanSearchRouteImport.update({
   id: '/api/mikan/search',
   path: '/api/mikan/search',
@@ -65,11 +75,32 @@ const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
   path: '/api/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMoverJobsClaimRoute = ApiMoverJobsClaimRouteImport.update({
+  id: '/claim',
+  path: '/claim',
+  getParentRoute: () => ApiMoverJobsRoute,
+} as any)
 const ApiMikanBangumiIdRoute = ApiMikanBangumiIdRouteImport.update({
   id: '/api/mikan/bangumi/$id',
   path: '/api/mikan/bangumi/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMoverJobsHashSourceRoute = ApiMoverJobsHashSourceRouteImport.update({
+  id: '/$hash/source',
+  path: '/$hash/source',
+  getParentRoute: () => ApiMoverJobsRoute,
+} as any)
+const ApiMoverJobsHashFailRoute = ApiMoverJobsHashFailRouteImport.update({
+  id: '/$hash/fail',
+  path: '/$hash/fail',
+  getParentRoute: () => ApiMoverJobsRoute,
+} as any)
+const ApiMoverJobsHashCompleteRoute =
+  ApiMoverJobsHashCompleteRouteImport.update({
+    id: '/$hash/complete',
+    path: '/$hash/complete',
+    getParentRoute: () => ApiMoverJobsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,8 +111,13 @@ export interface FileRoutesByFullPath {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/mover/jobs': typeof ApiMoverJobsRouteWithChildren
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
+  '/api/mover/jobs/claim': typeof ApiMoverJobsClaimRoute
+  '/api/mover/jobs/$hash/complete': typeof ApiMoverJobsHashCompleteRoute
+  '/api/mover/jobs/$hash/fail': typeof ApiMoverJobsHashFailRoute
+  '/api/mover/jobs/$hash/source': typeof ApiMoverJobsHashSourceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -92,8 +128,13 @@ export interface FileRoutesByTo {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/mover/jobs': typeof ApiMoverJobsRouteWithChildren
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
+  '/api/mover/jobs/claim': typeof ApiMoverJobsClaimRoute
+  '/api/mover/jobs/$hash/complete': typeof ApiMoverJobsHashCompleteRoute
+  '/api/mover/jobs/$hash/fail': typeof ApiMoverJobsHashFailRoute
+  '/api/mover/jobs/$hash/source': typeof ApiMoverJobsHashSourceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -105,8 +146,13 @@ export interface FileRoutesById {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/mover/jobs': typeof ApiMoverJobsRouteWithChildren
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
+  '/api/mover/jobs/claim': typeof ApiMoverJobsClaimRoute
+  '/api/mover/jobs/$hash/complete': typeof ApiMoverJobsHashCompleteRoute
+  '/api/mover/jobs/$hash/fail': typeof ApiMoverJobsHashFailRoute
+  '/api/mover/jobs/$hash/source': typeof ApiMoverJobsHashSourceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,8 +165,13 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/mikan/search'
+    | '/api/mover/jobs'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
+    | '/api/mover/jobs/claim'
+    | '/api/mover/jobs/$hash/complete'
+    | '/api/mover/jobs/$hash/fail'
+    | '/api/mover/jobs/$hash/source'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -131,8 +182,13 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/mikan/search'
+    | '/api/mover/jobs'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
+    | '/api/mover/jobs/claim'
+    | '/api/mover/jobs/$hash/complete'
+    | '/api/mover/jobs/$hash/fail'
+    | '/api/mover/jobs/$hash/source'
   id:
     | '__root__'
     | '/'
@@ -143,8 +199,13 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/mikan/search'
+    | '/api/mover/jobs'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
+    | '/api/mover/jobs/claim'
+    | '/api/mover/jobs/$hash/complete'
+    | '/api/mover/jobs/$hash/fail'
+    | '/api/mover/jobs/$hash/source'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -156,6 +217,7 @@ export interface RootRouteChildren {
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
   ApiMikanSearchRoute: typeof ApiMikanSearchRoute
+  ApiMoverJobsRoute: typeof ApiMoverJobsRouteWithChildren
   ApiRssRefreshRoute: typeof ApiRssRefreshRoute
   ApiMikanBangumiIdRoute: typeof ApiMikanBangumiIdRoute
 }
@@ -197,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRssRefreshRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mover/jobs': {
+      id: '/api/mover/jobs'
+      path: '/api/mover/jobs'
+      fullPath: '/api/mover/jobs'
+      preLoaderRoute: typeof ApiMoverJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/mikan/search': {
       id: '/api/mikan/search'
       path: '/api/mikan/search'
@@ -225,6 +294,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mover/jobs/claim': {
+      id: '/api/mover/jobs/claim'
+      path: '/claim'
+      fullPath: '/api/mover/jobs/claim'
+      preLoaderRoute: typeof ApiMoverJobsClaimRouteImport
+      parentRoute: typeof ApiMoverJobsRoute
+    }
     '/api/mikan/bangumi/$id': {
       id: '/api/mikan/bangumi/$id'
       path: '/api/mikan/bangumi/$id'
@@ -232,8 +308,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMikanBangumiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mover/jobs/$hash/source': {
+      id: '/api/mover/jobs/$hash/source'
+      path: '/$hash/source'
+      fullPath: '/api/mover/jobs/$hash/source'
+      preLoaderRoute: typeof ApiMoverJobsHashSourceRouteImport
+      parentRoute: typeof ApiMoverJobsRoute
+    }
+    '/api/mover/jobs/$hash/fail': {
+      id: '/api/mover/jobs/$hash/fail'
+      path: '/$hash/fail'
+      fullPath: '/api/mover/jobs/$hash/fail'
+      preLoaderRoute: typeof ApiMoverJobsHashFailRouteImport
+      parentRoute: typeof ApiMoverJobsRoute
+    }
+    '/api/mover/jobs/$hash/complete': {
+      id: '/api/mover/jobs/$hash/complete'
+      path: '/$hash/complete'
+      fullPath: '/api/mover/jobs/$hash/complete'
+      preLoaderRoute: typeof ApiMoverJobsHashCompleteRouteImport
+      parentRoute: typeof ApiMoverJobsRoute
+    }
   }
 }
+
+interface ApiMoverJobsRouteChildren {
+  ApiMoverJobsClaimRoute: typeof ApiMoverJobsClaimRoute
+  ApiMoverJobsHashCompleteRoute: typeof ApiMoverJobsHashCompleteRoute
+  ApiMoverJobsHashFailRoute: typeof ApiMoverJobsHashFailRoute
+  ApiMoverJobsHashSourceRoute: typeof ApiMoverJobsHashSourceRoute
+}
+
+const ApiMoverJobsRouteChildren: ApiMoverJobsRouteChildren = {
+  ApiMoverJobsClaimRoute: ApiMoverJobsClaimRoute,
+  ApiMoverJobsHashCompleteRoute: ApiMoverJobsHashCompleteRoute,
+  ApiMoverJobsHashFailRoute: ApiMoverJobsHashFailRoute,
+  ApiMoverJobsHashSourceRoute: ApiMoverJobsHashSourceRoute,
+}
+
+const ApiMoverJobsRouteWithChildren = ApiMoverJobsRoute._addFileChildren(
+  ApiMoverJobsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -244,6 +359,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,
   ApiMikanSearchRoute: ApiMikanSearchRoute,
+  ApiMoverJobsRoute: ApiMoverJobsRouteWithChildren,
   ApiRssRefreshRoute: ApiRssRefreshRoute,
   ApiMikanBangumiIdRoute: ApiMikanBangumiIdRoute,
 }
