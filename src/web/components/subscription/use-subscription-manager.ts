@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Notice } from '~/components/subscription/notice-banner';
 import type { SubscriptionFormState } from '~/components/subscription/subscription-settings';
 import {
@@ -35,8 +35,12 @@ export function useSubscriptionManager() {
   const [isRssRefreshing, setIsRssRefreshing] = useState(false);
   const [loadingBangumiId, setLoadingBangumiId] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingSubscriptionKeys, setPendingSubscriptionKeys] = useState<Set<string>>(() => new Set());
   const [notice, setNotice] = useState<Notice | null>(null);
   const [form, setForm] = useState<SubscriptionFormState>(emptyForm);
+  const configRequestSeq = useRef(0);
+  const searchRequestSeq = useRef(0);
+  const detailRequestSeq = useRef(0);
 
   useEffect(() => {
     void refreshConfig();
@@ -54,7 +58,7 @@ export function useSubscriptionManager() {
   );
 
   const displayedSubscriptions = useMemo(
-    () => (config?.subscriptions ?? []).map((subscription, index) => ({ subscription, index })).reverse(),
+    () => (config?.subscriptions ?? []).map((subscription) => ({ subscription, key: subscription.rss })).reverse(),
     [config],
   );
 
@@ -78,13 +82,15 @@ export function useSubscriptionManager() {
   }, [selectedBangumi, selectedGroup]);
 
   async function refreshConfig() {
+    const requestId = ++configRequestSeq.current;
     setIsConfigLoading(true);
     try {
-      setConfig(await fetchConfig());
+      const nextConfig = await fetchConfig();
+      if (requestId === configRequestSeq.current) setConfig(nextConfig);
     } catch (error) {
-      showNotice(asMessage(error), 'error');
+      if (requestId === configRequestSeq.current) showNotice(asMessage(error), 'error');
     } finally {
-      setIsConfigLoading(false);
+      if (requestId === configRequestSeq.current) setIsConfigLoading(false);
     }
   }
 
@@ -102,6 +108,7 @@ export function useSubscriptionManager() {
 
   async function runSearch(keyword: string, source: 'search' | 'browse' = 'search') {
     const isBrowse = source === 'browse';
+    const requestId = ++searchRequestSeq.current;
     if (isBrowse) {
       setIsBrowseLoading(true);
     } else {
@@ -110,15 +117,19 @@ export function useSubscriptionManager() {
 
     try {
       const list = isBrowse || !keyword.trim() ? await browseSeason() : await searchMikan(keyword);
-      setResults(list);
+      if (requestId === searchRequestSeq.current) setResults(list);
     } catch (error) {
-      setResults([]);
-      showNotice(asMessage(error), 'error');
+      if (requestId === searchRequestSeq.current) {
+        setResults([]);
+        showNotice(asMessage(error), 'error');
+      }
     } finally {
-      if (isBrowse) {
-        setIsBrowseLoading(false);
-      } else {
-        setIsSearchLoading(false);
+      if (requestId === searchRequestSeq.current) {
+        if (isBrowse) {
+          setIsBrowseLoading(false);
+        } else {
+          setIsSearchLoading(false);
+        }
       }
     }
   }
@@ -129,33 +140,42 @@ export function useSubscriptionManager() {
       return;
     }
 
+    const requestId = ++detailRequestSeq.current;
     setLoadingBangumiId(item.id);
     try {
       const detail = await fetchBangumiDetail(item.id);
-      setSelectedBangumi(detail);
-      setSelectedGroupId(detail.groups[0]?.id ?? null);
+      if (requestId === detailRequestSeq.current) {
+        setSelectedBangumi(detail);
+        setSelectedGroupId(detail.groups[0]?.id ?? null);
+      }
     } catch (error) {
-      showNotice(asMessage(error), 'error');
+      if (requestId === detailRequestSeq.current) showNotice(asMessage(error), 'error');
     } finally {
-      setLoadingBangumiId(null);
+      if (requestId === detailRequestSeq.current) setLoadingBangumiId(null);
     }
   }
 
-  async function handleDelete(index: number) {
+  async function handleDelete(rss: string) {
+    setSubscriptionPending(rss, true);
     try {
-      setConfig(await deleteSeason(index));
+      setConfig(await deleteSeason(rss));
       showNotice('Subscription removed.', 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
+    } finally {
+      setSubscriptionPending(rss, false);
     }
   }
 
-  async function handleUpdate(index: number, payload: UpdateSeasonPayload) {
+  async function handleUpdate(rss: string, payload: UpdateSeasonPayload) {
+    setSubscriptionPending(rss, true);
     try {
-      setConfig(await updateSeason(index, payload));
+      setConfig(await updateSeason(rss, payload));
       showNotice('Subscription updated.', 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
+    } finally {
+      setSubscriptionPending(rss, false);
     }
   }
 
@@ -185,14 +205,20 @@ export function useSubscriptionManager() {
   }
 
   function clearSelection() {
+    detailRequestSeq.current += 1;
     setSelectedBangumi(null);
     setSelectedGroupId(null);
+    setLoadingBangumiId(null);
     setNotice(null);
     setForm(emptyForm);
   }
 
   function showNotice(message: string, kind: Notice['kind']) {
     setNotice({ kind, message });
+  }
+
+  function setSubscriptionPending(key: string, pending: boolean) {
+    setPendingSubscriptionKeys((current) => setSubscriptionPendingState(current, key, pending));
   }
 
   return {
@@ -205,6 +231,7 @@ export function useSubscriptionManager() {
     isSubmitting,
     loadingBangumiId,
     notice,
+    pendingSubscriptionKeys,
     query,
     results,
     selectedBangumi,
@@ -222,6 +249,16 @@ export function useSubscriptionManager() {
     setSelectedGroupId,
     clearSelection,
   };
+}
+
+function setSubscriptionPendingState(current: Set<string>, key: string, pending: boolean) {
+  const next = new Set(current);
+  if (pending) {
+    next.add(key);
+  } else {
+    next.delete(key);
+  }
+  return next;
 }
 
 function formatRssRefreshMessage(result: { queuedCount: number; archivedSubscriptionCount: number }) {

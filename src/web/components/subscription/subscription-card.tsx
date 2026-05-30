@@ -1,5 +1,5 @@
 import { Archive, Check, ChevronDown, RotateCcw, Rss, Trash2, X } from 'lucide-react';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useId, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Field } from '~/components/subscription/shared';
@@ -8,14 +8,16 @@ import type { SubscriptionConfig, UpdateSeasonPayload } from '~/types';
 
 interface SubscriptionCardProps {
   subscription: SubscriptionConfig;
-  index: number;
-  onDelete: (index: number) => void;
-  onUpdate: (index: number, payload: UpdateSeasonPayload) => void;
+  subscriptionKey: string;
+  isPending: boolean;
+  onDelete: (subscriptionKey: string) => void;
+  onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
 }
 
 export const SubscriptionCard = memo(function SubscriptionCard({
   subscription,
-  index,
+  subscriptionKey,
+  isPending,
   onDelete,
   onUpdate,
 }: SubscriptionCardProps) {
@@ -24,6 +26,10 @@ export const SubscriptionCard = memo(function SubscriptionCard({
   const [folder, setFolder] = useState(subscription.folder);
   const [season, setSeason] = useState(String(subscription.season));
   const [filters, setFilters] = useState(subscription.filters?.join(', ') ?? '');
+  const formId = useId();
+  const seasonId = `${formId}-season`;
+  const folderId = `${formId}-folder`;
+  const filtersId = `${formId}-filters`;
 
   useEffect(() => {
     setFolder(subscription.folder);
@@ -41,7 +47,7 @@ export const SubscriptionCard = memo(function SubscriptionCard({
     const nextSeason = Number(season);
     if (!Number.isInteger(nextSeason) || nextSeason <= 0) return;
 
-    onUpdate(index, {
+    onUpdate(subscriptionKey, {
       folder: folder.trim() || subscription.title,
       season: nextSeason,
       filters: splitCommaList(filters),
@@ -51,7 +57,7 @@ export const SubscriptionCard = memo(function SubscriptionCard({
   }
 
   function toggleArchive() {
-    onUpdate(index, {
+    onUpdate(subscriptionKey, {
       folder: subscription.folder,
       season: subscription.season,
       filters: subscription.filters ?? [],
@@ -70,6 +76,7 @@ export const SubscriptionCard = memo(function SubscriptionCard({
       <div
         role="button"
         tabIndex={0}
+        aria-expanded={expanded}
         className="grid cursor-pointer gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start"
         onClick={() => setExpanded((value) => !value)}
         onKeyDown={(event) => {
@@ -126,14 +133,21 @@ export const SubscriptionCard = memo(function SubscriptionCard({
           className="mt-4 rounded-xl border border-slate-800 bg-slate-950/64 p-3"
           onClick={(event) => event.stopPropagation()}>
           <div className="grid gap-3 md:grid-cols-[7rem_1fr]">
-            <Field label="Season">
-              <Input type="number" min="1" value={season} onChange={(event) => setSeason(event.target.value)} />
-            </Field>
-            <Field label="Folder">
-              <Input value={folder} onChange={(event) => setFolder(event.target.value)} />
-            </Field>
-            <Field label="Title Filters">
+            <Field id={seasonId} label="Season">
               <Input
+                id={seasonId}
+                type="number"
+                min="1"
+                value={season}
+                onChange={(event) => setSeason(event.target.value)}
+              />
+            </Field>
+            <Field id={folderId} label="Folder">
+              <Input id={folderId} value={folder} onChange={(event) => setFolder(event.target.value)} />
+            </Field>
+            <Field id={filtersId} label="Title Filters">
+              <Input
+                id={filtersId}
                 value={filters}
                 onChange={(event) => setFilters(event.target.value)}
                 placeholder="One or more keywords, separated by commas. e.g. 1080p, CHS"
@@ -142,16 +156,26 @@ export const SubscriptionCard = memo(function SubscriptionCard({
             </Field>
           </div>
           <div className="mt-3 flex flex-wrap justify-between gap-2">
-            <Button variant="danger" size="sm" className="w-fit whitespace-nowrap" onClick={() => onDelete(index)}>
+            <Button
+              variant="danger"
+              size="sm"
+              className="w-fit whitespace-nowrap"
+              disabled={isPending}
+              onClick={() => onDelete(subscriptionKey)}>
               <Trash2 className="mr-2 size-4" />
               Delete
             </Button>
             <div className="flex flex-wrap justify-end gap-2">
-              <Button variant="outline" size="sm" className="w-fit whitespace-nowrap" onClick={toggleArchive}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-fit whitespace-nowrap"
+                disabled={isPending}
+                onClick={toggleArchive}>
                 {subscription.archived ? <RotateCcw className="mr-2 size-4" /> : <Archive className="mr-2 size-4" />}
                 {subscription.archived ? 'Restore' : 'Archive'}
               </Button>
-              <Button variant="soft" size="sm" className="w-fit whitespace-nowrap" onClick={save}>
+              <Button variant="soft" size="sm" className="w-fit whitespace-nowrap" disabled={isPending} onClick={save}>
                 <Check className="mr-2 size-4" />
                 Save
               </Button>

@@ -1,4 +1,4 @@
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -7,9 +7,11 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY tsconfig.json tsconfig.web.json vite.config.ts ./
 COPY src ./src
-RUN npm run build && npm run build:web && npm prune --omit=dev
+RUN npm run build && npm run build:web
 
-FROM node:24-alpine AS runner
+FROM node:26-alpine AS runner
+
+LABEL org.opencontainers.image.description="Auto Bangumi web UI, API server, RSS scheduler, and qBittorrent coordinator."
 
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
@@ -19,7 +21,7 @@ ENV API_PORT=3001
 ENV API_BASE_URL=http://127.0.0.1:3001
 
 COPY --from=builder /usr/src/app/package*.json ./
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/.output ./.output
 

@@ -1,17 +1,13 @@
 services:
   qbittorrent:
-    build:
-      context: .
-      dockerfile: docker/qbittorrent.Dockerfile
+    image: ghcr.io/techiall/auto-bangumi-qbittorrent:latest
     volumes:
       - qbittorrent-config:/config
       - qbittorrent-downloads:/downloads
     restart: unless-stopped
 
   server:
-    build:
-      context: .
-      dockerfile: docker/app.Dockerfile
+    image: ghcr.io/techiall/auto-bangumi-server:latest
     init: true
     depends_on:
       - qbittorrent
@@ -24,9 +20,7 @@ services:
     restart: unless-stopped
 
   agent:
-    build:
-      context: .
-      dockerfile: docker/agent.Dockerfile
+    image: ghcr.io/techiall/auto-bangumi-agent:latest
     depends_on:
       - server
     environment:

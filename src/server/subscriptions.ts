@@ -34,9 +34,10 @@ export class SubscriptionService {
     return this.save(config);
   }
 
-  async update(index: number, payload: SeasonUpdatePayload): Promise<PublicConfig> {
+  async update(rss: string, payload: SeasonUpdatePayload): Promise<PublicConfig> {
     const config = await loadConfig(this.dbPath);
-    const current = this.find(config, index);
+    const index = this.findIndexByRss(config, rss);
+    const current = config.subscriptions[index];
 
     config.subscriptions[index] = {
       ...current,
@@ -46,9 +47,10 @@ export class SubscriptionService {
     return this.save(config);
   }
 
-  async delete(index: number): Promise<PublicConfig> {
+  async delete(rss: string): Promise<PublicConfig> {
     const config = await loadConfig(this.dbPath);
-    const subscription = this.find(config, index);
+    const index = this.findIndexByRss(config, rss);
+    const subscription = config.subscriptions[index];
 
     await this.cleanupSubscription(subscription.rss, config);
     config.subscriptions.splice(index, 1);
@@ -83,6 +85,10 @@ export class SubscriptionService {
       }
     }
 
+    if (failedQbittorrentRemovals) {
+      throw new HttpError(502, `Failed to remove ${failedQbittorrentRemovals} qBittorrent torrent(s).`);
+    }
+
     await withDb(this.dbPath, async (db) => {
       for (const hash of hashes) {
         delete db.data.active[hash];
@@ -110,12 +116,13 @@ export class SubscriptionService {
     }
   }
 
-  private find(config: Config, index: number) {
-    if (!Number.isInteger(index) || index < 0 || index >= config.subscriptions.length) {
+  private findIndexByRss(config: Config, rss: string) {
+    const index = config.subscriptions.findIndex((subscription) => subscription.rss === rss);
+    if (index < 0) {
       throw new HttpError(404, 'Subscription not found.');
     }
 
-    return config.subscriptions[index];
+    return index;
   }
 
   private async save(config: Config) {

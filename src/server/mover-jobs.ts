@@ -7,8 +7,10 @@ import { completeEpisode, markQbittorrentRemoved, withDb } from './state/db.js';
 import type { AppDb, MoveJob, MoveJobRecord } from './state/db.js';
 import { resolveActiveEpisodeMetadata } from './state/episode-metadata.js';
 import { HttpError } from './http-error.js';
+import { fetchWithRetry } from './utils/fetch-with-retry.js';
 
 const DEFAULT_LEASE_MS = 15 * 60 * 1000;
+const MAX_MOVE_ATTEMPTS = 5;
 
 export interface MoverJobPayload {
   id: string;
@@ -61,24 +63,27 @@ export class MoverJobService {
 
   async complete(hash: string, payload: unknown) {
     const config = await loadConfig(this.dbPath);
-    return withDb(this.dbPath, async (db) => {
+    const result = await withDb(this.dbPath, async (db) => {
       const job = this.findJob(db, hash);
       const targetPath = parseDisplayTargetPath(payload) || job.targetRelativePath;
 
       completeEpisode(db.data, hash, targetPath);
       await db.write();
-
-      const api = new QBittorrentApi(config.qbittorrent);
-      try {
-        await api.removeTorrent(hash, true);
-        markQbittorrentRemoved(db.data, hash);
-        await db.write();
-      } catch (error) {
-        logger.warn(`Moved ${hash}, but failed to remove qBittorrent source files: ${(error as Error).message}`);
-      }
-
       return { ok: true };
     });
+
+    const api = new QBittorrentApi(config.qbittorrent);
+    try {
+      await api.removeTorrent(hash, true);
+      await withDb(this.dbPath, async (db) => {
+        markQbittorrentRemoved(db.data, hash);
+        await db.write();
+      });
+    } catch (error) {
+      logger.warn(`Moved ${hash}, but failed to remove qBittorrent source files: ${(error as Error).message}`);
+    }
+
+    return result;
   }
 
   async fail(hash: string, payload: unknown) {
@@ -86,13 +91,21 @@ export class MoverJobService {
       const job = this.findJob(db, hash);
       const now = new Date().toISOString();
 
-      job.status = 'failed';
+      job.status = job.attempts >= MAX_MOVE_ATTEMPTS ? 'failed' : 'ready';
       job.error = parseErrorMessage(payload);
       job.updatedAt = now;
       delete job.leaseExpiresAt;
       await db.write();
 
       return { ok: true };
+    });
+  }
+
+  async openSource(hash: string) {
+    const config = await loadConfig(this.dbPath);
+    const job = await withDb(this.dbPath, (db) => ({ ...this.findJob(db, hash) }));
+    return fetchWithRetry(buildFileServerUrl(config.qbittorrent, job.sourceRemotePath), {
+      headers: fileServerAuthorizationHeaders(config.qbittorrent.fileServer),
     });
   }
 
@@ -157,8 +170,8 @@ export class MoverJobService {
       folder: job.folder,
       season: job.season,
       episode: job.number,
-      sourceUrl: buildFileServerUrl(config.qbittorrent, job.sourceRemotePath),
-      sourceHeaders: fileServerAuthorizationHeaders(config.qbittorrent.fileServer),
+      sourceUrl: `/api/mover/jobs/${encodeURIComponent(hash)}/source`,
+      sourceHeaders: {},
       targetRelativePath: job.targetRelativePath,
       attempts: job.attempts,
     };

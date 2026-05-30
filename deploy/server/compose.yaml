@@ -1,27 +1,24 @@
 services:
   qbittorrent:
-    build:
-      context: ../../..
-      dockerfile: docker/qbittorrent.Dockerfile
+    image: ghcr.io/techiall/auto-bangumi-qbittorrent:latest
     volumes:
       - qbittorrent-config:/config
       - qbittorrent-downloads:/downloads
     restart: unless-stopped
 
   server:
-    build:
-      context: ../../..
-      dockerfile: docker/app.Dockerfile
+    image: ghcr.io/techiall/auto-bangumi-server:latest
     init: true
     depends_on:
       - qbittorrent
     environment:
       MOVER_API_TOKEN: ${MOVER_API_TOKEN}
+      MOVER_API_PORT: 3002
     volumes:
       - ./db:/usr/src/app/db
     ports:
       # Bind this to a private LAN/VPN address for a remote library agent.
-      - '${SERVER_API_BIND}:3001:3001'
+      - '${SERVER_API_BIND}:3001:3002'
       - '127.0.0.1:3000:3000'
     restart: unless-stopped
 

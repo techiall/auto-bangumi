@@ -6,8 +6,6 @@ import type {
 } from '~/components/downloads/download-types';
 import type { DownloadState } from '~/types';
 
-export const HISTORY_PREVIEW_LIMIT = 12;
-
 export function buildDownloadRows(data: DownloadState): DownloadRow[] {
   const activeRows = Object.entries(data.active).map(
     ([hash, episode]): DownloadRow => ({

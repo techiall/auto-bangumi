@@ -59,23 +59,29 @@ async function scanSubscriptions(options: DownloadTaskOptions): Promise<Subscrip
 
   const knownTorrentHashes = await api.torrentHashes();
   let queuedCount = 0;
+  const queuedEpisodes = new Map<string, Data['active'][string]>();
 
   await runWithConcurrency(candidates, DOWNLOAD_CONCURRENCY, async ({ season, episode }) => {
-    logger.info(`Queueing ${season.title} S${season.number}E${episode.number}`);
-    await api.download(episode, knownTorrentHashes);
+    try {
+      logger.info(`Queueing ${season.title} S${season.number}E${episode.number}`);
+      await api.download(episode, knownTorrentHashes);
 
-    knownTorrentHashes.add(episode.torrent);
-    data.active[episode.torrent] = {
-      number: episode.number,
-      enclosureUrl: episode.enclosureUrl,
-      subscriptionRss: season.subscriptionRss,
-    };
-    queuedCount += 1;
+      knownTorrentHashes.add(episode.torrent);
+      queuedEpisodes.set(episode.torrent, {
+        number: episode.number,
+        enclosureUrl: episode.enclosureUrl,
+        subscriptionRss: season.subscriptionRss,
+      });
+      queuedCount += 1;
+    } catch (error) {
+      logger.warn(`Failed to queue ${season.title} S${season.number}E${episode.number}: ${(error as Error).message}`);
+    }
   });
 
   if (queuedCount) {
     await withDb(options.dbPath, async (db) => {
-      for (const [torrent, episode] of Object.entries(data.active)) {
+      for (const [torrent, episode] of queuedEpisodes) {
+        if (isTracked(db.data, torrent)) continue;
         db.data.active[torrent] = episode;
       }
       await db.write();

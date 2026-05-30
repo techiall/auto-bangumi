@@ -44,28 +44,33 @@ async function cleanupMovedEpisodes(dbPath: string) {
   const config = await loadConfig(dbPath);
   const api = new QBittorrentApi(config.qbittorrent);
   const torrents = await api.torrentsByHash();
-  const cleaned = await withDb(dbPath, async (db) => {
-    let cleaned = 0;
+  const candidates = await withDb(dbPath, (db) =>
+    Object.entries(db.data.completed)
+      .filter(([, episode]) => !episode.qbitRemovedAt)
+      .map(([hash]) => hash),
+  );
+  const cleanedHashes: string[] = [];
 
-    for (const [hash, episode] of Object.entries(db.data.completed)) {
-      if (episode.qbitRemovedAt) continue;
-
-      const torrent = torrents.get(hash);
-      if (!torrent) {
-        markQbittorrentRemoved(db.data, hash);
-        cleaned += 1;
-        continue;
-      }
-
-      if (!torrent.canCleanupDownloadedFiles()) continue;
-
-      await api.removeTorrent(hash, true);
-      markQbittorrentRemoved(db.data, hash);
-      cleaned += 1;
+  for (const hash of candidates) {
+    const torrent = torrents.get(hash);
+    if (!torrent) {
+      cleanedHashes.push(hash);
+      continue;
     }
 
-    if (cleaned) await db.write();
-    return cleaned;
+    if (!torrent.canCleanupDownloadedFiles()) continue;
+
+    await api.removeTorrent(hash, true);
+    cleanedHashes.push(hash);
+  }
+
+  const cleaned = await withDb(dbPath, async (db) => {
+    for (const hash of cleanedHashes) {
+      markQbittorrentRemoved(db.data, hash);
+    }
+
+    if (cleanedHashes.length) await db.write();
+    return cleanedHashes.length;
   });
 
   if (cleaned) logger.info(`Cleaned ${cleaned} moved torrent${cleaned === 1 ? '' : 's'} from qBittorrent`);

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { DownloadRecord, MovedHistoryRecord } from '~/components/downloads/download-record';
-import { HISTORY_PREVIEW_LIMIT, splitDownloadRows } from '~/components/downloads/download-model';
+import { splitDownloadRows } from '~/components/downloads/download-model';
 import { formatTime } from '~/components/downloads/download-format';
 import type { DownloadRow } from '~/components/downloads/download-types';
 
@@ -19,7 +19,6 @@ interface DownloadActivityBoardProps {
 export function DownloadActivityBoard({ rows, loading, error, lastUpdatedAt, onRefresh }: DownloadActivityBoardProps) {
   const [showHistory, setShowHistory] = useState(false);
   const { attentionRows, activeRows, moveJobRows, seedingRows, historyRows } = splitDownloadRows(rows);
-  const visibleHistoryRows = historyRows.slice(0, HISTORY_PREVIEW_LIMIT);
 
   return (
     <Card className="p-5">
@@ -87,18 +86,22 @@ export function DownloadActivityBoard({ rows, loading, error, lastUpdatedAt, onR
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium text-slate-200">Moved History</span>
-                <span className="block truncate text-xs text-slate-500">
-                  {historyRows.length} moved total, showing latest {Math.min(historyRows.length, HISTORY_PREVIEW_LIMIT)}
-                </span>
+                <span className="block truncate text-xs text-slate-500">{historyRows.length} moved total</span>
               </span>
             </span>
-            <span className="shrink-0 text-xs font-medium text-slate-500">{showHistory ? 'Hide' : 'Show recent'}</span>
+            <span className="shrink-0 text-xs font-medium text-slate-500">{showHistory ? 'Hide' : 'Show all'}</span>
           </button>
 
           {showHistory ? (
-            <div className="grid gap-2 border-t border-slate-800/80 bg-slate-950/36 p-3">
-              {visibleHistoryRows.length ? (
-                visibleHistoryRows.map((row) => <MovedHistoryRecord key={row.hash} row={row} />)
+            <div className="border-t border-slate-800/80 bg-slate-950/36 p-3">
+              {historyRows.length ? (
+                <div className="max-h-[34rem] overflow-y-auto pr-1 [scrollbar-color:#334155_transparent]">
+                  <div className="grid gap-2">
+                    {historyRows.map((row) => (
+                      <MovedHistoryRecord key={row.hash} row={row} />
+                    ))}
+                  </div>
+                </div>
               ) : (
                 <EmptySection icon={<CheckCircle2 className="size-4" />} text="No moved episodes yet." />
               )}

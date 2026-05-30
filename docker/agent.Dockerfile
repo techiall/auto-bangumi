@@ -1,20 +1,24 @@
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /usr/src/app/agent
 
-COPY agent/package*.json ./
+COPY package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci
 
-COPY agent ./
-RUN npm run build && npm prune --omit=dev
+COPY . ./
+RUN npm run build
 
-FROM node:24-alpine AS runner
+FROM node:26-alpine AS runner
+
+LABEL org.opencontainers.image.description="Auto Bangumi library mover agent for transferring completed downloads into the media library."
 
 WORKDIR /usr/src/app/agent
 ENV NODE_ENV=production
 
 COPY --from=builder /usr/src/app/agent/package*.json ./
-COPY --from=builder /usr/src/app/agent/node_modules ./node_modules
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 COPY --from=builder /usr/src/app/agent/dist ./dist
+
+USER node
 
 CMD ["node", "dist/agent.js"]

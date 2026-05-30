@@ -74,6 +74,8 @@ export interface AppDb {
   close(): void;
 }
 
+let dbQueue: Promise<unknown> = Promise.resolve();
+
 export function createDefaultData(): Data {
   return {
     subscriptions: [],
@@ -95,12 +97,17 @@ export async function createDb(dbPath = 'db/state.sqlite'): Promise<AppDb> {
 }
 
 export async function withDb<T>(dbPath: string | undefined, task: (db: AppDb) => T | Promise<T>): Promise<T> {
-  const db = await createDb(dbPath);
-  try {
-    return await task(db);
-  } finally {
-    db.close();
-  }
+  const run = dbQueue.then(async () => {
+    const db = await createDb(dbPath);
+    try {
+      return await task(db);
+    } finally {
+      db.close();
+    }
+  });
+
+  dbQueue = run.catch(() => undefined);
+  return run;
 }
 
 export function isTracked(data: Data, torrent: string) {

@@ -1,5 +1,8 @@
 import express from 'express';
 import { timingSafeEqual } from 'node:crypto';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import type { ReadableStream } from 'node:stream/web';
 import { logger } from './config/logger.js';
 import { getBangumiDetail, searchBangumi } from './mikan/api.js';
 import { DownloadService } from './downloads.js';
@@ -47,6 +50,48 @@ export function createApp(options: AppOptions = {}) {
     response.json(await downloads.state());
   });
 
+  registerMoverRoutes(app, moverJobs, moverToken);
+
+  app.post('/api/rss/refresh', async (_request, response) => {
+    response.json(await downloadTask({ dbPath }));
+  });
+
+  app.post('/api/seasons', async (request, response) => {
+    const config = await subscriptions.add(request.body);
+    response.status(201).json(config);
+
+    void downloadTask({ dbPath }).catch((error: unknown) => {
+      logger.warn(`Immediate subscription scan failed: ${(error as Error).message}`);
+    });
+  });
+
+  app.patch('/api/seasons', async (request, response) => {
+    response.json(await subscriptions.update(readRssQuery(request), request.body));
+  });
+
+  app.delete('/api/seasons', async (request, response) => {
+    response.json(await subscriptions.delete(readRssQuery(request)));
+  });
+
+  app.use('/api', apiErrorHandler);
+
+  return app;
+}
+
+export function createMoverApp(options: AppOptions = {}) {
+  const app = express();
+  const dbPath = options.dbPath ?? 'db/state.sqlite';
+  const moverJobs = new MoverJobService(dbPath);
+  const moverToken = readMoverApiToken({ requireExplicit: true });
+
+  app.use(express.json());
+  registerMoverRoutes(app, moverJobs, moverToken);
+  app.use('/api', apiErrorHandler);
+
+  return app;
+}
+
+function registerMoverRoutes(app: express.Express, moverJobs: MoverJobService, moverToken: string) {
   app.get('/api/mover/jobs', (request, response, next) => {
     if (!isAuthorizedMoverRequest(request, moverToken)) {
       response.status(401).json({ message: 'Unauthorized mover request.' });
@@ -77,6 +122,27 @@ export function createApp(options: AppOptions = {}) {
     moverJobs.complete(request.params.hash, request.body).then((result) => response.json(result), next);
   });
 
+  app.get('/api/mover/jobs/:hash/source', async (request, response, next) => {
+    if (!isAuthorizedMoverRequest(request, moverToken)) {
+      response.status(401).json({ message: 'Unauthorized mover request.' });
+      return;
+    }
+
+    try {
+      const source = await moverJobs.openSource(request.params.hash);
+      if (!source.body) throw new HttpError(502, 'Download source returned an empty body.');
+
+      const contentType = source.headers.get('content-type');
+      const contentLength = source.headers.get('content-length');
+      if (contentType) response.setHeader('content-type', contentType);
+      if (contentLength) response.setHeader('content-length', contentLength);
+
+      await pipeline(Readable.fromWeb(source.body as ReadableStream), response);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.post('/api/mover/jobs/:hash/fail', (request, response, next) => {
     if (!isAuthorizedMoverRequest(request, moverToken)) {
       response.status(401).json({ message: 'Unauthorized mover request.' });
@@ -85,47 +151,34 @@ export function createApp(options: AppOptions = {}) {
 
     moverJobs.fail(request.params.hash, request.body).then((result) => response.json(result), next);
   });
-
-  app.post('/api/rss/refresh', async (_request, response) => {
-    response.json(await downloadTask({ dbPath }));
-  });
-
-  app.post('/api/seasons', async (request, response) => {
-    const config = await subscriptions.add(request.body);
-    response.status(201).json(config);
-
-    void downloadTask({ dbPath }).catch((error: unknown) => {
-      logger.warn(`Immediate subscription scan failed: ${(error as Error).message}`);
-    });
-  });
-
-  app.patch('/api/seasons/:index', async (request, response) => {
-    const index = Number(request.params.index);
-    response.json(await subscriptions.update(index, request.body));
-  });
-
-  app.delete('/api/seasons/:index', async (request, response) => {
-    const index = Number(request.params.index);
-    response.json(await subscriptions.delete(index));
-  });
-
-  app.use(
-    '/api',
-    (error: unknown, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      const status = error instanceof HttpError ? error.status : 500;
-      response.status(status).json({ message });
-    },
-  );
-
-  return app;
 }
 
-function readMoverApiToken() {
+function apiErrorHandler(
+  error: unknown,
+  _request: express.Request,
+  response: express.Response,
+  _next: express.NextFunction,
+) {
+  const message = error instanceof Error ? error.message : 'Unknown error';
+  const status = error instanceof HttpError ? error.status : 500;
+  response.status(status).json({ message });
+}
+
+function readRssQuery(request: express.Request) {
+  const rss = String(request.query.rss ?? '').trim();
+  if (!rss) throw new HttpError(400, 'RSS is required.');
+  return rss;
+}
+
+function readMoverApiToken(options: { requireExplicit?: boolean } = {}) {
   const token = process.env.MOVER_API_TOKEN?.trim();
 
   if (token?.startsWith('replace-with-')) {
     throw new Error('MOVER_API_TOKEN must be changed from the placeholder value.');
+  }
+
+  if (options.requireExplicit && !token) {
+    throw new Error('MOVER_API_TOKEN is required for the mover API.');
   }
 
   return token || DEFAULT_MOVER_API_TOKEN;
