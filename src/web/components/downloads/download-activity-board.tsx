@@ -80,7 +80,7 @@ export function DownloadActivityBoard({
           title="Seeding"
           icon={<Send className="size-4" />}
           rows={seedingRows}
-          emptyText="No moved episodes are seeding right now."
+          emptyText="No qB seeding episodes right now."
           tone="seeding"
         />
 

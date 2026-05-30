@@ -8,11 +8,13 @@ import {
   formatRatio,
   normalizeProgress,
 } from '~/components/downloads/download-format';
+import { isQbSeedingRow } from '~/components/downloads/download-model';
 import type { CompletedDownloadRow, DownloadRow } from '~/components/downloads/download-types';
 
 export const DownloadRecord = memo(function DownloadRecord({ row }: { row: DownloadRow }) {
   const qbit = row.qbit;
   const isCompleted = row.state === 'completed';
+  const isSeeding = isQbSeedingRow(row);
   const season = row.season ?? 1;
 
   return (
@@ -29,8 +31,8 @@ export const DownloadRecord = memo(function DownloadRecord({ row }: { row: Downl
         </div>
 
         <div className="grid gap-3">
-          {row.state === 'completed' ? <SeedingCell row={row} /> : null}
-          {row.state === 'active' ? <ProgressCell row={row} /> : null}
+          {isSeeding ? <SeedingCell row={row} /> : null}
+          {row.state === 'active' && !isSeeding ? <ProgressCell row={row} /> : null}
           {row.state === 'moveJob' ? <MoveJobCell row={row} /> : null}
           <QbittorrentMeta row={row} />
         </div>
@@ -155,9 +157,9 @@ function MoveJobCell({ row }: { row: DownloadRow & { state: 'moveJob' } }) {
   );
 }
 
-function SeedingCell({ row }: { row: DownloadRow & { state: 'completed' } }) {
+function SeedingCell({ row }: { row: DownloadRow }) {
   if (row.qbitError) return <span className="text-rose-300">qB unavailable</span>;
-  if (row.qbitRemovedAt) return <span className="text-slate-500">Cleaned</span>;
+  if (row.state === 'completed' && row.qbitRemovedAt) return <span className="text-slate-500">Cleaned</span>;
   if (!row.qbit) return <span className="text-slate-500">Moved</span>;
 
   const ratioPercent = normalizeProgress(row.qbit.ratio);
@@ -198,7 +200,7 @@ function QbittorrentMeta({ row }: { row: DownloadRow }) {
 
   return (
     <div className="grid gap-2 text-xs sm:grid-cols-2">
-      {row.state === 'completed' ? (
+      {isQbSeedingRow(row) ? (
         <>
           <Metric label="Time" value={formatDuration(qbit.seedingTime)} />
           <Metric label="Upload" value={`${formatBytes(qbit.uploadSpeed)}/s`} />

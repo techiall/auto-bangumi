@@ -9,7 +9,7 @@ export function DownloadStatusNotes() {
       </summary>
       <div className="mt-3 grid gap-2">
         <StatusNote label="Needs Attention" text="Missing qB status or a qB/API error that may need manual checking." />
-        <StatusNote label="Active" text="Tracked and expected to exist in qBittorrent." />
+        <StatusNote label="Active" text="Still downloading or checking in qBittorrent." />
         <StatusNote
           label="Ready to move"
           text="qB finished downloading and the download server has created a library transfer job."
@@ -22,7 +22,10 @@ export function DownloadStatusNotes() {
           label="Move failed"
           text="The library agent reported an error; the downloaded source is kept for retry or manual checking."
         />
-        <StatusNote label="Seeding" text="Moved to the library, still present in qB until cleanup limit is reached." />
+        <StatusNote
+          label="Seeding"
+          text="qB has finished downloading and is uploading; it may be waiting for move, moving, or already moved until cleanup."
+        />
         <StatusNote label="Moved" text="Copied into the library and no longer visible in qBittorrent." />
         <StatusNote label="Cleaned" text="Moved, then removed from qBittorrent together with its source files." />
         <StatusNote label="Not found" text="Tracked locally, but qB currently has no matching torrent." />
