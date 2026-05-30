@@ -15,6 +15,9 @@ import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
 import { Route as ApiConfigRouteImport } from './routes/api/config'
 import { Route as ApiRssRefreshRouteImport } from './routes/api/rss/refresh'
 import { Route as ApiMikanSearchRouteImport } from './routes/api/mikan/search'
+import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
+import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
+import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiMikanBangumiIdRouteImport } from './routes/api/mikan/bangumi.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +50,21 @@ const ApiMikanSearchRoute = ApiMikanSearchRouteImport.update({
   path: '/api/mikan/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthSessionRoute = ApiAuthSessionRouteImport.update({
+  id: '/api/auth/session',
+  path: '/api/auth/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
+  id: '/api/auth/logout',
+  path: '/api/auth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
+  id: '/api/auth/login',
+  path: '/api/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMikanBangumiIdRoute = ApiMikanBangumiIdRouteImport.update({
   id: '/api/mikan/bangumi/$id',
   path: '/api/mikan/bangumi/$id',
@@ -58,6 +76,9 @@ export interface FileRoutesByFullPath {
   '/api/config': typeof ApiConfigRoute
   '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
@@ -67,6 +88,9 @@ export interface FileRoutesByTo {
   '/api/config': typeof ApiConfigRoute
   '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
@@ -77,6 +101,9 @@ export interface FileRoutesById {
   '/api/config': typeof ApiConfigRoute
   '/api/downloads': typeof ApiDownloadsRoute
   '/api/seasons': typeof ApiSeasonsRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
@@ -88,6 +115,9 @@ export interface FileRouteTypes {
     | '/api/config'
     | '/api/downloads'
     | '/api/seasons'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/session'
     | '/api/mikan/search'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
@@ -97,6 +127,9 @@ export interface FileRouteTypes {
     | '/api/config'
     | '/api/downloads'
     | '/api/seasons'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/session'
     | '/api/mikan/search'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
@@ -106,6 +139,9 @@ export interface FileRouteTypes {
     | '/api/config'
     | '/api/downloads'
     | '/api/seasons'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/session'
     | '/api/mikan/search'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
@@ -116,6 +152,9 @@ export interface RootRouteChildren {
   ApiConfigRoute: typeof ApiConfigRoute
   ApiDownloadsRoute: typeof ApiDownloadsRoute
   ApiSeasonsRoute: typeof ApiSeasonsRoute
+  ApiAuthLoginRoute: typeof ApiAuthLoginRoute
+  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
+  ApiAuthSessionRoute: typeof ApiAuthSessionRoute
   ApiMikanSearchRoute: typeof ApiMikanSearchRoute
   ApiRssRefreshRoute: typeof ApiRssRefreshRoute
   ApiMikanBangumiIdRoute: typeof ApiMikanBangumiIdRoute
@@ -165,6 +204,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMikanSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/session': {
+      id: '/api/auth/session'
+      path: '/api/auth/session'
+      fullPath: '/api/auth/session'
+      preLoaderRoute: typeof ApiAuthSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/logout': {
+      id: '/api/auth/logout'
+      path: '/api/auth/logout'
+      fullPath: '/api/auth/logout'
+      preLoaderRoute: typeof ApiAuthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/login': {
+      id: '/api/auth/login'
+      path: '/api/auth/login'
+      fullPath: '/api/auth/login'
+      preLoaderRoute: typeof ApiAuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/mikan/bangumi/$id': {
       id: '/api/mikan/bangumi/$id'
       path: '/api/mikan/bangumi/$id'
@@ -180,6 +240,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiConfigRoute: ApiConfigRoute,
   ApiDownloadsRoute: ApiDownloadsRoute,
   ApiSeasonsRoute: ApiSeasonsRoute,
+  ApiAuthLoginRoute: ApiAuthLoginRoute,
+  ApiAuthLogoutRoute: ApiAuthLogoutRoute,
+  ApiAuthSessionRoute: ApiAuthSessionRoute,
   ApiMikanSearchRoute: ApiMikanSearchRoute,
   ApiRssRefreshRoute: ApiRssRefreshRoute,
   ApiMikanBangumiIdRoute: ApiMikanBangumiIdRoute,

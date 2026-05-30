@@ -8,6 +8,13 @@ import type {
   UpdateSeasonPayload,
 } from '~/types';
 
+export class AuthenticationError extends Error {
+  constructor(message = 'Authentication required.') {
+    super(message);
+    this.name = 'AuthenticationError';
+  }
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     headers: {
@@ -20,6 +27,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     const message = typeof data?.message === 'string' ? data.message : `Request failed (${response.status})`;
+    if (response.status === 401) throw new AuthenticationError(message);
     throw new Error(message);
   }
 
@@ -75,4 +83,21 @@ export function fetchDownloads() {
 export function downloadsWebSocketUrl() {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   return `${protocol}//${window.location.host}/api/downloads/ws`;
+}
+
+export function login(username: string, password: string) {
+  return request<{ ok: true }>('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
+  });
+}
+
+export function logout() {
+  return request<{ ok: true }>('/api/auth/logout', {
+    method: 'POST',
+  });
+}
+
+export function fetchSession() {
+  return request<{ authenticated: boolean }>('/api/auth/session');
 }
