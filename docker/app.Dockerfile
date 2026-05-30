@@ -1,4 +1,4 @@
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -9,7 +9,7 @@ COPY tsconfig.json tsconfig.web.json vite.config.ts ./
 COPY src ./src
 RUN npm run build && npm run build:web && npm prune --omit=dev
 
-FROM node:24-alpine AS runner
+FROM node:26-alpine AS runner
 
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
