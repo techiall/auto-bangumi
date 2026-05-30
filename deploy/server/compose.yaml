@@ -12,7 +12,8 @@ services:
     depends_on:
       - qbittorrent
     environment:
-      MOVER_API_TOKEN: ${MOVER_API_TOKEN}
+      SERVER_USERNAME: ${SERVER_USERNAME}
+      SERVER_PASSWORD: ${SERVER_PASSWORD}
       MOVER_API_PORT: 3002
     volumes:
       - ./db:/usr/src/app/db

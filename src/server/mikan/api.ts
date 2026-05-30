@@ -1,30 +1,9 @@
 import * as cheerio from 'cheerio';
 import { fetchWithRetry } from '../utils/fetch-with-retry.js';
 import { suggestFolderName } from './anime-title.js';
+import type { MikanBangumiDetail, MikanBangumiGroup, MikanSearchResult } from './types.js';
 
 const MIKAN_BASE_URL = 'https://mikanani.me';
-
-export interface MikanSearchResult {
-  id: number;
-  title: string;
-  url: string;
-  imageUrl?: string;
-}
-
-export interface MikanBangumiGroup {
-  id: number;
-  name: string;
-  rss: string;
-}
-
-export interface MikanBangumiDetail {
-  id: number;
-  title: string;
-  folder: string;
-  url: string;
-  rss: string;
-  groups: MikanBangumiGroup[];
-}
 
 export async function searchBangumi(query: string): Promise<MikanSearchResult[]> {
   const keyword = query.trim();

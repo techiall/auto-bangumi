@@ -1,10 +1,5 @@
 import type { Item } from 'rss-parser';
-
-export interface Episode {
-  torrent: string;
-  number: number;
-  enclosureUrl: string;
-}
+import type { Episode } from './types.js';
 
 export class EpisodeParse {
   private readonly episode: Item;
@@ -13,7 +8,7 @@ export class EpisodeParse {
     this.episode = episode;
   }
 
-  async parse() {
+  async parse(): Promise<Episode | undefined> {
     const title = this.episode.title;
     if (!title) return undefined;
 
@@ -30,7 +25,7 @@ export class EpisodeParse {
       torrent,
       number,
       enclosureUrl,
-    } as Episode;
+    };
   }
 
   private parseEpisodeNumber(title: string) {

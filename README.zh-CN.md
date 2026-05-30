@@ -79,7 +79,7 @@ graph LR
 - 做种清理：分享率达到 `3.0` 或做种满 `60` 分钟
 - Tracker 列表：`https://cf.trackerslist.com/all.txt`
 
-浏览器只能读取公开的订阅和下载状态。qBittorrent 凭据和迁移 token 只保存在服务端。
+Server 登录使用 Basic Auth。
 
 ## 本地开发
 

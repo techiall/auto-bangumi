@@ -1,22 +1,24 @@
 import type { Server } from 'node:http';
 import { WebSocket, WebSocketServer } from 'ws';
+import { basicAuthChallengeHeader, isAuthorizedBasicAuthHeader, readServerCredentials } from './auth/basic-auth.js';
 import { logger } from './config/logger.js';
 import { DownloadService } from './downloads.js';
-
-export interface DownloadWebSocketOptions {
-  dbPath: string;
-  path?: string;
-  intervalMs?: number;
-}
+import type { DownloadWebSocketOptions } from './downloads/types.js';
 
 export function attachDownloadWebSocket(server: Server, options: DownloadWebSocketOptions) {
   const path = options.path ?? '/api/downloads/ws';
   const intervalMs = options.intervalMs ?? Number(process.env.DOWNLOADS_WS_INTERVAL_MS ?? 2000);
   const service = new DownloadService(options.dbPath);
+  const credentials = readServerCredentials();
   const wss = new WebSocketServer({ noServer: true });
 
   server.on('upgrade', (request, socket, head) => {
     if (!request.url || new URL(request.url, 'http://localhost').pathname !== path) return;
+    if (!isAuthorizedBasicAuthHeader(request.headers.authorization, credentials)) {
+      socket.write(`HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: ${basicAuthChallengeHeader()}\r\n\r\n`);
+      socket.destroy();
+      return;
+    }
 
     wss.handleUpgrade(request, socket, head, (client) => {
       wss.emit('connection', client, request);

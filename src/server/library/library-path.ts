@@ -1,4 +1,5 @@
 import { numberDisplayString } from '../utils/number.js';
+import { sanitizePathSegment } from '../utils/path.js';
 
 export interface LibraryTargetInput {
   folder: string;
@@ -13,6 +14,6 @@ export function createLibraryTargetRelativePath(input: LibraryTargetInput): stri
     `Season ${numberDisplayString(input.season)}`,
     `${numberDisplayString(input.episode)}${input.extension}`,
   ]
-    .map((segment) => segment.replace(/[<>:"/\\|?*\u0000-\u001F]/g, '_').trim() || '_')
+    .map((segment) => sanitizePathSegment(segment) || '_')
     .join('/');
 }

@@ -8,7 +8,7 @@
 
 - `deploy/server/`：下载节点，运行 qBittorrent 和 Web/API 服务。
 - `deploy/agent/`：媒体库节点，运行入库 Agent，并把宿主机媒体库目录挂载到容器内的 `/library`。
-- `MOVER_API_TOKEN`：两端共用的密钥，下载节点和媒体库节点必须保持一致。
+- `SERVER_USERNAME` 和 `SERVER_PASSWORD`：Web UI 和远程 Agent 共用的 Basic Auth 登录凭据。
 
 只在可信的 LAN 或 VPN 内开放 Server API。不要把 qBittorrent 或它的内部文件服务直接暴露到公网。
 
@@ -22,11 +22,12 @@ cp .env.example .env
 编辑 `.env`：
 
 ```env
-MOVER_API_TOKEN=<两端使用同一个密钥>
+SERVER_USERNAME=admin
+SERVER_PASSWORD=<两端使用同一个密码>
 SERVER_API_BIND=<可信 LAN 或 VPN 地址>
 ```
 
-可以用下面的命令生成一个随机密钥：
+可以用下面的命令生成一个随机密码：
 
 ```bash
 openssl rand -base64 32
@@ -56,7 +57,8 @@ cp .env.example .env
 编辑 `.env`：
 
 ```env
-MOVER_API_TOKEN=<两端使用同一个密钥>
+SERVER_USERNAME=admin
+SERVER_PASSWORD=<两端使用同一个密码>
 DOWNLOAD_SERVER_URL=http://<下载节点地址>:3001
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```

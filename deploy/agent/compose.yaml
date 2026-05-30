@@ -4,7 +4,8 @@ services:
     environment:
       DOWNLOAD_SERVER_URL: ${DOWNLOAD_SERVER_URL}
       LIBRARY_DISPLAY_ROOT: ${HOST_LIBRARY_ROOT}
-      MOVER_API_TOKEN: ${MOVER_API_TOKEN}
+      SERVER_USERNAME: ${SERVER_USERNAME}
+      SERVER_PASSWORD: ${SERVER_PASSWORD}
     volumes:
       - ${HOST_LIBRARY_ROOT}:/library
     restart: unless-stopped

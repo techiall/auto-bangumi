@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import type { Episode } from '../mikan/episode.js';
+import type { Episode } from '../mikan/types.js';
 import type { SubscriptionConfig } from '../config/app-config.js';
 
 interface EpisodeMetadataFallback {

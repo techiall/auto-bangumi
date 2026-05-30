@@ -8,23 +8,11 @@ import { SeasonParse } from '../mikan/season.js';
 import { runRecurringTask } from './task-runner.js';
 import { pathToFileURL } from 'node:url';
 import { formatInterval } from '../utils/format.js';
-import type { Episode } from '../mikan/episode.js';
-import type { Season } from '../mikan/season.js';
+import type { Episode, Season } from '../mikan/types.js';
+import type { DownloadTaskOptions, SubscriptionScanResult } from './types.js';
 
 const DOWNLOAD_INTERVAL_MS = 10 * 1000 * 60;
 const DOWNLOAD_CONCURRENCY = 4;
-
-export interface DownloadTaskOptions {
-  dbPath?: string;
-}
-
-export interface SubscriptionScanResult {
-  subscriptionCount: number;
-  activeSubscriptionCount: number;
-  archivedSubscriptionCount: number;
-  parsedSubscriptionCount: number;
-  queuedCount: number;
-}
 
 let currentSubscriptionScan: Promise<SubscriptionScanResult> | undefined;
 

@@ -12,6 +12,8 @@ services:
     depends_on:
       - qbittorrent
     environment:
+      SERVER_USERNAME: ${SERVER_USERNAME}
+      SERVER_PASSWORD: ${SERVER_PASSWORD}
       LIBRARY_DISPLAY_ROOT: ${HOST_LIBRARY_ROOT}
     volumes:
       - ./db:/usr/src/app/db
@@ -24,6 +26,8 @@ services:
     depends_on:
       - server
     environment:
+      SERVER_USERNAME: ${SERVER_USERNAME}
+      SERVER_PASSWORD: ${SERVER_PASSWORD}
       LIBRARY_DISPLAY_ROOT: ${HOST_LIBRARY_ROOT}
     volumes:
       - ${HOST_LIBRARY_ROOT}:/library

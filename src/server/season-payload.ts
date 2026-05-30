@@ -1,4 +1,4 @@
-import { type SubscriptionConfig } from './config/app-config.js';
+import type { SubscriptionConfig } from './config/app-config.js';
 import { HttpError } from './http-error.js';
 
 export interface SeasonPayload {

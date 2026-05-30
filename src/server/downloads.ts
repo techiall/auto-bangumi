@@ -1,36 +1,12 @@
 import { loadConfig } from './config/app-config.js';
 import { logger } from './config/logger.js';
 import { QBittorrentApi } from './qbittorrent/api.js';
-import type { QBittorrentTorrentStatus } from './qbittorrent/api.js';
+import type { QBittorrentTorrentStatus } from './qbittorrent/types.js';
 import { withDb } from './state/db.js';
 import type { ActiveEpisode, CompletedEpisode, MoveJobRecord } from './state/db.js';
 import { resolveActiveEpisodeMetadata, resolveCompletedEpisodeMetadata } from './state/episode-metadata.js';
 import { syncMoveJobs } from './move-job-sync.js';
-
-export interface DownloadState {
-  active: Record<string, ActiveEpisodeWithStatus>;
-  moveJobs: Record<string, MoveJobWithStatus>;
-  completed: Record<string, CompletedEpisodeWithStatus>;
-}
-
-export type ActiveEpisodeWithStatus = ActiveEpisode & {
-  qbit?: QBittorrentTorrentStatus;
-  qbitError?: string;
-};
-
-export type CompletedEpisodeWithStatus = CompletedEpisode & {
-  qbit?: QBittorrentTorrentStatus;
-  qbitError?: string;
-};
-
-export type MoveJobWithStatus = MoveJobRecord & {
-  qbit?: QBittorrentTorrentStatus;
-  qbitError?: string;
-};
-
-type QbittorrentStatuses =
-  | { statuses: Map<string, QBittorrentTorrentStatus>; error?: never }
-  | { statuses?: never; error: string };
+import type { DownloadState, QbittorrentStatuses } from './downloads/types.js';
 
 export class DownloadService {
   constructor(private readonly dbPath: string) {}

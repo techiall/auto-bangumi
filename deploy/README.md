@@ -10,7 +10,7 @@ Use the root `compose.yaml` for a normal single-machine image-based setup. Use t
 
 - `deploy/server/`: download server machine. Runs qBittorrent plus the web/API server.
 - `deploy/agent/`: library machine. Runs only the mover agent and mounts the host media folder at `/library`.
-- `MOVER_API_TOKEN`: shared secret. Use the same value on both machines.
+- `SERVER_USERNAME` and `SERVER_PASSWORD`: Basic Auth credentials shared by the web UI and remote agent.
 
 Only expose the server API on a trusted LAN or VPN. Do not publish qBittorrent or its internal file server.
 
@@ -24,11 +24,12 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-MOVER_API_TOKEN=<same-secret-on-both-machines>
+SERVER_USERNAME=admin
+SERVER_PASSWORD=<same-password-on-both-machines>
 SERVER_API_BIND=<private-lan-or-vpn-address>
 ```
 
-Generate a token:
+Generate a password:
 
 ```bash
 openssl rand -base64 32
@@ -58,7 +59,8 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-MOVER_API_TOKEN=<same-secret-on-both-machines>
+SERVER_USERNAME=admin
+SERVER_PASSWORD=<same-password-on-both-machines>
 DOWNLOAD_SERVER_URL=http://<download-server-private-address>:3001
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```

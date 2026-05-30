@@ -1,11 +1,8 @@
 import type { TorrentFile } from '@ctrl/qbittorrent';
 import path from 'node:path';
+import { basicAuthorizationHeader } from '../auth/basic-auth.js';
 import type { QbittorrentConfig, FileServerConfig } from '../config/app-config.js';
-
-export interface DownloadedFile {
-  remotePath: string;
-  extension: string;
-}
+import type { DownloadedFile } from './types.js';
 
 export function pickDownloadedFile(contentPath: string, files: TorrentFile[]): DownloadedFile {
   const completedFiles = files.filter((file) => file.progress >= 1 && file.priority > 0);
@@ -89,6 +86,6 @@ export function fileServerAuthorizationHeaders(fileServer: FileServerConfig): Re
   }
 
   return {
-    Authorization: `Basic ${Buffer.from(`${fileServer.username}:${fileServer.password}`).toString('base64')}`,
+    Authorization: basicAuthorizationHeader(fileServer.username, fileServer.password),
   };
 }

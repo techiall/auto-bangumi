@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import * as React from 'react';
+import type { ReactNode } from 'react';
 import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
 import appCss from '~/styles/app.css?url';
 
@@ -27,7 +27,7 @@ function RootComponent() {
   );
 }
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
       <head>

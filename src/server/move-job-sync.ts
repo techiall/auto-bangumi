@@ -5,12 +5,9 @@ import { markQbittorrentRemoved, withDb } from './state/db.js';
 import { runRecurringTask } from './tasks/task-runner.js';
 import { MoverJobService } from './mover-jobs.js';
 import { formatInterval } from './utils/format.js';
+import type { MoveJobSyncOptions } from './tasks/types.js';
 
 const MOVE_JOB_SYNC_INTERVAL_MS = Number(process.env.MOVE_JOB_SYNC_INTERVAL_MS ?? 30_000);
-
-export interface MoveJobSyncOptions {
-  dbPath?: string;
-}
 
 let currentSync: Promise<void> | undefined;
 

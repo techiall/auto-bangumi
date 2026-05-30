@@ -16,7 +16,7 @@
 - Do not add compatibility for legacy `db/db.json` or `config/config.yaml`.
 - Do not reintroduce the old `seasons` plus `manager` database shape.
 - Do not expose qBittorrent ports unless explicitly requested.
-- Do not expose qBittorrent credentials or `MOVER_API_TOKEN` to the browser.
+- Do not expose qBittorrent credentials or server Basic Auth passwords to the browser.
 - Keep root npm scripts minimal: `build`, `dev`, `check`, and targeted helpers only.
 - Keep Dockerfiles under `docker/` with `*.Dockerfile` names.
 - Keep Docker images on Node 26 unless explicitly changed.

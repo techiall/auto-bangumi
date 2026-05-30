@@ -10,10 +10,7 @@ import {
   type SeasonPayload,
   type SeasonUpdatePayload,
 } from './season-payload.js';
-
-export interface PublicConfig {
-  subscriptions: Config['subscriptions'];
-}
+import type { PublicConfig } from './subscriptions/types.js';
 
 export class SubscriptionService {
   constructor(private readonly dbPath: string) {}

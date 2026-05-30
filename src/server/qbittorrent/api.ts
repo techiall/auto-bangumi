@@ -3,38 +3,12 @@ import type { TorrentFile } from '@ctrl/qbittorrent';
 import type { QbittorrentConfig } from '../config/app-config.js';
 import { TorrentState } from '@ctrl/shared-torrent';
 import type { NormalizedTorrent } from '@ctrl/shared-torrent';
-import type { Episode } from '../mikan/episode.js';
+import type { Episode } from '../mikan/types.js';
 import { fetchWithRetry } from '../utils/fetch-with-retry.js';
 import { logger } from '../config/logger.js';
+import type { QBittorrentTorrent, QBittorrentTorrentStatus } from './types.js';
 
 const loggedApiConnections = new Set<string>();
-
-export interface QBittorrentTorrent {
-  torrentHash: string;
-  state: TorrentState;
-  rawState: string;
-  downloadPath: string;
-
-  canMove(): boolean;
-  canCleanupDownloadedFiles(): boolean;
-}
-
-export interface QBittorrentTorrentStatus {
-  progress: number;
-  ratio: number;
-  downloadSpeed: number;
-  uploadSpeed: number;
-  eta: number;
-  seedingTime: number;
-  state: string;
-  stateMessage: string;
-  connectedSeeds: number;
-  connectedPeers: number;
-  totalSeeds: number;
-  totalPeers: number;
-  totalSize: number;
-  totalUploaded: number;
-}
 
 export class QBittorrentApi {
   private readonly client: QBittorrent;

@@ -1,3 +1,5 @@
+import { sanitizePathSegment } from '../utils/path.js';
+
 interface AniListResponse {
   data?: {
     Media?: {
@@ -14,8 +16,6 @@ interface BangumiTvResponse {
     name?: string;
   }>;
 }
-
-const invalidFolderChars = /[<>:"/\\|?*\u0000-\u001f]/g;
 
 export async function suggestFolderName(title: string, fallback: string) {
   const aniListTitle = await searchAniListTitleCandidates(title).catch(() => undefined);
@@ -93,8 +93,7 @@ async function searchBangumiTvTitle(title: string) {
 
 function normalizeFolderName(value: string) {
   return (
-    value
-      .replace(invalidFolderChars, ' ')
+    sanitizePathSegment(value, ' ')
       .replace(/\s+/g, ' ')
       .replace(/[. ]+$/g, '')
       .trim() || 'Unknown'

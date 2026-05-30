@@ -1,4 +1,6 @@
 import { withDb } from '../state/db.js';
+import type { SubscriptionConfig } from '../../shared/api-types.js';
+export type { SubscriptionConfig } from '../../shared/api-types.js';
 
 export async function loadConfig(dbPath = 'db/state.sqlite'): Promise<Config> {
   return withDb(dbPath, (db) => ({
@@ -102,15 +104,6 @@ function envList(name: string, fallback: string[] = []) {
 export interface Config {
   subscriptions: SubscriptionConfig[];
   qbittorrent: QbittorrentConfig;
-}
-
-export interface SubscriptionConfig {
-  rss: string;
-  title: string;
-  folder: string;
-  season: number;
-  filters?: string[];
-  archived: boolean;
 }
 
 export interface QbittorrentConfig {

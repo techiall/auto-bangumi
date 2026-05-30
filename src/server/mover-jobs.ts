@@ -8,21 +8,10 @@ import type { AppDb, MoveJob, MoveJobRecord } from './state/db.js';
 import { resolveActiveEpisodeMetadata } from './state/episode-metadata.js';
 import { HttpError } from './http-error.js';
 import { fetchWithRetry } from './utils/fetch-with-retry.js';
+import type { MoverJobPayload } from './mover/types.js';
 
 const DEFAULT_LEASE_MS = 15 * 60 * 1000;
 const MAX_MOVE_ATTEMPTS = 5;
-
-export interface MoverJobPayload {
-  id: string;
-  title: string;
-  folder: string;
-  season: number;
-  episode: number;
-  sourceUrl: string;
-  sourceHeaders: Record<string, string>;
-  targetRelativePath: string;
-  attempts: number;
-}
 
 export class MoverJobService {
   constructor(private readonly dbPath: string) {}
@@ -199,16 +188,20 @@ function isClaimable(job: MoveJobRecord, now: Date) {
 }
 
 function parseDisplayTargetPath(payload: unknown) {
-  if (!payload || typeof payload !== 'object') return undefined;
-  const targetPath = String(
-    (payload as { displayTargetPath?: unknown; targetPath?: unknown }).displayTargetPath ??
-      (payload as { targetPath?: unknown }).targetPath ??
-      '',
-  ).trim();
+  const body = toRecord(payload);
+  if (!body) return undefined;
+
+  const targetPath = String(body.displayTargetPath ?? body.targetPath ?? '').trim();
   return targetPath || undefined;
 }
 
 function parseErrorMessage(payload: unknown) {
-  if (!payload || typeof payload !== 'object' || !('message' in payload)) return 'Mover failed without details.';
-  return String((payload as { message?: unknown }).message ?? '').trim() || 'Mover failed without details.';
+  const body = toRecord(payload);
+  if (!body) return 'Mover failed without details.';
+
+  return String(body.message ?? '').trim() || 'Mover failed without details.';
+}
+
+function toRecord(value: unknown): Record<string, unknown> | undefined {
+  return value && typeof value === 'object' ? (value as Record<string, unknown>) : undefined;
 }

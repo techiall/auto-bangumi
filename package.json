@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "build:web": "vite build && tsc -p tsconfig.web.json --noEmit",
-    "check": "npm run build && npm run build:web && npm --prefix agent run build && npm run format:check",
+    "check": "npm run build && npm run build:web && npm --prefix agent run build && npm run lint && npm run format:check",
+    "lint": "eslint src agent/src vite.config.ts eslint.config.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "server:dev": "tsx watch src/server/dev-server.ts",

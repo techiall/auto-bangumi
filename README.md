@@ -81,7 +81,7 @@ Common defaults:
 - Seeding cleanup: ratio `3.0` or `60` minutes
 - Tracker list: `https://cf.trackerslist.com/all.txt`
 
-The browser only receives public subscription and download data. qBittorrent credentials and mover tokens stay server-side.
+Server login uses Basic Auth.
 
 ## Local Development
 
