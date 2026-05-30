@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { StateBox } from '~/components/subscription/shared';
 import { SubscriptionCard } from '~/components/subscription/subscription-card';
+import type { SubscriptionDownloadSummary } from '~/components/downloads/download-types';
 import type { SubscriptionConfig, UpdateSeasonPayload } from '~/types';
 
 interface CurrentSubscriptionsProps {
@@ -12,10 +13,12 @@ interface CurrentSubscriptionsProps {
   isLoading: boolean;
   isRssRefreshing: boolean;
   pendingSubscriptionKeys: Set<string>;
+  downloadSummaries: ReadonlyMap<string, SubscriptionDownloadSummary>;
   onReload: () => void;
   onRefreshRss: () => void;
   onDelete: (subscriptionKey: string) => void;
   onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
+  onViewDownloads: (subscriptionKey: string) => void;
 }
 
 export function CurrentSubscriptions({
@@ -23,10 +26,12 @@ export function CurrentSubscriptions({
   isLoading,
   isRssRefreshing,
   pendingSubscriptionKeys,
+  downloadSummaries,
   onReload,
   onRefreshRss,
   onDelete,
   onUpdate,
+  onViewDownloads,
 }: CurrentSubscriptionsProps) {
   const [filter, setFilter] = useState('');
   const [showArchived, setShowArchived] = useState(false);
@@ -76,8 +81,10 @@ export function CurrentSubscriptions({
           showArchived={showArchived}
           onToggleArchived={() => setShowArchived((value) => !value)}
           pendingSubscriptionKeys={pendingSubscriptionKeys}
+          downloadSummaries={downloadSummaries}
           onDelete={onDelete}
           onUpdate={onUpdate}
+          onViewDownloads={onViewDownloads}
         />
       </CardContent>
     </Card>
@@ -90,18 +97,22 @@ function SubscriptionListState({
   isLoading,
   showArchived,
   pendingSubscriptionKeys,
+  downloadSummaries,
   onToggleArchived,
   onDelete,
   onUpdate,
+  onViewDownloads,
 }: {
   subscriptions: Array<{ subscription: SubscriptionConfig; key: string }>;
   filteredSubscriptions: Array<{ subscription: SubscriptionConfig; key: string }>;
   isLoading: boolean;
   showArchived: boolean;
   pendingSubscriptionKeys: Set<string>;
+  downloadSummaries: ReadonlyMap<string, SubscriptionDownloadSummary>;
   onToggleArchived: () => void;
   onDelete: (subscriptionKey: string) => void;
   onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
+  onViewDownloads: (subscriptionKey: string) => void;
 }) {
   if (isLoading) return <StateBox icon={<LoaderCircle className="size-4 animate-spin" />} text="Loading config..." />;
   if (!subscriptions.length) return <StateBox icon={<Layers3 className="size-4" />} text="No subscriptions yet." />;
@@ -120,8 +131,10 @@ function SubscriptionListState({
             subscription={subscription}
             subscriptionKey={key}
             isPending={pendingSubscriptionKeys.has(key)}
+            downloadSummary={downloadSummaries.get(key)}
             onDelete={onDelete}
             onUpdate={onUpdate}
+            onViewDownloads={onViewDownloads}
           />
         ))
       ) : (
@@ -160,8 +173,10 @@ function SubscriptionListState({
                   subscription={subscription}
                   subscriptionKey={key}
                   isPending={pendingSubscriptionKeys.has(key)}
+                  downloadSummary={downloadSummaries.get(key)}
                   onDelete={onDelete}
                   onUpdate={onUpdate}
+                  onViewDownloads={onViewDownloads}
                 />
               ))}
             </div>

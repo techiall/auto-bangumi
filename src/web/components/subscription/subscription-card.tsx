@@ -1,7 +1,9 @@
-import { Archive, Check, ChevronDown, RotateCcw, Rss, Trash2, X } from 'lucide-react';
+import { Activity, Archive, Check, ChevronDown, RotateCcw, Rss, Trash2, X } from 'lucide-react';
 import { memo, useEffect, useId, useState } from 'react';
+import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
+import type { SubscriptionDownloadSummary } from '~/components/downloads/download-types';
 import { Field } from '~/components/subscription/shared';
 import { inferMikanBangumiUrl, splitCommaList } from '~/lib/subscription';
 import type { SubscriptionConfig, UpdateSeasonPayload } from '~/types';
@@ -10,16 +12,20 @@ interface SubscriptionCardProps {
   subscription: SubscriptionConfig;
   subscriptionKey: string;
   isPending: boolean;
+  downloadSummary?: SubscriptionDownloadSummary;
   onDelete: (subscriptionKey: string) => void;
   onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
+  onViewDownloads: (subscriptionKey: string) => void;
 }
 
 export const SubscriptionCard = memo(function SubscriptionCard({
   subscription,
   subscriptionKey,
   isPending,
+  downloadSummary,
   onDelete,
   onUpdate,
+  onViewDownloads,
 }: SubscriptionCardProps) {
   const mikanUrl = inferMikanBangumiUrl(subscription.rss);
   const [expanded, setExpanded] = useState(false);
@@ -110,9 +116,21 @@ export const SubscriptionCard = memo(function SubscriptionCard({
             </a>
           </div>
           <SubscriptionMeta subscription={subscription} />
+          {downloadSummary ? <SubscriptionDownloadStrip summary={downloadSummary} /> : null}
         </div>
 
         <div className="flex items-center gap-2 sm:justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 w-fit rounded-full px-2.5 text-xs"
+            onClick={(event) => {
+              event.stopPropagation();
+              onViewDownloads(subscriptionKey);
+            }}>
+            <Activity className="mr-1.5 size-3.5" />
+            Downloads
+          </Button>
           {subscription.archived ? (
             <div className="rounded-full border border-amber-800/70 bg-amber-950/80 px-2.5 py-0.5 text-xs font-medium text-amber-200">
               Archived
@@ -215,6 +233,28 @@ function SubscriptionMeta({ subscription }: { subscription: SubscriptionConfig }
           <span className="font-medium text-slate-200">{subscription.filters.join(' / ')}</span>
         </span>
       ) : null}
+    </div>
+  );
+}
+
+function SubscriptionDownloadStrip({ summary }: { summary: SubscriptionDownloadSummary }) {
+  const hasAttention = summary.attentionCount > 0;
+  const hasActivity = summary.activeCount + summary.moveJobCount + summary.seedingCount > 0;
+
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {hasAttention ? <Badge variant="warning">Attention {summary.attentionCount}</Badge> : null}
+      {hasActivity ? (
+        <>
+          <Badge variant="muted">Active {summary.activeCount}</Badge>
+          <Badge variant="muted">Moving {summary.moveJobCount}</Badge>
+          <Badge variant="muted">Seeding {summary.seedingCount}</Badge>
+        </>
+      ) : summary.completedCount ? (
+        <Badge variant="outline">Moved {summary.completedCount}</Badge>
+      ) : (
+        <Badge variant="outline">No downloads</Badge>
+      )}
     </div>
   );
 }

@@ -10,11 +10,10 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true,
+    watch: {
+      ignored: ['**/.tmp/**', '**/db/**', '**/library/**', '**/downloads/**'],
+    },
     proxy: {
-      '/api/downloads/ws': {
-        target: 'ws://127.0.0.1:3001',
-        ws: true,
-      },
       '/api': {
         target: 'http://127.0.0.1:3001',
         changeOrigin: true,

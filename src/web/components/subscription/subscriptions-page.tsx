@@ -2,11 +2,16 @@ import { CurrentSubscriptions } from '~/components/subscription/current-subscrip
 import { NoticeBanner } from '~/components/subscription/notice-banner';
 import { SearchPanel } from '~/components/subscription/search-panel';
 import { SubscriptionSettings } from '~/components/subscription/subscription-settings';
-import { useSubscriptionManager } from '~/components/subscription/use-subscription-manager';
+import type { SubscriptionDownloadSummary } from '~/components/downloads/download-types';
+import type { useSubscriptionManager } from '~/components/subscription/use-subscription-manager';
 
-export function SubscriptionsPage() {
-  const manager = useSubscriptionManager();
+interface SubscriptionsPageProps {
+  downloadSummaries: ReadonlyMap<string, SubscriptionDownloadSummary>;
+  manager: ReturnType<typeof useSubscriptionManager>;
+  onViewDownloads: (subscriptionRss: string) => void;
+}
 
+export function SubscriptionsPage({ downloadSummaries, manager, onViewDownloads }: SubscriptionsPageProps) {
   return (
     <>
       {manager.notice && !manager.selectedBangumi ? <NoticeBanner notice={manager.notice} /> : null}
@@ -52,6 +57,8 @@ export function SubscriptionsPage() {
             onRefreshRss={() => void manager.refreshRss()}
             onDelete={manager.handleDelete}
             onUpdate={manager.handleUpdate}
+            downloadSummaries={downloadSummaries}
+            onViewDownloads={onViewDownloads}
           />
         </div>
       </div>

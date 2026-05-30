@@ -16,6 +16,7 @@ yarn-error.log*
 # Logs
 logs/
 *.log
+.tmp/
 
 # Runtime state
 db/*.sqlite

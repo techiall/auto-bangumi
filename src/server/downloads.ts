@@ -11,7 +11,7 @@ import type { DownloadState, QbittorrentStatuses } from './downloads/types.js';
 export class DownloadService {
   constructor(private readonly dbPath: string) {}
 
-  async state(): Promise<DownloadState> {
+  async state(options: DownloadStateOptions = {}): Promise<DownloadState> {
     void syncMoveJobs({
       dbPath: this.dbPath,
     }).catch((error: unknown) => {
@@ -23,7 +23,7 @@ export class DownloadService {
     const api = new QBittorrentApi(config.qbittorrent);
     const torrentStatuses = await this.loadQbittorrentStatuses(api);
 
-    return {
+    const state = {
       active: mapRecord(data.active, (hash, episode) =>
         withQbittorrentStatus(hash, resolveActiveEpisodeMetadata(config, hash, episode), torrentStatuses),
       ),
@@ -34,6 +34,8 @@ export class DownloadService {
         withQbittorrentStatus(hash, resolveCompletedEpisodeMetadata(config, episode), torrentStatuses),
       ),
     };
+
+    return options.subscriptionRss ? filterStateBySubscription(state, options.subscriptionRss) : state;
   }
 
   private async loadQbittorrentStatuses(api: QBittorrentApi) {
@@ -43,6 +45,10 @@ export class DownloadService {
       return { error: (error as Error).message };
     }
   }
+}
+
+interface DownloadStateOptions {
+  subscriptionRss?: string;
 }
 
 function resolveMoveJobMetadata(config: Awaited<ReturnType<typeof loadConfig>>, job: MoveJobRecord): MoveJobRecord {
@@ -62,6 +68,18 @@ function resolveMoveJobMetadata(config: Awaited<ReturnType<typeof loadConfig>>, 
 
 function mapRecord<T, R>(record: Record<string, T>, mapper: (key: string, value: T) => R): Record<string, R> {
   return Object.fromEntries(Object.entries(record).map(([key, value]) => [key, mapper(key, value)]));
+}
+
+function filterStateBySubscription(state: DownloadState, subscriptionRss: string): DownloadState {
+  return {
+    active: filterRecord(state.active, (episode) => episode.subscriptionRss === subscriptionRss),
+    moveJobs: filterRecord(state.moveJobs, (job) => job.subscriptionRss === subscriptionRss),
+    completed: filterRecord(state.completed, (episode) => episode.subscriptionRss === subscriptionRss),
+  };
+}
+
+function filterRecord<T>(record: Record<string, T>, predicate: (value: T) => boolean): Record<string, T> {
+  return Object.fromEntries(Object.entries(record).filter(([, value]) => predicate(value)));
 }
 
 function withQbittorrentStatus<T extends ActiveEpisode | CompletedEpisode | MoveJobRecord>(

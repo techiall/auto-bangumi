@@ -73,6 +73,7 @@ export interface CompletedDownload {
   title: string;
   folder?: string;
   season: number;
+  subscriptionRss?: string;
   number: number;
   movedAt: string;
   qbitRemovedAt?: string;

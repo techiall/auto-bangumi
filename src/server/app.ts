@@ -39,8 +39,9 @@ export function createApp(options: AppOptions = {}) {
     response.json(await getBangumiDetail(id));
   });
 
-  app.get('/api/downloads', async (_request, response) => {
-    response.json(await downloads.state());
+  app.get('/api/downloads', async (request, response) => {
+    const subscriptionRss = String(request.query.subscription ?? '').trim();
+    response.json(await downloads.state(subscriptionRss ? { subscriptionRss } : undefined));
   });
 
   registerMoverRoutes(app, moverJobs);

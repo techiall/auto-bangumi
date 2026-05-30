@@ -13,8 +13,7 @@ export function AppMark({ className = 'size-10' }: AppMarkProps) {
         'grid shrink-0 place-items-center rounded-2xl border border-cyan-200/25 bg-gradient-to-br from-cyan-300 via-cyan-500 to-teal-400 text-slate-950 shadow-[0_0_32px_rgba(34,211,238,0.24)]',
         className,
       )}
-      role="img"
-    >
+      role="img">
       <TvMinimalPlay className="size-[60%]" strokeWidth={2.5} />
     </span>
   );

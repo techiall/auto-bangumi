@@ -23,7 +23,7 @@ const emptyForm: SubscriptionFormState = {
   rss: '',
 };
 
-export function useSubscriptionManager() {
+export function useSubscriptionManager(enabled = true) {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<MikanSearchResult[]>([]);
@@ -43,8 +43,8 @@ export function useSubscriptionManager() {
   const detailRequestSeq = useRef(0);
 
   useEffect(() => {
-    void refreshConfig();
-  }, []);
+    if (enabled) void refreshConfig();
+  }, [enabled]);
 
   useEffect(() => {
     if (!notice) return;
@@ -61,6 +61,7 @@ export function useSubscriptionManager() {
     () => (config?.subscriptions ?? []).map((subscription) => ({ subscription, key: subscription.rss })).reverse(),
     [config],
   );
+  const subscriptions = useMemo(() => config?.subscriptions ?? [], [config]);
 
   useEffect(() => {
     if (!selectedBangumi) return;
@@ -223,6 +224,7 @@ export function useSubscriptionManager() {
 
   return {
     displayedSubscriptions,
+    subscriptions,
     form,
     isBrowseLoading,
     isConfigLoading,

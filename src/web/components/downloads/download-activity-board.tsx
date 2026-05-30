@@ -13,10 +13,18 @@ interface DownloadActivityBoardProps {
   loading: boolean;
   error: string | null;
   lastUpdatedAt: Date | null;
+  selectedSubscriptionTitle?: string;
   onRefresh: () => void;
 }
 
-export function DownloadActivityBoard({ rows, loading, error, lastUpdatedAt, onRefresh }: DownloadActivityBoardProps) {
+export function DownloadActivityBoard({
+  rows,
+  loading,
+  error,
+  lastUpdatedAt,
+  selectedSubscriptionTitle,
+  onRefresh,
+}: DownloadActivityBoardProps) {
   const [showHistory, setShowHistory] = useState(false);
   const { attentionRows, activeRows, moveJobRows, seedingRows, historyRows } = splitDownloadRows(rows);
 
@@ -24,7 +32,9 @@ export function DownloadActivityBoard({ rows, loading, error, lastUpdatedAt, onR
     <Card className="p-5">
       <CardHeader className="mb-5 flex-col sm:flex-row sm:items-start">
         <div className="min-w-0">
-          <CardTitle>Download Activity</CardTitle>
+          <CardTitle>
+            {selectedSubscriptionTitle ? `${selectedSubscriptionTitle} Activity` : 'Download Activity'}
+          </CardTitle>
           {lastUpdatedAt ? (
             <div className="mt-1 text-xs text-slate-500">Updated at {formatTime(lastUpdatedAt)}</div>
           ) : null}

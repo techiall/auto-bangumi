@@ -3,8 +3,9 @@ import type {
   DownloadRow,
   DownloadSummary,
   MoveJobDownloadRow,
+  SubscriptionDownloadSummary,
 } from '~/components/downloads/download-types';
-import type { DownloadState } from '~/types';
+import type { DownloadState, SubscriptionConfig } from '~/types';
 
 export function buildDownloadRows(data: DownloadState): DownloadRow[] {
   const activeRows = Object.entries(data.active).map(
@@ -50,22 +51,42 @@ export function splitDownloadRows(rows: DownloadRow[]) {
   return { attentionRows, activeRows, moveJobRows, seedingRows, historyRows };
 }
 
-export function summarizeDownloads(data: DownloadState, rows: DownloadRow[]): DownloadSummary {
-  const qbitItems = [
-    ...Object.values(data.active),
-    ...Object.values(data.moveJobs ?? {}),
-    ...Object.values(data.completed),
-  ].filter((item) => item.qbit);
+export function summarizeDownloadRows(rows: DownloadRow[]): DownloadSummary {
+  const qbitItems = rows.filter((item) => item.qbit);
 
   return {
-    activeCount: Object.keys(data.active).length,
-    moveJobCount: Object.keys(data.moveJobs ?? {}).length,
+    activeCount: rows.filter((row) => row.state === 'active').length,
+    moveJobCount: rows.filter((row) => row.state === 'moveJob').length,
     attentionCount: rows.filter(isAttentionRow).length,
-    completedCount: Object.keys(data.completed).length,
-    seedingCount: Object.values(data.completed).filter((item) => item.qbit && !item.qbitRemovedAt).length,
+    completedCount: rows.filter((row) => row.state === 'completed').length,
+    seedingCount: rows.filter(isSeedingRow).length,
     downloadSpeed: qbitItems.reduce((sum, item) => sum + (item.qbit?.downloadSpeed ?? 0), 0),
     uploadSpeed: qbitItems.reduce((sum, item) => sum + (item.qbit?.uploadSpeed ?? 0), 0),
   };
+}
+
+export function filterRowsBySubscription(rows: DownloadRow[], subscriptionRss: string | undefined) {
+  if (!subscriptionRss) return rows;
+  return rows.filter((row) => row.subscriptionRss === subscriptionRss);
+}
+
+export function buildSubscriptionDownloadSummaries(
+  subscriptions: SubscriptionConfig[],
+  rows: DownloadRow[],
+): Map<string, SubscriptionDownloadSummary> {
+  return new Map(
+    subscriptions.map((subscription) => {
+      const subscriptionRows = filterRowsBySubscription(rows, subscription.rss);
+      return [
+        subscription.rss,
+        {
+          ...summarizeDownloadRows(subscriptionRows),
+          subscription,
+          latestActivityAt: latestActivityAt(subscriptionRows),
+        },
+      ];
+    }),
+  );
 }
 
 export function isAttentionRow(row: DownloadRow) {
@@ -77,4 +98,15 @@ export function isAttentionRow(row: DownloadRow) {
 
 function isSeedingRow(row: DownloadRow): row is CompletedDownloadRow {
   return row.state === 'completed' && Boolean(row.qbit && !row.qbitRemovedAt);
+}
+
+function latestActivityAt(rows: DownloadRow[]) {
+  return rows
+    .map((row) => {
+      if (row.state === 'completed') return row.movedAt;
+      if (row.state === 'moveJob') return row.updatedAt;
+      return undefined;
+    })
+    .filter((value): value is string => Boolean(value))
+    .sort((first, second) => second.localeCompare(first))[0];
 }

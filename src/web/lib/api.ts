@@ -76,8 +76,9 @@ export function refreshRssFeeds() {
   });
 }
 
-export function fetchDownloads() {
-  return request<DownloadState>('/api/downloads');
+export function fetchDownloads(subscriptionRss?: string) {
+  const query = subscriptionRss ? `?subscription=${encodeURIComponent(subscriptionRss)}` : '';
+  return request<DownloadState>(`/api/downloads${query}`);
 }
 
 export function downloadsWebSocketUrl() {

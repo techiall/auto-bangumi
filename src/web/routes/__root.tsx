@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 import type { ReactNode } from 'react';
 import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
-import faviconSvg from '~/public/favicon.svg?url';
 import appCss from '~/styles/app.css?url';
 
 export const Route = createRootRoute({
@@ -14,7 +13,7 @@ export const Route = createRootRoute({
       { name: 'description', content: 'Search Mikan and update subscriptions from a cleaner web UI.' },
     ],
     links: [
-      { rel: 'icon', type: 'image/svg+xml', href: faviconSvg },
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       { rel: 'stylesheet', href: appCss },
     ],
   }),

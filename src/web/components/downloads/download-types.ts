@@ -1,4 +1,4 @@
-import type { ActiveDownload, CompletedDownload, DownloadState, MoveJobDownload } from '~/types';
+import type { ActiveDownload, CompletedDownload, DownloadState, MoveJobDownload, SubscriptionConfig } from '~/types';
 
 export type DownloadRow =
   | ({ hash: string; state: 'active' } & ActiveDownload)
@@ -21,3 +21,8 @@ export interface DownloadSummary {
 }
 
 export type DownloadMessage = { type: 'state'; data: DownloadState } | { type: 'error'; message: string };
+
+export interface SubscriptionDownloadSummary extends DownloadSummary {
+  subscription: SubscriptionConfig;
+  latestActivityAt?: string;
+}
