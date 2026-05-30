@@ -4,6 +4,13 @@ Use this when downloads run on one machine and the media library lives on anothe
 
 Do this only on a trusted LAN or VPN. Do not publish qBittorrent or the internal file server directly to the internet. Both machines need a full checkout of this repository because the compose files build from the project root.
 
+## Layout
+
+- Download machine: `deploy/server/` runs qBittorrent plus the combined server/web app.
+- Library machine: `agent/deploy/` runs only the mover agent and mounts the final media library.
+- Shared secret: both sides use the same `MOVER_API_TOKEN`.
+- Network path: the agent talks only to the download server API; it does not need qBittorrent or download-volume access.
+
 ## Download Server
 
 The download server runs qBittorrent and the combined server/web app. qBittorrent uses the project defaults from the custom image.
@@ -26,7 +33,7 @@ Generate one token and use the exact same value on both machines. For example:
 openssl rand -base64 32
 ```
 
-Use a private LAN or VPN address for `SERVER_API_BIND` when the library agent runs on another machine. Point the agent's `DOWNLOAD_SERVER_URL` at that same address and host port.
+Use a private LAN or VPN address for `SERVER_API_BIND` when the library agent runs on another machine. Point the agent's `DOWNLOAD_SERVER_URL` at that same address and host port. Keep `MOVER_API_TOKEN` identical on both machines.
 
 Start it:
 
@@ -42,27 +49,8 @@ If you want to open the web UI from another machine, change the `3000` port bind
 
 ## Library Agent
 
-The library agent runs near the media library and pulls completed files from the download server.
+The library agent runs near the media library and pulls completed files from the download server. Configure and start it from `agent/deploy/`.
 
-```bash
-cd agent/deploy
-cp .env.example .env
-```
-
-Edit `.env`:
-
-```env
-MOVER_API_TOKEN=z2HRn3D4ZvcmK27VJ32qAT8M1PV7VMSbOow7OpuKqV4
-DOWNLOAD_SERVER_URL=http://download-server:3001
-HOST_LIBRARY_ROOT=/media/Bangumi
-```
-
-Use the same `MOVER_API_TOKEN` from the download server. The split-machine containers reject empty or placeholder token values.
-
-Start it:
-
-```bash
-docker compose up -d --build
-```
+See `../agent/deploy/README.md` for the agent-side steps.
 
 Keep qBittorrent and the internal file server private. Only publish the server API through a trusted network boundary.

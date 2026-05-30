@@ -47,6 +47,7 @@ export function SubscriptionsPage() {
             subscriptions={manager.displayedSubscriptions}
             isLoading={manager.isConfigLoading}
             isRssRefreshing={manager.isRssRefreshing}
+            pendingSubscriptionKeys={manager.pendingSubscriptionKeys}
             onReload={() => void manager.refreshConfig()}
             onRefreshRss={() => void manager.refreshRss()}
             onDelete={manager.handleDelete}

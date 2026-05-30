@@ -50,13 +50,13 @@ export function addSeason(payload: AddSeasonPayload) {
 }
 
 export function deleteSeason(rss: string) {
-  return request<AppConfig>(`/api/seasons/${encodeURIComponent(rss)}`, {
+  return request<AppConfig>(`/api/seasons?rss=${encodeURIComponent(rss)}`, {
     method: 'DELETE',
   });
 }
 
 export function updateSeason(rss: string, payload: UpdateSeasonPayload) {
-  return request<AppConfig>(`/api/seasons/${encodeURIComponent(rss)}`, {
+  return request<AppConfig>(`/api/seasons?rss=${encodeURIComponent(rss)}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });

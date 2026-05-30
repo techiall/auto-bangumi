@@ -4,10 +4,10 @@ import { Label } from '~/components/ui/label';
 import { cn } from '~/lib/utils';
 import type { MikanBangumiGroup } from '~/types';
 
-export function Field({ label, children }: { label: string; children: ReactNode }) {
+export function Field({ id, label, children }: { id?: string; label: string; children: ReactNode }) {
   return (
     <div className="grid gap-2">
-      <Label>{label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       {children}
     </div>
   );

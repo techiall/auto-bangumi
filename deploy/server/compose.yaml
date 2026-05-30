@@ -1,8 +1,8 @@
 services:
   qbittorrent:
     build:
-      context: ../..
-      dockerfile: docker/qbittorrent.Dockerfile
+      context: ../../docker/qbittorrent
+      dockerfile: ../qbittorrent.Dockerfile
     volumes:
       - qbittorrent-config:/config
       - qbittorrent-downloads:/downloads
@@ -17,11 +17,12 @@ services:
       - qbittorrent
     environment:
       MOVER_API_TOKEN: ${MOVER_API_TOKEN}
+      MOVER_API_PORT: 3002
     volumes:
       - ./db:/usr/src/app/db
     ports:
       # Bind this to a private LAN/VPN address for a remote library agent.
-      - '${SERVER_API_BIND}:3001:3001'
+      - '${SERVER_API_BIND}:3001:3002'
       - '127.0.0.1:3000:3000'
     restart: unless-stopped
 

@@ -34,15 +34,15 @@ export function normalizeSubscription(subscription: SubscriptionConfig): Subscri
 }
 
 function normalizeQbittorrent(): QbittorrentConfig {
-  const defaultQbittorrentConfig = createDefaultQbittorrentConfig();
+  const qbittorrent = createDefaultQbittorrentConfig();
 
   return {
-    ...defaultQbittorrentConfig,
-    fileServer: createDefaultFileServerConfig(defaultQbittorrentConfig),
+    ...qbittorrent,
+    fileServer: createDefaultFileServerConfig(qbittorrent),
   };
 }
 
-function createDefaultQbittorrentConfig(): QbittorrentConfig {
+function createDefaultQbittorrentConfig(): Omit<QbittorrentConfig, 'fileServer'> {
   const downloadPath = envString('QBITTORRENT_DOWNLOAD_PATH', '/downloads');
 
   return {
@@ -54,7 +54,6 @@ function createDefaultQbittorrentConfig(): QbittorrentConfig {
     downloadPath,
     trackers: envList('QBITTORRENT_TRACKERS'),
     trackerUrls: envList('QBITTORRENT_TRACKER_URLS', ['https://cf.trackerslist.com/all.txt']),
-    fileServer: createDefaultFileServerConfig({ downloadPath }),
   };
 }
 

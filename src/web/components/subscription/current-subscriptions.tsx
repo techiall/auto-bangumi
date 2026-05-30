@@ -11,6 +11,7 @@ interface CurrentSubscriptionsProps {
   subscriptions: Array<{ subscription: SubscriptionConfig; key: string }>;
   isLoading: boolean;
   isRssRefreshing: boolean;
+  pendingSubscriptionKeys: Set<string>;
   onReload: () => void;
   onRefreshRss: () => void;
   onDelete: (subscriptionKey: string) => void;
@@ -21,6 +22,7 @@ export function CurrentSubscriptions({
   subscriptions,
   isLoading,
   isRssRefreshing,
+  pendingSubscriptionKeys,
   onReload,
   onRefreshRss,
   onDelete,
@@ -73,6 +75,7 @@ export function CurrentSubscriptions({
           isLoading={isLoading}
           showArchived={showArchived}
           onToggleArchived={() => setShowArchived((value) => !value)}
+          pendingSubscriptionKeys={pendingSubscriptionKeys}
           onDelete={onDelete}
           onUpdate={onUpdate}
         />
@@ -86,6 +89,7 @@ function SubscriptionListState({
   filteredSubscriptions,
   isLoading,
   showArchived,
+  pendingSubscriptionKeys,
   onToggleArchived,
   onDelete,
   onUpdate,
@@ -94,6 +98,7 @@ function SubscriptionListState({
   filteredSubscriptions: Array<{ subscription: SubscriptionConfig; key: string }>;
   isLoading: boolean;
   showArchived: boolean;
+  pendingSubscriptionKeys: Set<string>;
   onToggleArchived: () => void;
   onDelete: (subscriptionKey: string) => void;
   onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
@@ -114,6 +119,7 @@ function SubscriptionListState({
             key={key}
             subscription={subscription}
             subscriptionKey={key}
+            isPending={pendingSubscriptionKeys.has(key)}
             onDelete={onDelete}
             onUpdate={onUpdate}
           />
@@ -153,6 +159,7 @@ function SubscriptionListState({
                   key={key}
                   subscription={subscription}
                   subscriptionKey={key}
+                  isPending={pendingSubscriptionKeys.has(key)}
                   onDelete={onDelete}
                   onUpdate={onUpdate}
                 />

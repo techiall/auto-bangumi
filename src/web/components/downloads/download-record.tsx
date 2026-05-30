@@ -119,7 +119,13 @@ function ProgressCell({ row }: { row: DownloadRow & { state: 'active' } }) {
         <span className="font-medium text-slate-300">Download Progress</span>
         <span className="font-semibold text-cyan-100">{percent}%</span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+      <div
+        className="h-2 overflow-hidden rounded-full bg-slate-800"
+        role="progressbar"
+        aria-label={`${row.title ?? 'Episode'} download progress`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={percent}>
         <div className="h-full rounded-full bg-cyan-400" style={{ width: `${Math.min(percent, 100)}%` }} />
       </div>
     </div>
@@ -161,7 +167,13 @@ function SeedingCell({ row }: { row: DownloadRow & { state: 'completed' } }) {
         <span className="font-medium text-slate-300">Seeding Ratio</span>
         <span className="font-semibold text-emerald-100">{formatRatio(row.qbit.ratio)}</span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+      <div
+        className="h-2 overflow-hidden rounded-full bg-slate-800"
+        role="progressbar"
+        aria-label={`${row.title ?? 'Episode'} seeding ratio`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.min(ratioPercent, 100)}>
         <div className="h-full rounded-full bg-emerald-400" style={{ width: `${Math.min(ratioPercent, 100)}%` }} />
       </div>
       <div className="text-xs text-slate-500">{formatDuration(row.qbit.seedingTime)}</div>

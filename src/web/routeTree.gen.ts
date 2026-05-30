@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiSeasonsRouteImport } from './routes/api/seasons'
 import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
 import { Route as ApiConfigRouteImport } from './routes/api/config'
-import { Route as ApiSeasonsRssRouteImport } from './routes/api/seasons.$rss'
 import { Route as ApiRssRefreshRouteImport } from './routes/api/rss/refresh'
 import { Route as ApiMikanSearchRouteImport } from './routes/api/mikan/search'
 import { Route as ApiMikanBangumiIdRouteImport } from './routes/api/mikan/bangumi.$id'
@@ -38,11 +37,6 @@ const ApiConfigRoute = ApiConfigRouteImport.update({
   path: '/api/config',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSeasonsRssRoute = ApiSeasonsRssRouteImport.update({
-  id: '/$rss',
-  path: '/$rss',
-  getParentRoute: () => ApiSeasonsRoute,
-} as any)
 const ApiRssRefreshRoute = ApiRssRefreshRouteImport.update({
   id: '/api/rss/refresh',
   path: '/api/rss/refresh',
@@ -63,20 +57,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/config': typeof ApiConfigRoute
   '/api/downloads': typeof ApiDownloadsRoute
-  '/api/seasons': typeof ApiSeasonsRouteWithChildren
+  '/api/seasons': typeof ApiSeasonsRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/rss/refresh': typeof ApiRssRefreshRoute
-  '/api/seasons/$rss': typeof ApiSeasonsRssRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/config': typeof ApiConfigRoute
   '/api/downloads': typeof ApiDownloadsRoute
-  '/api/seasons': typeof ApiSeasonsRouteWithChildren
+  '/api/seasons': typeof ApiSeasonsRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/rss/refresh': typeof ApiRssRefreshRoute
-  '/api/seasons/$rss': typeof ApiSeasonsRssRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
 }
 export interface FileRoutesById {
@@ -84,10 +76,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/api/config': typeof ApiConfigRoute
   '/api/downloads': typeof ApiDownloadsRoute
-  '/api/seasons': typeof ApiSeasonsRouteWithChildren
+  '/api/seasons': typeof ApiSeasonsRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
   '/api/rss/refresh': typeof ApiRssRefreshRoute
-  '/api/seasons/$rss': typeof ApiSeasonsRssRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
 }
 export interface FileRouteTypes {
@@ -99,7 +90,6 @@ export interface FileRouteTypes {
     | '/api/seasons'
     | '/api/mikan/search'
     | '/api/rss/refresh'
-    | '/api/seasons/$rss'
     | '/api/mikan/bangumi/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -109,7 +99,6 @@ export interface FileRouteTypes {
     | '/api/seasons'
     | '/api/mikan/search'
     | '/api/rss/refresh'
-    | '/api/seasons/$rss'
     | '/api/mikan/bangumi/$id'
   id:
     | '__root__'
@@ -119,7 +108,6 @@ export interface FileRouteTypes {
     | '/api/seasons'
     | '/api/mikan/search'
     | '/api/rss/refresh'
-    | '/api/seasons/$rss'
     | '/api/mikan/bangumi/$id'
   fileRoutesById: FileRoutesById
 }
@@ -127,7 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiConfigRoute: typeof ApiConfigRoute
   ApiDownloadsRoute: typeof ApiDownloadsRoute
-  ApiSeasonsRoute: typeof ApiSeasonsRouteWithChildren
+  ApiSeasonsRoute: typeof ApiSeasonsRoute
   ApiMikanSearchRoute: typeof ApiMikanSearchRoute
   ApiRssRefreshRoute: typeof ApiRssRefreshRoute
   ApiMikanBangumiIdRoute: typeof ApiMikanBangumiIdRoute
@@ -163,13 +151,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/seasons/$rss': {
-      id: '/api/seasons/$rss'
-      path: '/$rss'
-      fullPath: '/api/seasons/$rss'
-      preLoaderRoute: typeof ApiSeasonsRssRouteImport
-      parentRoute: typeof ApiSeasonsRoute
-    }
     '/api/rss/refresh': {
       id: '/api/rss/refresh'
       path: '/api/rss/refresh'
@@ -194,23 +175,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface ApiSeasonsRouteChildren {
-  ApiSeasonsRssRoute: typeof ApiSeasonsRssRoute
-}
-
-const ApiSeasonsRouteChildren: ApiSeasonsRouteChildren = {
-  ApiSeasonsRssRoute: ApiSeasonsRssRoute,
-}
-
-const ApiSeasonsRouteWithChildren = ApiSeasonsRoute._addFileChildren(
-  ApiSeasonsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiConfigRoute: ApiConfigRoute,
   ApiDownloadsRoute: ApiDownloadsRoute,
-  ApiSeasonsRoute: ApiSeasonsRouteWithChildren,
+  ApiSeasonsRoute: ApiSeasonsRoute,
   ApiMikanSearchRoute: ApiMikanSearchRoute,
   ApiRssRefreshRoute: ApiRssRefreshRoute,
   ApiMikanBangumiIdRoute: ApiMikanBangumiIdRoute,

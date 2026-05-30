@@ -1,25 +1,24 @@
+.git
+.github/
 .idea/
 .vscode/
-.github/
 
-config/
-.dockerignore
-renovate.json
-
-.gitignore
-.git
 .env
 .env.*
 agent/.env
 agent/.env.*
 
-node_modules
-agent/node_modules
-.output
-.tanstack
+config/
+db/
+deploy/
+library/
+node_modules/
+agent/node_modules/
+dist/
+agent/dist/
+.output/
+.tanstack/
 
-dist
-agent/dist
-
-.DS_Store
+renovate.json
 Thumbs.db
+.DS_Store

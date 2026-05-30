@@ -1,6 +1,5 @@
 # Node.js
 node_modules/
-agent/node_modules/
 dist/
 build/
 .output/
@@ -10,10 +9,6 @@ yarn-debug.log*
 yarn-error.log*
 /.env
 /.env.local
-agent/.env
-deploy/server/.env
-deploy/server/db/
-agent/deploy/.env
 
 # TypeScript
 *.tsbuildinfo
@@ -26,7 +21,6 @@ logs/
 db/*.sqlite
 db/*.sqlite-*
 library/
-agent/deploy/library/
 
 # OS
 .DS_Store

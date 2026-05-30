@@ -120,7 +120,7 @@ npm run build
 node dist/server/server.js
 ```
 
-Run a local library agent after building:
+Run a local library agent after building. The local agent writes to `/library`; use Docker for normal library writes, or make sure that path exists and is writable in your local environment.
 
 ```bash
 cd agent
@@ -187,6 +187,7 @@ Useful checks before committing:
 ```bash
 npm run build
 npm run build:web
+npm --prefix agent run check
 docker compose config
 docker compose build qbittorrent server agent
 ```

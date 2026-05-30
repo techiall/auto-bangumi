@@ -1,5 +1,6 @@
 import { Check, ExternalLink, Layers3, LoaderCircle, X } from 'lucide-react';
 import type { FormEvent } from 'react';
+import { useId } from 'react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -40,6 +41,12 @@ export function SubscriptionSettings({
   onSubmit,
   onCancel,
 }: SubscriptionSettingsProps) {
+  const formId = useId();
+  const titleId = `${formId}-title`;
+  const seasonId = `${formId}-season`;
+  const folderId = `${formId}-folder`;
+  const filtersId = `${formId}-filters`;
+
   return (
     <form
       className="grid gap-4 rounded-2xl border border-cyan-800/70 bg-slate-950/82 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),0_16px_44px_rgba(8,145,178,0.1)]"
@@ -97,12 +104,17 @@ export function SubscriptionSettings({
 
         <section className="space-y-4">
           <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_8rem]">
-            <Field label="Title">
-              <Input value={form.title} onChange={(event) => onFormChange({ ...form, title: event.target.value })} />
+            <Field id={titleId} label="Title">
+              <Input
+                id={titleId}
+                value={form.title}
+                onChange={(event) => onFormChange({ ...form, title: event.target.value })}
+              />
             </Field>
 
-            <Field label="Season">
+            <Field id={seasonId} label="Season">
               <Input
+                id={seasonId}
                 type="number"
                 min="1"
                 value={form.season}
@@ -112,16 +124,18 @@ export function SubscriptionSettings({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-            <Field label="Folder">
+            <Field id={folderId} label="Folder">
               <Input
+                id={folderId}
                 value={form.folder}
                 onChange={(event) => onFormChange({ ...form, folder: event.target.value })}
                 placeholder="e.g. Natsume Yuujinchou"
               />
             </Field>
 
-            <Field label="Title Filters">
+            <Field id={filtersId} label="Title Filters">
               <Input
+                id={filtersId}
                 value={form.filters}
                 onChange={(event) => onFormChange({ ...form, filters: event.target.value })}
                 placeholder="e.g. 1080p, CHS"

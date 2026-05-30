@@ -13,7 +13,11 @@ import { runRecurringTask } from './task-runner.js';
 
 const MOVE_AGENT_INTERVAL_MS = Number(process.env.MOVE_AGENT_INTERVAL_MS ?? 10_000);
 const MOVE_AGENT_LIMIT = Number(process.env.MOVE_AGENT_LIMIT ?? 1);
+const MOVE_AGENT_JOB_ATTEMPTS = Number(process.env.MOVE_AGENT_JOB_ATTEMPTS ?? 2);
+const MOVE_AGENT_API_TIMEOUT_MS = Number(process.env.MOVE_AGENT_API_TIMEOUT_MS ?? 15_000);
+const MOVE_AGENT_TRANSFER_TIMEOUT_MS = Number(process.env.MOVE_AGENT_TRANSFER_TIMEOUT_MS ?? 30 * 60_000);
 const DEFAULT_MOVER_API_TOKEN = 'auto-bangumi-local-mover-api-token';
+const LIBRARY_ROOT = '/library';
 
 interface MoverJob {
   id: string;
@@ -37,7 +41,7 @@ class MoveAgent {
 
   constructor() {
     this.downloadServerUrl = normalizeBaseUrl(process.env.DOWNLOAD_SERVER_URL ?? 'http://server:3001');
-    this.libraryRoot = process.env.LIBRARY_CONTAINER_ROOT ?? '/library';
+    this.libraryRoot = LIBRARY_ROOT;
     this.libraryDisplayRoot = process.env.LIBRARY_DISPLAY_ROOT?.trim() || this.libraryRoot;
     this.token = requireMoverApiToken(process.env.MOVER_API_TOKEN);
   }
@@ -47,7 +51,7 @@ class MoveAgent {
     if (!jobs.length) return;
 
     for (const job of jobs) {
-      await this.moveJob(job).catch(async (error: unknown) => {
+      await this.moveJobWithRetry(job).catch(async (error: unknown) => {
         await this.reportFailure(job.id, (error as Error).message);
       });
     }
@@ -60,22 +64,48 @@ class MoveAgent {
     return response.jobs;
   }
 
+  private async moveJobWithRetry(job: MoverJob) {
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= MOVE_AGENT_JOB_ATTEMPTS; attempt += 1) {
+      try {
+        await this.moveJob(job);
+        return;
+      } catch (error) {
+        lastError = error;
+        logger.warn(
+          `Move job ${job.id} attempt ${attempt}/${MOVE_AGENT_JOB_ATTEMPTS} failed: ${(error as Error).message}`,
+        );
+      }
+    }
+
+    throw lastError instanceof Error ? lastError : new Error('Move job failed.');
+  }
+
   private async moveJob(job: MoverJob) {
     const targetPath = safeJoin(this.libraryRoot, job.targetRelativePath);
     const temporaryPath = `${targetPath}.part-${process.pid}`;
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
 
     const sourceUrl = new URL(job.sourceUrl, this.downloadServerUrl);
-    const response = await fetchWithRetry(sourceUrl, {
-      headers: {
-        ...this.authorizationHeaders(),
-        ...(job.sourceHeaders ?? {}),
+    const response = await fetchWithRetry(
+      sourceUrl,
+      {
+        headers: {
+          ...this.authorizationHeaders(),
+          ...(job.sourceHeaders ?? {}),
+        },
       },
-    });
+      2,
+      1000,
+      MOVE_AGENT_API_TIMEOUT_MS,
+    );
     if (!response.body) throw new Error(`Source returned an empty body: ${sourceUrl.toString()}`);
 
     try {
-      await pipeline(Readable.fromWeb(response.body as ReadableStream), createWriteStream(temporaryPath));
+      await pipeline(Readable.fromWeb(response.body as ReadableStream), createWriteStream(temporaryPath), {
+        signal: AbortSignal.timeout(MOVE_AGENT_TRANSFER_TIMEOUT_MS),
+      });
       await fs.rename(temporaryPath, targetPath);
     } catch (error) {
       await fs.rm(temporaryPath, { force: true });
@@ -102,6 +132,7 @@ class MoveAgent {
   private async request<T = unknown>(pathName: string, init: RequestInit = {}): Promise<T> {
     const response = await fetch(new URL(pathName, this.downloadServerUrl), {
       ...init,
+      signal: init.signal ?? AbortSignal.timeout(MOVE_AGENT_API_TIMEOUT_MS),
       headers: {
         'Content-Type': 'application/json',
         ...this.authorizationHeaders(),

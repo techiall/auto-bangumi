@@ -20,7 +20,7 @@ export function parseSeasonPayload(payload: SeasonPayload): SubscriptionConfig {
   const rss = String(payload.rss ?? '').trim();
   const title = String(payload.title ?? '').trim();
   const folder = String(payload.folder ?? title).trim();
-  const season = Number(payload.season);
+  const season = normalizeSeason(payload.season, 1);
   const filters = normalizeStringArray(payload.filters);
 
   if (!rss) throw new HttpError(400, 'RSS is required.');
@@ -43,9 +43,9 @@ export function parseSeasonUpdatePayload(
   payload: SeasonUpdatePayload,
   current: SubscriptionConfig,
 ): Pick<SubscriptionConfig, 'folder' | 'season' | 'filters' | 'archived'> {
-  const season = Number(payload.season);
+  const season = normalizeSeason(payload.season, current.season);
   const folder = String(payload.folder ?? current.folder).trim();
-  const filters = normalizeStringArray(payload.filters);
+  const filters = payload.filters === undefined ? current.filters : normalizeStringArray(payload.filters);
   const archived = normalizeOptionalBoolean(payload.archived, current.archived);
 
   if (!Number.isInteger(season) || season <= 0) {
@@ -55,7 +55,7 @@ export function parseSeasonUpdatePayload(
   return {
     folder: folder || current.title,
     season,
-    filters: filters.length ? filters : undefined,
+    filters: filters?.length ? filters : undefined,
     archived,
   };
 }
@@ -63,6 +63,11 @@ export function parseSeasonUpdatePayload(
 function normalizeStringArray(value: unknown) {
   if (!Array.isArray(value)) return [];
   return value.map((item) => String(item).trim()).filter((item) => item.length > 0);
+}
+
+function normalizeSeason(value: unknown, fallback: number) {
+  if (value === undefined || value === null || value === '') return fallback;
+  return Number(value);
 }
 
 function normalizeOptionalBoolean(value: unknown, fallback: boolean) {

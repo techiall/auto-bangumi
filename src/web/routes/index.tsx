@@ -14,6 +14,7 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const routeTab = search.tab ?? 'subscriptions';
   const [activeTab, setActiveTabState] = useState<PageTab>(routeTab);
   const [visitedTabs, setVisitedTabs] = useState<Set<PageTab>>(() => new Set([routeTab]));
@@ -23,18 +24,16 @@ function HomePage() {
     setVisitedTabs((current) => new Set(current).add(routeTab));
   }, [routeTab]);
 
-  useEffect(() => {
-    const syncFromLocation = () => setActiveTabState(getTabFromLocation());
-    window.addEventListener('popstate', syncFromLocation);
-    return () => window.removeEventListener('popstate', syncFromLocation);
-  }, []);
-
   const setActiveTab = (tab: PageTab) => {
     if (tab === activeTab) return;
 
     setActiveTabState(tab);
     setVisitedTabs((current) => new Set(current).add(tab));
-    window.history.replaceState(null, '', tab === 'subscriptions' ? '/' : '/?tab=downloads');
+    void navigate({
+      to: '/',
+      search: tab === 'subscriptions' ? {} : { tab },
+      replace: true,
+    });
   };
 
   return (
@@ -51,8 +50,4 @@ function HomePage() {
       ) : null}
     </AppShell>
   );
-}
-
-function getTabFromLocation(): PageTab {
-  return new URLSearchParams(window.location.search).get('tab') === 'downloads' ? 'downloads' : 'subscriptions';
 }
