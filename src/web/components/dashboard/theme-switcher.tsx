@@ -7,12 +7,13 @@ import {
   persistThemeChoice,
   type ThemeChoice,
 } from '~/lib/theme';
+import { useI18n } from '~/lib/i18n';
 import { cn } from '~/lib/utils';
 
-const choices: Array<{ value: ThemeChoice; label: string; icon: typeof Monitor }> = [
-  { value: 'system', label: 'Follow system', icon: Monitor },
-  { value: 'light', label: 'Light mode', icon: Sun },
-  { value: 'dark', label: 'Dark mode', icon: Moon },
+const choices: Array<{ value: ThemeChoice; labelKey: string; icon: typeof Monitor }> = [
+  { value: 'system', labelKey: 'theme.system', icon: Monitor },
+  { value: 'light', labelKey: 'theme.light', icon: Sun },
+  { value: 'dark', labelKey: 'theme.dark', icon: Moon },
 ];
 
 interface ThemeSwitcherProps {
@@ -20,6 +21,7 @@ interface ThemeSwitcherProps {
 }
 
 export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
+  const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
   const [choice, setChoice] = useState<ThemeChoice>('system');
 
@@ -73,10 +75,11 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
         className,
       )}
       role="radiogroup"
-      aria-label="Theme mode">
+      aria-label={t('theme.mode')}>
       {choices.map((item) => {
         const Icon = item.icon;
         const active = choice === item.value;
+        const label = t(item.labelKey);
 
         return (
           <button
@@ -90,8 +93,8 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
             )}
             role="radio"
             aria-checked={active}
-            aria-label={item.label}
-            title={item.label}
+            aria-label={label}
+            title={label}
             onClick={() => chooseTheme(item.value)}>
             <Icon className="size-4" />
           </button>

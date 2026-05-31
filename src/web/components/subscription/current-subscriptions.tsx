@@ -6,6 +6,7 @@ import { Input } from '~/components/ui/input';
 import { StateBox } from '~/components/subscription/shared';
 import { SubscriptionCard } from '~/components/subscription/subscription-card';
 import type { SubscriptionDownloadSummary } from '~/components/downloads/download-types';
+import { useI18n } from '~/lib/i18n';
 import type { SubscriptionConfig, UpdateSeasonPayload } from '~/types';
 
 interface CurrentSubscriptionsProps {
@@ -33,12 +34,13 @@ export function CurrentSubscriptions({
   onUpdate,
   onViewDownloads,
 }: CurrentSubscriptionsProps) {
+  const { t } = useI18n();
   const [filter, setFilter] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   const deferredFilter = useDeferredValue(filter);
   const filteredSubscriptions = useMemo(
-    () => filterSubscriptions(subscriptions, deferredFilter),
-    [deferredFilter, subscriptions],
+    () => filterSubscriptions(subscriptions, deferredFilter, t('common.archived')),
+    [deferredFilter, subscriptions, t],
   );
   const archivedCount = subscriptions.filter(({ subscription }) => subscription.archived).length;
   const activeCount = subscriptions.length - archivedCount;
@@ -47,19 +49,19 @@ export function CurrentSubscriptions({
     <Card className="p-4 md:p-5">
       <CardHeader className="mb-5 flex-col sm:flex-row sm:items-start">
         <div className="min-w-0">
-          <CardTitle>Current Subscriptions</CardTitle>
+          <CardTitle>{t('subscriptions.current')}</CardTitle>
           <div className="mt-1 text-sm text-slate-500">
-            {activeCount} active · {archivedCount} archived
+            {t('subscriptions.activeArchivedSummary', { active: activeCount, archived: archivedCount })}
           </div>
         </div>
         <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
           <Button variant="ghost" size="sm" onClick={onReload} disabled={isLoading}>
             <RefreshCcw className={isLoading ? 'mr-2 size-4 animate-spin' : 'mr-2 size-4'} />
-            Reload
+            {t('common.reload')}
           </Button>
           <Button variant="default" size="sm" onClick={onRefreshRss} disabled={isRssRefreshing}>
             {isRssRefreshing ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Rss className="mr-2 size-4" />}
-            Refresh RSS
+            {t('subscriptions.refreshRss')}
           </Button>
         </div>
       </CardHeader>
@@ -69,7 +71,7 @@ export function CurrentSubscriptions({
           <Input
             value={filter}
             onChange={(event) => setFilter(event.target.value)}
-            placeholder="Filter subscriptions"
+            placeholder={t('subscriptions.filter')}
             className="pl-9"
           />
         </div>
@@ -114,10 +116,14 @@ function SubscriptionListState({
   onUpdate: (subscriptionKey: string, payload: UpdateSeasonPayload) => void;
   onViewDownloads: (subscriptionKey: string) => void;
 }) {
-  if (isLoading) return <StateBox icon={<LoaderCircle className="size-4 animate-spin" />} text="Loading config..." />;
-  if (!subscriptions.length) return <StateBox icon={<Layers3 className="size-4" />} text="No subscriptions yet." />;
+  const { t } = useI18n();
+
+  if (isLoading)
+    return <StateBox icon={<LoaderCircle className="size-4 animate-spin" />} text={t('subscriptions.loadingConfig')} />;
+  if (!subscriptions.length)
+    return <StateBox icon={<Layers3 className="size-4" />} text={t('subscriptions.noSubscriptions')} />;
   if (!filteredSubscriptions.length)
-    return <StateBox icon={<Search className="size-4" />} text="No matching subscriptions." />;
+    return <StateBox icon={<Search className="size-4" />} text={t('subscriptions.noMatching')} />;
 
   const activeSubscriptions = filteredSubscriptions.filter(({ subscription }) => !subscription.archived);
   const archivedSubscriptions = filteredSubscriptions.filter(({ subscription }) => subscription.archived);
@@ -138,7 +144,7 @@ function SubscriptionListState({
           />
         ))
       ) : (
-        <StateBox icon={<Search className="size-4" />} text="No active subscriptions match this filter." />
+        <StateBox icon={<Search className="size-4" />} text={t('subscriptions.noActiveMatch')} />
       )}
 
       {archivedSubscriptions.length ? (
@@ -153,14 +159,14 @@ function SubscriptionListState({
                 <Archive className="size-4" />
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-sm font-medium text-slate-200">Archived</span>
+                <span className="block truncate text-sm font-medium text-slate-200">{t('common.archived')}</span>
                 <span className="block truncate text-xs text-slate-500">
-                  {archivedSubscriptions.length} hidden from RSS refresh
+                  {t('subscriptions.hiddenFromRss', { count: archivedSubscriptions.length })}
                 </span>
               </span>
             </span>
             <span className="flex shrink-0 items-center gap-2 text-xs font-medium text-slate-500 group-hover:text-slate-300">
-              {showArchived ? 'Hide' : 'Show'}
+              {showArchived ? t('common.hide') : t('common.show')}
               <ChevronDown className={`size-4 transition-transform ${showArchived ? 'rotate-180' : ''}`} />
             </span>
           </button>
@@ -187,7 +193,11 @@ function SubscriptionListState({
   );
 }
 
-function filterSubscriptions(subscriptions: Array<{ subscription: SubscriptionConfig; key: string }>, filter: string) {
+function filterSubscriptions(
+  subscriptions: Array<{ subscription: SubscriptionConfig; key: string }>,
+  filter: string,
+  archivedKeyword: string,
+) {
   const keyword = filter.trim().toLowerCase();
   if (!keyword) return subscriptions;
 
@@ -196,7 +206,7 @@ function filterSubscriptions(subscriptions: Array<{ subscription: SubscriptionCo
       subscription.title,
       subscription.folder,
       subscription.rss,
-      subscription.archived ? 'archived' : '',
+      subscription.archived ? archivedKeyword : '',
       subscription.filters?.join(' '),
     ]
       .filter(Boolean)

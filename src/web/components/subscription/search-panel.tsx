@@ -4,6 +4,7 @@ import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
+import { useI18n } from '~/lib/i18n';
 import { cn } from '~/lib/utils';
 import type { MikanSearchResult } from '~/types';
 
@@ -36,18 +37,22 @@ export function SearchPanel({
   onChoose,
   onClearSelection,
 }: SearchPanelProps) {
+  const { t } = useI18n();
+
   return (
     <Card className="min-w-0 overflow-hidden">
       <div className="sticky top-0 z-10 border-b border-slate-800/80 bg-slate-950/88 p-4 backdrop-blur md:p-5">
         <CardHeader className="mb-3 flex-col sm:flex-row sm:items-start md:mb-4">
           <div className="flex min-w-0 items-center gap-3">
-            <CardTitle>Find Bangumi</CardTitle>
-            {results.length ? <span className="text-sm text-slate-500">{results.length} results</span> : null}
+            <CardTitle>{t('subscriptions.find')}</CardTitle>
+            {results.length ? (
+              <span className="text-sm text-slate-500">{t('subscriptions.results', { count: results.length })}</span>
+            ) : null}
           </div>
           {selectedBangumiId ? (
             <Button variant="outline" size="sm" onClick={onClearSelection}>
               <X className="mr-2 size-4" />
-              Clear
+              {t('common.clear')}
             </Button>
           ) : null}
         </CardHeader>
@@ -62,7 +67,7 @@ export function SearchPanel({
             <Input
               value={query}
               onChange={(event) => onQueryChange(event.target.value)}
-              placeholder="Search by title, e.g. Ave Mujica"
+              placeholder={t('subscriptions.placeholderSearch')}
               className="pl-9"
             />
           </div>
@@ -72,7 +77,7 @@ export function SearchPanel({
             ) : (
               <Search className="mr-2 size-4" />
             )}
-            Search
+            {t('common.search')}
           </Button>
           <Button
             variant="outline"
@@ -81,7 +86,7 @@ export function SearchPanel({
             onClick={onBrowse}
             disabled={isSearchLoading || isBrowseLoading}>
             {isBrowseLoading ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : null}
-            Current Season
+            {t('subscriptions.currentSeason')}
           </Button>
         </form>
       </div>
@@ -115,9 +120,10 @@ export function SearchPanel({
             </div>
           ) : (
             <div
-              className="grid min-h-24 place-items-center rounded-2xl border border-dashed border-slate-800/80 bg-slate-950/34 px-6 md:min-h-28"
-              aria-label="No search results">
+              className="grid min-h-24 place-items-center gap-2 rounded-2xl border border-dashed border-slate-800/80 bg-slate-950/34 px-6 py-6 text-center text-sm text-slate-500 md:min-h-28"
+              aria-label={t('subscriptions.noResults')}>
               <Search className="size-6 text-slate-700" aria-hidden="true" />
+              <span>{t('subscriptions.noResults')}</span>
             </div>
           )}
         </div>
@@ -137,6 +143,8 @@ function SearchResultItem({
   loading: boolean;
   onChoose: () => void;
 }) {
+  const { t } = useI18n();
+
   return (
     <div
       className={cn(
@@ -166,7 +174,7 @@ function SearchResultItem({
             <span className="truncate">{item.title}</span>
           </a>
           <div className="shrink-0 rounded-full border border-slate-800 bg-slate-950 px-2.5 py-0.5 text-xs font-medium text-slate-400">
-            ID {item.id}
+            {t('common.id')} {item.id}
           </div>
         </div>
         {loading ? <LoaderCircle className="mt-1 size-4 shrink-0 animate-spin text-cyan-200" /> : null}

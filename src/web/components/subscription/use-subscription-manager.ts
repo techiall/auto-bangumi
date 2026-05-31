@@ -12,6 +12,7 @@ import {
   searchMikan,
   updateSeason,
 } from '~/lib/api';
+import { useI18n } from '~/lib/i18n';
 import { asMessage, splitCommaList } from '~/lib/subscription';
 import type { AddSeasonPayload, AppConfig, MikanBangumiDetail, MikanSearchResult, UpdateSeasonPayload } from '~/types';
 
@@ -24,6 +25,7 @@ const emptyForm: SubscriptionFormState = {
 };
 
 export function useSubscriptionManager(enabled = true) {
+  const { t } = useI18n();
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<MikanSearchResult[]>([]);
@@ -99,7 +101,7 @@ export function useSubscriptionManager(enabled = true) {
     setIsRssRefreshing(true);
     try {
       const result = await refreshRssFeeds();
-      showNotice(formatRssRefreshMessage(result), 'success');
+      showNotice(formatRssRefreshMessage(result, t), 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
     } finally {
@@ -160,7 +162,7 @@ export function useSubscriptionManager(enabled = true) {
     setSubscriptionPending(rss, true);
     try {
       setConfig(await deleteSeason(rss));
-      showNotice('Subscription removed.', 'success');
+      showNotice(t('subscriptions.removed'), 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
     } finally {
@@ -172,7 +174,7 @@ export function useSubscriptionManager(enabled = true) {
     setSubscriptionPending(rss, true);
     try {
       setConfig(await updateSeason(rss, payload));
-      showNotice('Subscription updated.', 'success');
+      showNotice(t('subscriptions.updated'), 'success');
     } catch (error) {
       showNotice(asMessage(error), 'error');
     } finally {
@@ -194,7 +196,7 @@ export function useSubscriptionManager(enabled = true) {
 
     try {
       setConfig(await addSeason(payload));
-      showNotice('Subscription saved.', 'success');
+      showNotice(t('subscriptions.added'), 'success');
       setSelectedBangumi(null);
       setSelectedGroupId(null);
       setForm(emptyForm);
@@ -263,16 +265,18 @@ function setSubscriptionPendingState(current: Set<string>, key: string, pending:
   return next;
 }
 
-function formatRssRefreshMessage(result: { queuedCount: number; archivedSubscriptionCount: number }) {
+function formatRssRefreshMessage(
+  result: { queuedCount: number; archivedSubscriptionCount: number },
+  t: (key: string, values?: Record<string, string | number>) => string,
+) {
   const archivedSuffix = result.archivedSubscriptionCount
-    ? ` Skipped ${result.archivedSubscriptionCount} archived subscription${
-        result.archivedSubscriptionCount === 1 ? '' : 's'
-      }.`
+    ? t('subscriptions.rssSkippedArchived', { count: result.archivedSubscriptionCount })
     : '';
+  const joinNotice = (message: string) => [message, archivedSuffix].filter(Boolean).join(' ');
 
   if (result.queuedCount > 0) {
-    return `RSS refreshed. Queued ${result.queuedCount} new episode${result.queuedCount === 1 ? '' : 's'}.${archivedSuffix}`;
+    return joinNotice(t('subscriptions.rssRefreshedQueued', { count: result.queuedCount }));
   }
 
-  return `RSS refreshed. No new episodes found.${archivedSuffix}`;
+  return joinNotice(t('subscriptions.rssRefreshedNone'));
 }

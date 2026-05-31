@@ -5,6 +5,7 @@ import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Field, GroupOption, StateBox } from '~/components/subscription/shared';
+import { useI18n } from '~/lib/i18n';
 import { cn } from '~/lib/utils';
 import type { MikanBangumiDetail, MikanBangumiGroup } from '~/types';
 
@@ -41,6 +42,7 @@ export function SubscriptionSettings({
   onSubmit,
   onCancel,
 }: SubscriptionSettingsProps) {
+  const { t } = useI18n();
   const formId = useId();
   const titleId = `${formId}-title`;
   const seasonId = `${formId}-season`;
@@ -61,10 +63,10 @@ export function SubscriptionSettings({
             <span className="truncate">{bangumi.title}</span>
             <ExternalLink className="size-3.5 shrink-0" />
           </a>
-          <div className="mt-1 text-sm text-slate-500">Bangumi ID: {bangumi.id}</div>
+          <div className="mt-1 text-sm text-slate-500">{t('subscriptions.bangumiId', { id: bangumi.id })}</div>
         </div>
         <Badge variant="outline" className="border-cyan-800 bg-cyan-950 text-cyan-100">
-          {selectedGroup ? selectedGroup.name : 'No subtitle group selected'}
+          {selectedGroup ? selectedGroup.name : t('subscriptions.noSubtitleGroup')}
         </Badge>
       </div>
 
@@ -82,7 +84,7 @@ export function SubscriptionSettings({
 
       <div className="grid gap-5">
         <section className="min-w-0 space-y-3">
-          <div className="text-sm font-medium text-slate-100">Subtitle Group</div>
+          <div className="text-sm font-medium text-slate-100">{t('subscriptions.subtitleGroup')}</div>
           <div className="grid max-h-72 min-w-0 grid-cols-[repeat(auto-fit,minmax(min(17rem,100%),1fr))] gap-2 overflow-x-hidden overflow-y-auto pr-1">
             {bangumi.groups.length ? (
               bangumi.groups.map((group) => (
@@ -94,17 +96,14 @@ export function SubscriptionSettings({
                 />
               ))
             ) : (
-              <StateBox
-                icon={<Layers3 className="size-4" />}
-                text="No subtitle groups found. The default bangumi RSS will be used."
-              />
+              <StateBox icon={<Layers3 className="size-4" />} text={t('subscriptions.noSubtitleGroupsFound')} />
             )}
           </div>
         </section>
 
         <section className="min-w-0 space-y-4">
           <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_8rem]">
-            <Field id={titleId} label="Title">
+            <Field id={titleId} label={t('common.title')}>
               <Input
                 id={titleId}
                 value={form.title}
@@ -112,7 +111,7 @@ export function SubscriptionSettings({
               />
             </Field>
 
-            <Field id={seasonId} label="Season">
+            <Field id={seasonId} label={t('common.season')}>
               <Input
                 id={seasonId}
                 type="number"
@@ -124,21 +123,21 @@ export function SubscriptionSettings({
           </div>
 
           <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-            <Field id={folderId} label="Folder">
+            <Field id={folderId} label={t('common.folder')}>
               <Input
                 id={folderId}
                 value={form.folder}
                 onChange={(event) => onFormChange({ ...form, folder: event.target.value })}
-                placeholder="e.g. Natsume Yuujinchou"
+                placeholder={t('subscriptions.placeholderFolder')}
               />
             </Field>
 
-            <Field id={filtersId} label="Title Filters">
+            <Field id={filtersId} label={t('subscriptions.titleFilters')}>
               <Input
                 id={filtersId}
                 value={form.filters}
                 onChange={(event) => onFormChange({ ...form, filters: event.target.value })}
-                placeholder="e.g. 1080p, CHS"
+                placeholder={t('subscriptions.placeholderTitleFilters')}
                 className="h-12 text-base"
               />
             </Field>
@@ -147,11 +146,11 @@ export function SubscriptionSettings({
           <div className="grid gap-2 sm:flex sm:flex-wrap sm:justify-end">
             <Button type="button" variant="outline" size="lg" className="w-full sm:w-fit" onClick={onCancel}>
               <X className="mr-2 size-4" />
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" size="lg" className="w-full sm:w-fit" disabled={isSubmitting}>
               {isSubmitting ? <LoaderCircle className="mr-2 size-4 animate-spin" /> : <Check className="mr-2 size-4" />}
-              Save
+              {t('common.save')}
             </Button>
           </div>
         </section>

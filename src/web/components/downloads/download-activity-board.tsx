@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { DownloadRecord, MovedHistoryRecord } from '~/components/downloads/download-record';
 import { splitDownloadRows } from '~/components/downloads/download-model';
 import { formatTime } from '~/components/downloads/download-format';
+import { useI18n } from '~/lib/i18n';
 import type { DownloadRow } from '~/components/downloads/download-types';
 
 interface DownloadActivityBoardProps {
@@ -29,6 +30,7 @@ export function DownloadActivityBoard({
   onRetryMove,
   retryingMoveHashes,
 }: DownloadActivityBoardProps) {
+  const { locale, t } = useI18n();
   const [showHistory, setShowHistory] = useState(false);
   const { attentionRows, activeRows, moveJobRows, seedingRows, historyRows } = splitDownloadRows(rows);
 
@@ -37,15 +39,19 @@ export function DownloadActivityBoard({
       <CardHeader className="mb-5 flex-col sm:flex-row sm:items-start">
         <div className="min-w-0">
           <CardTitle>
-            {selectedSubscriptionTitle ? `${selectedSubscriptionTitle} Activity` : 'Download Activity'}
+            {selectedSubscriptionTitle
+              ? t('downloads.activityFor', { title: selectedSubscriptionTitle })
+              : t('downloads.activity')}
           </CardTitle>
           {lastUpdatedAt ? (
-            <div className="mt-1 text-xs text-slate-500">Updated at {formatTime(lastUpdatedAt)}</div>
+            <div className="mt-1 text-xs text-slate-500">
+              {t('downloads.updatedAt', { time: formatTime(lastUpdatedAt, locale) })}
+            </div>
           ) : null}
         </div>
         <Button variant="outline" size="sm" onClick={onRefresh} disabled={loading}>
           <RefreshCcw className={loading ? 'mr-2 size-4 animate-spin' : 'mr-2 size-4'} />
-          Refresh
+          {t('downloads.refresh')}
         </Button>
       </CardHeader>
 
@@ -57,40 +63,40 @@ export function DownloadActivityBoard({
         ) : null}
 
         <PrimarySection
-          title="Needs Attention"
+          title={t('downloads.needsAttention')}
           icon={<ShieldAlert className="size-4" />}
           rows={attentionRows}
-          emptyText="No problems need your attention."
+          emptyText={t('downloads.emptyAttention')}
           tone="attention"
           onRetryMove={onRetryMove}
           retryingMoveHashes={retryingMoveHashes}
         />
 
         <PrimarySection
-          title="Active Queue"
+          title={t('downloads.activeQueue')}
           icon={<LoaderCircle className={loading ? 'size-4 animate-spin' : 'size-4'} />}
           rows={activeRows}
-          emptyText="No active downloads right now."
+          emptyText={t('downloads.emptyActive')}
           tone="active"
           onRetryMove={onRetryMove}
           retryingMoveHashes={retryingMoveHashes}
         />
 
         <PrimarySection
-          title="Move Jobs"
+          title={t('downloads.moveJobs')}
           icon={<Truck className="size-4" />}
           rows={moveJobRows}
-          emptyText="No files are being moved right now."
+          emptyText={t('downloads.emptyMoveJobs')}
           tone="move"
           onRetryMove={onRetryMove}
           retryingMoveHashes={retryingMoveHashes}
         />
 
         <PrimarySection
-          title="Seeding"
+          title={t('downloads.seeding')}
           icon={<Send className="size-4" />}
           rows={seedingRows}
-          emptyText="No qB seeding episodes right now."
+          emptyText={t('downloads.emptySeeding')}
           tone="seeding"
           onRetryMove={onRetryMove}
           retryingMoveHashes={retryingMoveHashes}
@@ -107,11 +113,15 @@ export function DownloadActivityBoard({
                 <Archive className="size-4" />
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-sm font-medium text-slate-200">Moved History</span>
-                <span className="block truncate text-xs text-slate-500">{historyRows.length} moved total</span>
+                <span className="block truncate text-sm font-medium text-slate-200">{t('downloads.movedHistory')}</span>
+                <span className="block truncate text-xs text-slate-500">
+                  {t('downloads.movedTotal', { count: historyRows.length })}
+                </span>
               </span>
             </span>
-            <span className="shrink-0 text-xs font-medium text-slate-500">{showHistory ? 'Hide' : 'Show all'}</span>
+            <span className="shrink-0 text-xs font-medium text-slate-500">
+              {showHistory ? t('common.hide') : t('common.show')}
+            </span>
           </button>
 
           {showHistory ? (
@@ -125,7 +135,7 @@ export function DownloadActivityBoard({
                   </div>
                 </div>
               ) : (
-                <EmptySection icon={<CheckCircle2 className="size-4" />} text="No moved episodes yet." />
+                <EmptySection icon={<CheckCircle2 className="size-4" />} text={t('downloads.emptyHistory')} />
               )}
             </div>
           ) : null}

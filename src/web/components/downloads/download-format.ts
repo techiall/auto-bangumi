@@ -1,13 +1,13 @@
-export function formatMovedAt(value: string) {
+export function formatMovedAt(value: string, locale = 'en-US') {
   if (!value || value === new Date(0).toISOString()) return '-';
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: 'short',
     timeStyle: 'short',
   }).format(new Date(value));
 }
 
-export function formatTime(value: Date) {
-  return new Intl.DateTimeFormat('en-US', {
+export function formatTime(value: Date, locale = 'en-US') {
+  return new Intl.DateTimeFormat(locale, {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
@@ -41,8 +41,8 @@ export function formatEta(value: number) {
   if (!Number.isFinite(value) || value <= 0 || value >= 8640000) return '';
   const hours = Math.floor(value / 3600);
   const minutes = Math.floor((value % 3600) / 60);
-  if (hours > 0) return `ETA ${hours}h ${minutes}m`;
-  return `ETA ${minutes}m`;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
 }
 
 export function formatDuration(value: number) {

@@ -9,6 +9,7 @@ import { useDownloadState } from '~/components/downloads/use-download-state';
 import { SubscriptionsPage } from '~/components/subscription/subscriptions-page';
 import { useSubscriptionManager } from '~/components/subscription/use-subscription-manager';
 import { AuthenticationError, fetchSession, logout } from '~/lib/api';
+import { useI18n } from '~/lib/i18n';
 
 export const Route = createFileRoute('/')({
   validateSearch: (search: Record<string, unknown>): { tab?: PageTab; subscription?: string } => ({
@@ -19,6 +20,7 @@ export const Route = createFileRoute('/')({
 });
 
 function HomePage() {
+  const { t } = useI18n();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const routeTab = search.tab ?? 'subscriptions';
@@ -107,7 +109,7 @@ function HomePage() {
   if (checkingSession) {
     return (
       <div className="session-check-bg flex min-h-screen items-center justify-center text-sm text-slate-400">
-        Checking session...
+        {t('auth.checkingSession')}
       </div>
     );
   }

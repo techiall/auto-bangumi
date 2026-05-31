@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Rss } from 'lucide-react';
 import { Label } from '~/components/ui/label';
+import { useI18n } from '~/lib/i18n';
 import { cn } from '~/lib/utils';
 import type { MikanBangumiGroup } from '~/types';
 
@@ -22,6 +23,8 @@ export function GroupOption({
   active: boolean;
   onClick: () => void;
 }) {
+  const { t } = useI18n();
+
   return (
     <div
       className={cn(
@@ -38,7 +41,7 @@ export function GroupOption({
         className="inline-flex shrink-0 items-center gap-1 rounded-full border border-cyan-800/80 bg-cyan-950/70 px-2.5 py-1 text-xs font-medium text-cyan-100 transition-colors hover:border-cyan-500 hover:bg-cyan-900 hover:text-cyan-50"
         title={`${group.name} RSS`}>
         <Rss className="size-3.5" />
-        RSS
+        {t('common.rss')}
       </a>
     </div>
   );

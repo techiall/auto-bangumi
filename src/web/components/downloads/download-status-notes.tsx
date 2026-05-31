@@ -1,40 +1,25 @@
 import { Info } from 'lucide-react';
+import { useI18n } from '~/lib/i18n';
 
 export function DownloadStatusNotes() {
+  const { t } = useI18n();
+
   return (
     <details className="rounded-2xl border border-slate-800/80 bg-slate-950/55 px-4 py-3 text-xs text-slate-500">
       <summary className="flex cursor-pointer list-none items-center gap-2 font-semibold uppercase tracking-[0.16em] text-slate-400 marker:hidden">
         <Info className="size-3.5 text-cyan-300" />
-        Status Notes
+        {t('downloads.statusNotes')}
       </summary>
       <div className="mt-3 grid gap-2">
-        <StatusNote
-          label="Views"
-          text="Sections are independent; one episode can appear in Seeding and Move Jobs at the same time."
-        />
-        <StatusNote
-          label="Needs Attention"
-          text="qB read errors, missing qB torrents, or failed move jobs. Retry move appears here after a move failure."
-        />
-        <StatusNote label="Active Queue" text="qB torrents that are still downloading or checking." />
-        <StatusNote
-          label="Move Jobs"
-          text="Files currently claimed by the library agent and being copied into the library."
-        />
-        <StatusNote
-          label="Seeding"
-          text="Completed qB torrents that are still present in qB, including files already moved but still sharing."
-        />
-        <StatusNote
-          label="Moved History"
-          text="Files copied into the library. They may also remain in Seeding until qB reaches the share limit."
-        />
-        <StatusNote
-          label="Cleaned"
-          text="Moved first, then removed from qBittorrent and its download storage after ratio or time limits stop it."
-        />
-        <StatusNote label="Not found" text="Tracked locally, but qB currently has no matching torrent." />
-        <StatusNote label="qB unavailable" text="The server could not read qB status during this refresh." />
+        <StatusNote label={t('downloads.notes.views.label')} text={t('downloads.notes.views.text')} />
+        <StatusNote label={t('downloads.notes.attention.label')} text={t('downloads.notes.attention.text')} />
+        <StatusNote label={t('downloads.notes.active.label')} text={t('downloads.notes.active.text')} />
+        <StatusNote label={t('downloads.notes.moveJobs.label')} text={t('downloads.notes.moveJobs.text')} />
+        <StatusNote label={t('downloads.notes.seeding.label')} text={t('downloads.notes.seeding.text')} />
+        <StatusNote label={t('downloads.notes.history.label')} text={t('downloads.notes.history.text')} />
+        <StatusNote label={t('downloads.notes.cleaned.label')} text={t('downloads.notes.cleaned.text')} />
+        <StatusNote label={t('downloads.notes.notFound.label')} text={t('downloads.notes.notFound.text')} />
+        <StatusNote label={t('downloads.notes.qbUnavailable.label')} text={t('downloads.notes.qbUnavailable.text')} />
       </div>
     </details>
   );

@@ -5,6 +5,7 @@ import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import type { DownloadSummary, SubscriptionDownloadSummary } from '~/components/downloads/download-types';
+import { useI18n } from '~/lib/i18n';
 import { cn } from '~/lib/utils';
 
 interface DownloadScopePickerProps {
@@ -20,6 +21,7 @@ export function DownloadScopePicker({
   selectedSubscriptionRss,
   onSelect,
 }: DownloadScopePickerProps) {
+  const { t } = useI18n();
   const [expanded, setExpanded] = useState(false);
   const [query, setQuery] = useState('');
   const scopesPanelId = useId();
@@ -47,22 +49,26 @@ export function DownloadScopePicker({
             </span>
             <div className="min-w-0">
               <div className="flex items-center gap-2 text-sm font-medium text-slate-300">
-                Download Scope
-                {selectedSummary?.subscription.archived ? <Badge variant="warning">Archived</Badge> : null}
+                {t('downloads.downloadScope')}
+                {selectedSummary?.subscription.archived ? (
+                  <Badge variant="warning">{t('common.archived')}</Badge>
+                ) : null}
               </div>
               <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
                 <span className="max-w-full truncate text-xl font-semibold tracking-tight text-slate-50">
-                  {selectedSummary?.subscription.title ?? 'All subscriptions'}
+                  {selectedSummary?.subscription.title ?? t('downloads.allSubscriptions')}
                 </span>
-                <span className="text-xs text-slate-500">{scopeText(currentSummary)}</span>
+                <span className="text-xs text-slate-500">{scopeText(currentSummary, t)}</span>
               </div>
               <div className="mt-0.5 truncate text-sm text-slate-500">
-                {selectedSummary ? selectedSummary.subscription.folder : `${summaries.length} subscriptions`}
+                {selectedSummary
+                  ? selectedSummary.subscription.folder
+                  : t('downloads.scopeCount', { count: summaries.length })}
               </div>
             </div>
 
             <span className="ml-auto hidden shrink-0 items-center gap-2 text-sm font-medium text-slate-400 sm:flex">
-              {expanded ? 'Hide scopes' : 'Browse scopes'}
+              {expanded ? t('downloads.hideScopes') : t('downloads.browseScopes')}
               <ChevronDown className={`size-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
             </span>
           </button>
@@ -75,7 +81,7 @@ export function DownloadScopePicker({
                 className="w-fit whitespace-nowrap"
                 onClick={() => selectScope(undefined)}>
                 <X className="mr-2 size-4" />
-                Clear
+                {t('common.clear')}
               </Button>
             ) : null}
             <button
@@ -84,7 +90,7 @@ export function DownloadScopePicker({
               aria-controls={scopesPanelId}
               aria-expanded={expanded}
               onClick={() => setExpanded((value) => !value)}>
-              {expanded ? 'Hide scopes' : 'Browse scopes'}
+              {expanded ? t('downloads.hideScopes') : t('downloads.browseScopes')}
               <ChevronDown className={`size-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
             </button>
           </div>
@@ -97,7 +103,7 @@ export function DownloadScopePicker({
               <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Filter download scopes"
+                placeholder={t('downloads.filterScopes')}
                 className="pl-9"
               />
             </div>
@@ -106,8 +112,8 @@ export function DownloadScopePicker({
               <div className="grid gap-2 md:grid-cols-2 2xl:grid-cols-3">
                 <ScopeButton
                   active={!selectedSubscriptionRss}
-                  title="All subscriptions"
-                  subtitle={scopeText(allSummary)}
+                  title={t('downloads.allSubscriptions')}
+                  subtitle={scopeText(allSummary, t)}
                   summary={allSummary}
                   onClick={() => selectScope(undefined)}
                 />
@@ -116,7 +122,7 @@ export function DownloadScopePicker({
                     key={summary.subscription.rss}
                     active={summary.subscription.rss === selectedSubscriptionRss}
                     title={summary.subscription.title}
-                    subtitle={scopeText(summary)}
+                    subtitle={scopeText(summary, t)}
                     summary={summary}
                     archived={summary.subscription.archived}
                     onClick={() => selectScope(summary.subscription.rss)}
@@ -146,6 +152,7 @@ function ScopeButton({
   archived?: boolean;
   onClick: () => void;
 }) {
+  const { t } = useI18n();
   const hasAttention = summary.attentionCount > 0;
   const hasActivity = summary.activeCount + summary.moveJobCount + summary.seedingCount > 0;
 
@@ -165,29 +172,43 @@ function ScopeButton({
       </div>
       <div className="mt-1 truncate text-xs text-slate-500">{subtitle}</div>
       <div className="mt-3 flex flex-wrap gap-1.5">
-        {hasAttention ? <Badge variant="warning">Attention {summary.attentionCount}</Badge> : null}
+        {hasAttention ? (
+          <Badge variant="warning">
+            {t('downloads.needsAttention')} {summary.attentionCount}
+          </Badge>
+        ) : null}
         {hasActivity ? (
           <>
-            <Badge variant="muted">Active {summary.activeCount}</Badge>
-            <Badge variant="muted">Moving {summary.moveJobCount}</Badge>
-            <Badge variant="muted">Seeding {summary.seedingCount}</Badge>
+            <Badge variant="muted">
+              {t('downloads.active')} {summary.activeCount}
+            </Badge>
+            <Badge variant="muted">
+              {t('downloads.moveJobs')} {summary.moveJobCount}
+            </Badge>
+            <Badge variant="muted">
+              {t('downloads.seeding')} {summary.seedingCount}
+            </Badge>
           </>
         ) : (
-          <Badge variant="outline">Idle</Badge>
+          <Badge variant="outline">{t('downloads.idle')}</Badge>
         )}
-        {archived ? <Badge variant="warning">Archived</Badge> : null}
+        {archived ? <Badge variant="warning">{t('common.archived')}</Badge> : null}
       </div>
     </button>
   );
 }
 
-function scopeText(summary: DownloadSummary) {
+function scopeText(summary: DownloadSummary, t: (key: string, values?: Record<string, string | number>) => string) {
   if (summary.activeCount || summary.moveJobCount || summary.seedingCount) {
-    return `${summary.activeCount} active · ${summary.moveJobCount} moving · ${summary.seedingCount} seeding`;
+    return t('downloads.scopeText', {
+      active: summary.activeCount,
+      moving: summary.moveJobCount,
+      seeding: summary.seedingCount,
+    });
   }
 
-  if (summary.completedCount) return `${summary.completedCount} moved`;
-  return 'No download history yet';
+  if (summary.completedCount) return t('downloads.scopeTextMoved', { count: summary.completedCount });
+  return t('downloads.scopeTextEmpty');
 }
 
 function filterSummaries(summaries: SubscriptionDownloadSummary[], query: string) {
