@@ -10,31 +10,29 @@ export function DownloadStatusNotes() {
       <div className="mt-3 grid gap-2">
         <StatusNote
           label="Views"
-          text="Sections can overlap; an episode can be seeding while a library move is running."
+          text="Sections are independent; one episode can appear in Seeding and Move Jobs at the same time."
         />
-        <StatusNote label="Needs Attention" text="Any qB/API error, missing qB status, or failed move job." />
-        <StatusNote label="Active Queue" text="Still downloading or checking in qBittorrent." />
         <StatusNote
-          label="Ready to move"
-          text="qB finished downloading and the server has created a transfer job that is not claimed yet."
+          label="Needs Attention"
+          text="qB read errors, missing qB torrents, or failed move jobs. Retry move appears here after a move failure."
         />
+        <StatusNote label="Active Queue" text="qB torrents that are still downloading or checking." />
         <StatusNote
           label="Move Jobs"
-          text="A library agent has claimed the job and is copying the file into the library."
-        />
-        <StatusNote
-          label="Move failed"
-          text="The library agent reported an error; use Retry move after fixing the cause."
+          text="Files currently claimed by the library agent and being copied into the library."
         />
         <StatusNote
           label="Seeding"
-          text="qB has finished downloading and is uploading; it stays visible here until qB cleanup removes it."
+          text="Completed qB torrents that are still present in qB, including files already moved but still sharing."
         />
         <StatusNote
           label="Moved History"
-          text="Copied into the library; it may still also appear in Seeding before cleanup."
+          text="Files copied into the library. They may also remain in Seeding until qB reaches the share limit."
         />
-        <StatusNote label="Cleaned" text="Moved, then removed from qBittorrent together with its source files." />
+        <StatusNote
+          label="Cleaned"
+          text="Moved first, then removed from qBittorrent and its download storage after ratio or time limits stop it."
+        />
         <StatusNote label="Not found" text="Tracked locally, but qB currently has no matching torrent." />
         <StatusNote label="qB unavailable" text="The server could not read qB status during this refresh." />
       </div>
