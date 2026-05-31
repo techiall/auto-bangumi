@@ -10,7 +10,7 @@ Use the root `compose.yaml` for single-machine deployments.
 
 - `deploy/server/`: download machine. Runs qBittorrent and the web/API server.
 - `deploy/agent/`: library machine. Runs only the mover agent.
-- `SERVER_USERNAME` and `SERVER_PASSWORD` must match on both machines.
+- `SERVER_USERNAME` and `SERVER_PASSWORD` can be any values, but they must match on both machines.
 
 Expose the web/API server only on a trusted LAN or VPN. Do not expose qBittorrent or its internal file server.
 
@@ -24,7 +24,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-SERVER_USERNAME=admin
+SERVER_USERNAME=<shared-username>
 SERVER_PASSWORD=<shared-password>
 ```
 
@@ -46,7 +46,7 @@ cp .env.example .env
 Edit `.env`:
 
 ```env
-SERVER_USERNAME=admin
+SERVER_USERNAME=<shared-username>
 SERVER_PASSWORD=<shared-password>
 DOWNLOAD_SERVER_URL=http://<download-machine>:3000
 HOST_LIBRARY_ROOT=/media/Bangumi

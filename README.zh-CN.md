@@ -47,6 +47,7 @@ graph LR
 ## 默认值
 
 - Web UI：`http://localhost:3000`
+- 应用登录：使用 `.env` 里的 `SERVER_USERNAME` 和 `SERVER_PASSWORD`
 - Docker 内 qBittorrent API：`qbittorrent:8080`
 - Docker 内 qBittorrent 文件服务：`qbittorrent:8081`
 - qBittorrent WebUI：`admin / adminadmin`

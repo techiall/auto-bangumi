@@ -8,7 +8,7 @@
 
 - `deploy/server/`：下载机，运行 qBittorrent 和 Web/API server。
 - `deploy/agent/`：媒体库机器，只运行 mover agent。
-- `SERVER_USERNAME` 和 `SERVER_PASSWORD` 两端必须一致。
+- `SERVER_USERNAME` 和 `SERVER_PASSWORD` 都可以自定义，但两端必须一致。
 
 Web/API 只建议暴露在可信 LAN 或 VPN 内。不要暴露 qBittorrent 或内部文件服务。
 
@@ -22,7 +22,7 @@ cp .env.example .env
 编辑 `.env`：
 
 ```env
-SERVER_USERNAME=admin
+SERVER_USERNAME=<两端共用用户名>
 SERVER_PASSWORD=<两端共用密码>
 ```
 
@@ -44,7 +44,7 @@ cp .env.example .env
 编辑 `.env`：
 
 ```env
-SERVER_USERNAME=admin
+SERVER_USERNAME=<两端共用用户名>
 SERVER_PASSWORD=<两端共用密码>
 DOWNLOAD_SERVER_URL=http://<下载机地址>:3000
 HOST_LIBRARY_ROOT=/media/Bangumi

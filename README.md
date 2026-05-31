@@ -49,6 +49,7 @@ graph LR
 ## Defaults
 
 - Web UI: `http://localhost:3000`
+- App login: `SERVER_USERNAME` and `SERVER_PASSWORD` from `.env`
 - qBittorrent API in Docker: `qbittorrent:8080`
 - qBittorrent file server in Docker: `qbittorrent:8081`
 - qBittorrent WebUI: `admin / adminadmin`
