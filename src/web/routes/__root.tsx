@@ -8,7 +8,8 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: '#020617' },
+      { name: 'theme-color', media: '(prefers-color-scheme: light)', content: '#f8fafc' },
+      { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#020617' },
       { title: 'Bangumi Manager' },
       { name: 'description', content: 'Search Mikan and update subscriptions from a cleaner web UI.' },
     ],
@@ -30,7 +31,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>

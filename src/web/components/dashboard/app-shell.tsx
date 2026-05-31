@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { LogOut } from 'lucide-react';
 import { PageHero } from '~/components/subscription/page-hero';
 import { PageTabs, type PageTab } from '~/components/dashboard/page-tabs';
+import { ThemeSwitcher } from '~/components/dashboard/theme-switcher';
 import { Button } from '~/components/ui/button';
 
 interface AppShellProps {
@@ -13,12 +14,13 @@ interface AppShellProps {
 
 export function AppShell({ activeTab, children, onTabChange, onLogout }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_32rem),linear-gradient(180deg,#020617,#0f172a_48%,#111827)]">
+    <div className="app-shell-bg min-h-screen">
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-4 overflow-hidden px-3 py-4 sm:px-4 md:px-6 md:py-5">
         <header className="flex min-w-0 flex-col gap-4 overflow-hidden rounded-3xl border border-slate-800/90 bg-slate-950/72 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-5">
           <PageHero />
           <div className="flex min-w-0 flex-col gap-2 md:items-end">
             <div className="flex items-center justify-end gap-2 text-xs text-slate-500">
+              <ThemeSwitcher />
               <Button
                 type="button"
                 variant="ghost"

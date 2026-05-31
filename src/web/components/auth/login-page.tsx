@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react';
+import { AppMark } from '~/components/dashboard/app-mark';
+import { ThemeSwitcher } from '~/components/dashboard/theme-switcher';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
@@ -32,15 +34,22 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.20),transparent_32rem),radial-gradient(circle_at_80%_20%,rgba(15,23,42,0.8),transparent_28rem),linear-gradient(135deg,#020617,#0f172a_54%,#111827)] px-4 py-10">
+    <div className="login-page-bg relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10">
+      <ThemeSwitcher className="absolute right-4 top-4" />
       <Card className="relative w-full max-w-md overflow-hidden border-slate-700/80 bg-slate-950/84 p-1 shadow-[0_32px_90px_rgba(0,0,0,0.45)]">
         <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
-        <CardHeader className="flex-col gap-2 p-6 pb-3">
-          <div className="mb-2 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-300/30 bg-cyan-300/10 text-lg font-semibold text-cyan-100">
-            AB
+        <CardHeader className="flex-col gap-4 p-6 pb-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <AppMark className="size-11 drop-shadow-[0_0_28px_rgba(34,211,238,0.28)]" />
+            <div className="min-w-0">
+              <CardTitle className="truncate font-serif text-3xl">Auto Bangumi</CardTitle>
+              <CardDescription className="mt-1 truncate">Mikan RSS console</CardDescription>
+            </div>
           </div>
-          <CardTitle className="text-2xl">Sign in</CardTitle>
-          <CardDescription>Use the server credentials from your local environment.</CardDescription>
+          <div>
+            <div className="text-xl font-semibold tracking-tight text-slate-50">Sign in</div>
+            <CardDescription>Use the server credentials from your local environment.</CardDescription>
+          </div>
         </CardHeader>
         <CardContent className="p-6 pt-3">
           <form className="grid gap-4" onSubmit={submit}>
