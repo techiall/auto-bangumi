@@ -1,0 +1,41 @@
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
+import { defineConfig } from 'vite';
+import viteReact from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import { nitro } from 'nitro/vite';
+
+export default defineConfig({
+  root: '.',
+  publicDir: 'src/web/public',
+  server: {
+    port: 3000,
+    strictPort: true,
+    watch: {
+      ignored: ['**/.tmp/**', '**/db/**', '**/library/**', '**/downloads/**'],
+    },
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:3001',
+        changeOrigin: true,
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      '~': '/src/web',
+    },
+  },
+  plugins: [
+    tailwindcss(),
+    tanstackStart({
+      srcDirectory: 'src/web',
+    }),
+    viteReact(),
+    nitro({
+      features: {
+        websocket: true,
+      },
+      serverDir: 'src/web/nitro',
+    }),
+  ],
+});

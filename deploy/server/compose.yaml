@@ -1,0 +1,25 @@
+services:
+  qbittorrent:
+    image: ghcr.io/techiall/auto-bangumi-qbittorrent:latest
+    volumes:
+      - qbittorrent-config:/config
+      - qbittorrent-downloads:/downloads
+    restart: unless-stopped
+
+  server:
+    image: ghcr.io/techiall/auto-bangumi-server:latest
+    init: true
+    depends_on:
+      - qbittorrent
+    environment:
+      SERVER_USERNAME: ${SERVER_USERNAME}
+      SERVER_PASSWORD: ${SERVER_PASSWORD}
+    volumes:
+      - ./db:/usr/src/app/db
+    ports:
+      - '3000:3000'
+    restart: unless-stopped
+
+volumes:
+  qbittorrent-config:
+  qbittorrent-downloads:

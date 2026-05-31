@@ -1,0 +1,15 @@
+node_modules/
+agent/node_modules/
+dist/
+agent/dist/
+build/
+.output/
+.tanstack/
+src/web/routeTree.gen.ts
+coverage/
+.tmp/
+
+package-lock.json
+agent/package-lock.json
+db/db.json
+config/qbittorrent/

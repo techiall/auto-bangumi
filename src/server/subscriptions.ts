@@ -1,0 +1,134 @@
+import { loadConfig, saveSubscriptions } from './config/app-config.js';
+import type { Config } from './config/app-config.js';
+import { logger } from './config/logger.js';
+import { QBittorrentApi } from './qbittorrent/api.js';
+import { withDb } from './state/db.js';
+import { HttpError } from './http-error.js';
+import {
+  parseSeasonPayload,
+  parseSeasonUpdatePayload,
+  type SeasonPayload,
+  type SeasonUpdatePayload,
+} from './season-payload.js';
+import type { PublicConfig } from './subscriptions/types.js';
+
+export class SubscriptionService {
+  constructor(private readonly dbPath: string) {}
+
+  async list(): Promise<PublicConfig> {
+    return toPublicConfig(await loadConfig(this.dbPath));
+  }
+
+  async add(payload: SeasonPayload): Promise<PublicConfig> {
+    const season = parseSeasonPayload(payload);
+    const config = await loadConfig(this.dbPath);
+
+    if (config.subscriptions.some((existing) => existing.rss === season.rss)) {
+      throw new HttpError(409, 'This RSS already exists in config.');
+    }
+
+    config.subscriptions.push(season);
+    return this.save(config);
+  }
+
+  async update(rss: string, payload: SeasonUpdatePayload): Promise<PublicConfig> {
+    const config = await loadConfig(this.dbPath);
+    const index = this.findIndexByRss(config, rss);
+    const current = config.subscriptions[index];
+
+    config.subscriptions[index] = {
+      ...current,
+      ...parseSeasonUpdatePayload(payload, current),
+    };
+
+    return this.save(config);
+  }
+
+  async delete(rss: string): Promise<PublicConfig> {
+    const config = await loadConfig(this.dbPath);
+    const index = this.findIndexByRss(config, rss);
+    const subscription = config.subscriptions[index];
+
+    await this.cleanupSubscription(subscription.rss, config);
+    config.subscriptions.splice(index, 1);
+    return this.save(config);
+  }
+
+  private async cleanupSubscription(rss: string, config: Config) {
+    const hashes = await withDb(this.dbPath, (db) => [
+      ...Object.entries(db.data.active)
+        .filter(([, episode]) => episode.subscriptionRss === rss)
+        .map(([hash]) => hash),
+      ...Object.entries(db.data.completed)
+        .filter(([, episode]) => episode.subscriptionRss === rss)
+        .map(([hash]) => hash),
+      ...Object.entries(db.data.moveJobs)
+        .filter(([, job]) => job.subscriptionRss === rss)
+        .map(([hash]) => hash),
+    ]);
+
+    if (!hashes.length) return;
+
+    const api = new QBittorrentApi(config.qbittorrent);
+    let removedFromQbittorrent = 0;
+    let failedQbittorrentRemovals = 0;
+
+    for (const hash of hashes) {
+      const removed = await this.removeTorrent(api, hash);
+      if (removed) {
+        removedFromQbittorrent += 1;
+      } else {
+        failedQbittorrentRemovals += 1;
+      }
+    }
+
+    if (failedQbittorrentRemovals) {
+      throw new HttpError(502, `Failed to remove ${failedQbittorrentRemovals} qBittorrent torrent(s).`);
+    }
+
+    await withDb(this.dbPath, async (db) => {
+      for (const hash of hashes) {
+        delete db.data.active[hash];
+        delete db.data.moveJobs[hash];
+        delete db.data.completed[hash];
+      }
+      await db.write();
+    });
+    logger.info(
+      `Removed subscription state for ${rss}: ${hashes.length} db record${hashes.length === 1 ? '' : 's'}, ` +
+        `${removedFromQbittorrent} qBittorrent torrent${removedFromQbittorrent === 1 ? '' : 's'} removed` +
+        (failedQbittorrentRemovals ? `, ${failedQbittorrentRemovals} qBittorrent removal failed` : ''),
+    );
+  }
+
+  private async removeTorrent(api: QBittorrentApi, hash: string) {
+    try {
+      return await api.removeTorrent(hash, true);
+    } catch (error) {
+      const message = (error as Error).message;
+      if (message === 'Torrent not found') return true;
+
+      logger.warn(`Failed to remove torrent ${hash} from qBittorrent: ${message}`);
+      return false;
+    }
+  }
+
+  private findIndexByRss(config: Config, rss: string) {
+    const index = config.subscriptions.findIndex((subscription) => subscription.rss === rss);
+    if (index < 0) {
+      throw new HttpError(404, 'Subscription not found.');
+    }
+
+    return index;
+  }
+
+  private async save(config: Config) {
+    return toPublicConfig(await saveSubscriptions(config.subscriptions, this.dbPath));
+  }
+}
+
+function toPublicConfig(config: Config): PublicConfig {
+  return {
+    subscriptions: config.subscriptions,
+  };
+}
