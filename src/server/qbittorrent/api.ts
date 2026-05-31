@@ -160,7 +160,7 @@ export class QBittorrentApi {
         return this.state === TorrentState.seeding;
       },
       canCleanupDownloadedFiles(): boolean {
-        return ['pausedUP', 'stoppedUP'].includes(rawState);
+        return ['pausedUP', 'stoppedUP'].includes(rawState) && hasReachedConfiguredShareLimit(torrent);
       },
     };
   }
@@ -192,4 +192,28 @@ function normalizeTrackers(trackers: string[]) {
 async function fetchTrackerList(url: string) {
   const text = await fetchWithRetry(url).then((response) => response.text());
   return normalizeTrackers(text.split(/\r?\n/));
+}
+
+function hasReachedConfiguredShareLimit(torrent: NormalizedTorrent) {
+  return hasReachedRatioLimit(torrent) || hasReachedSeedingTimeLimit(torrent);
+}
+
+function hasReachedRatioLimit(torrent: NormalizedTorrent) {
+  const ratioLimit = firstPositiveNumber(torrent.raw.ratio_limit, torrent.raw.max_ratio);
+  return ratioLimit > 0 && torrent.ratio >= ratioLimit;
+}
+
+function hasReachedSeedingTimeLimit(torrent: NormalizedTorrent) {
+  const seedingTimeLimitMinutes = firstPositiveNumber(torrent.raw.seeding_time_limit, torrent.raw.max_seeding_time);
+  const seedingTimeSeconds = Number(torrent.raw.seeding_time ?? 0);
+  return seedingTimeLimitMinutes > 0 && seedingTimeSeconds >= seedingTimeLimitMinutes * 60;
+}
+
+function firstPositiveNumber(...values: unknown[]) {
+  for (const value of values) {
+    const number = Number(value);
+    if (Number.isFinite(number) && number > 0) return number;
+  }
+
+  return 0;
 }

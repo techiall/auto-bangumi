@@ -11,7 +11,7 @@ export interface DownloadStateSnapshot {
   loading: boolean;
   error: string | null;
   lastUpdatedAt: Date | null;
-  refresh: (options?: { silent?: boolean; subscriptionRss?: string }) => Promise<void>;
+  refresh: (options?: { forceHttp?: boolean; silent?: boolean; subscriptionRss?: string }) => Promise<void>;
 }
 
 export function useDownloadState(enabled: boolean): DownloadStateSnapshot {
@@ -22,27 +22,30 @@ export function useDownloadState(enabled: boolean): DownloadStateSnapshot {
   const socketRef = useRef<WebSocket | null>(null);
   const httpRequestInFlightRef = useRef(false);
 
-  const refresh = useCallback(async (options: { silent?: boolean; subscriptionRss?: string } = {}) => {
-    const socket = socketRef.current;
-    if (!options.subscriptionRss && socket?.readyState === WebSocket.OPEN) {
-      socket.send('refresh');
-      return;
-    }
+  const refresh = useCallback(
+    async (options: { forceHttp?: boolean; silent?: boolean; subscriptionRss?: string } = {}) => {
+      const socket = socketRef.current;
+      if (!options.forceHttp && !options.subscriptionRss && socket?.readyState === WebSocket.OPEN) {
+        socket.send('refresh');
+        return;
+      }
 
-    if (httpRequestInFlightRef.current) return;
-    httpRequestInFlightRef.current = true;
-    if (!options.silent) setLoading(true);
-    setError(null);
-    try {
-      setData(await fetchDownloads(options.subscriptionRss));
-      setLastUpdatedAt(new Date());
-    } catch (caught) {
-      setError(asMessage(caught));
-    } finally {
-      httpRequestInFlightRef.current = false;
-      setLoading(false);
-    }
-  }, []);
+      if (httpRequestInFlightRef.current) return;
+      httpRequestInFlightRef.current = true;
+      if (!options.silent) setLoading(true);
+      setError(null);
+      try {
+        setData(await fetchDownloads(options.subscriptionRss));
+        setLastUpdatedAt(new Date());
+      } catch (caught) {
+        setError(asMessage(caught));
+      } finally {
+        httpRequestInFlightRef.current = false;
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!enabled) return;

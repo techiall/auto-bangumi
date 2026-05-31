@@ -1,106 +1,72 @@
 # Auto Bangumi
 
-Auto Bangumi manages Mikan subscriptions, sends new episodes to qBittorrent, and moves completed files into a media library. It includes a web UI, a download-side server, and a library-side mover agent.
+Auto Bangumi manages Mikan subscriptions, adds new episodes to qBittorrent, and moves completed files into a media library through a small mover agent.
 
 Chinese documentation: [README.zh-CN.md](README.zh-CN.md).
 
-## Highlights
+## Features
 
-- Manage Mikan subscriptions from the web UI instead of editing config files.
-- Store subscriptions and download state in SQLite, so runtime state has one source of truth.
-- Keep qBittorrent private by default; only the app server is published to the host.
-- Run everything on one machine for simple setups, or split the download server and library mover across two machines.
-- Move completed files through the agent API path, so the qBittorrent host does not need direct access to the final media library.
+- Search and manage Mikan subscriptions from the web UI.
+- Store subscriptions, active downloads, move jobs, and history in SQLite.
+- Keep qBittorrent private by default; only the app server is exposed.
+- Run on one machine, or split the download server and library agent across machines.
+- Remove qBittorrent tasks only after files are moved and qBittorrent reaches the seeding limit.
 
 ## Quick Start
-
-Prerequisite: Docker Desktop or Docker Engine with Compose.
 
 ```bash
 cp .env.example .env
 docker compose up -d
 ```
 
-Open:
+Open `http://localhost:3000`.
 
-```text
-http://localhost:3000
-```
-
-By default, completed files are written to `./library`. Change `HOST_LIBRARY_ROOT` in `.env` if your media library lives elsewhere.
+Completed files are written to `./library` by default. Change `HOST_LIBRARY_ROOT` in `.env` to use another media folder.
 
 ## Runtime Model
 
-The default `compose.yaml` pulls published GHCR images and runs everything on one machine:
+The root `compose.yaml` runs the normal single-machine setup:
 
-- `server`: web UI, HTTP API, RSS polling, qBittorrent coordination, and move-job queue.
-- `agent`: mover that writes completed files to the host media folder mounted at `/library`.
-- `qbittorrent`: custom qBittorrent image with default WebUI credentials, tracker setup, and an internal download file server.
+- `server`: web UI, API, RSS polling, qBittorrent coordination, and move-job state.
+- `agent`: writes completed files to the host media folder mounted at `/library`.
+- `qbittorrent`: qBittorrent with default app config and an internal file server.
 
-qBittorrent ports are not exposed by default. The server talks to qBittorrent over the private Docker network. After the agent reports a successful move, the server attempts to remove the qBittorrent task and downloaded source file.
+qBittorrent ports are not published. The server talks to qBittorrent on the Docker network. After the agent reports a successful move, qBittorrent keeps seeding until the ratio or time limit is reached, then the server deletes the qBittorrent task and source file.
 
-If downloads and the final media library live on different machines, use the split deployment under `deploy/`. It runs the download server from `deploy/server/` and the library mover from `deploy/agent/`. See [deploy/README.md](deploy/README.md).
+Use [deploy/](deploy/README.md) when qBittorrent runs on a download box but the final media library lives on another machine, such as a NAS.
 
 ```mermaid
 graph LR
-  User[Browser] --> Web[Web UI]
-
-  subgraph DownloadMachine["Download machine"]
-    Web --> Server[Server API]
-    Server --> SQLite[(SQLite state)]
-    Server --> Mikan[Mikan RSS]
-    Server --> QB[qBittorrent]
-    QB --> Download[(Download volume)]
-    Server --> Jobs[Move jobs]
-  end
-
-  subgraph LibraryMachine["Library machine"]
-    Agent[Library agent]
-    Library[(Media library)]
-  end
-
-  Agent --> Server
-  Server --> Download
-  Agent --> Library
-  Agent --> Server
-  Server --> QB
+  User["Browser"] --> Server["Server and Web UI"]
+  Server --> Mikan["Mikan RSS"]
+  Server --> QB["qBittorrent"]
+  Server --> DB[("SQLite")]
+  QB --> Downloads[("Download volume")]
+  Agent["Library agent"] --> Server
+  Agent --> Library[("Media library")]
 ```
 
-## Configuration
-
-Runtime state lives in SQLite at `db/state.sqlite`. It is the source of truth for subscriptions, active downloads, move jobs, and completed history.
-
-Common defaults:
+## Defaults
 
 - Web UI: `http://localhost:3000`
-- qBittorrent API inside Docker: `qbittorrent:8080`
-- qBittorrent file server inside Docker: `qbittorrent:8081`
-- qBittorrent download path inside Docker: `/downloads`
-- qBittorrent WebUI credentials: `admin / adminadmin`
+- qBittorrent API in Docker: `qbittorrent:8080`
+- qBittorrent file server in Docker: `qbittorrent:8081`
+- qBittorrent WebUI: `admin / adminadmin`
 - Active download limit: `20`
-- Seeding cleanup: ratio `3.0` or `60` minutes
+- Seeding limit: ratio `3.0` or `60` minutes
 - Tracker list: `https://cf.trackerslist.com/all.txt`
 
-Server login uses Basic Auth.
-
-## Local Development
-
-Install dependencies:
+## Development
 
 ```bash
 npm install
 npm --prefix agent install
 cp .env.example .env
 cp agent/.env.example agent/.env
-```
-
-Start the development server:
-
-```bash
 npm run dev
 ```
 
-Useful checks before committing:
+Checks:
 
 ```bash
 npm run check

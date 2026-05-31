@@ -9,7 +9,7 @@ import { HttpError } from './http-error.js';
 import { fetchWithRetry } from './utils/fetch-with-retry.js';
 import type { MoverJobPayload } from './mover/types.js';
 
-const DEFAULT_LEASE_MS = 15 * 60 * 1000;
+const DEFAULT_LEASE_MS = envPositiveNumber('MOVE_JOB_LEASE_MS', 70 * 60 * 1000);
 const MAX_MOVE_ATTEMPTS = 5;
 
 export class MoverJobService {
@@ -210,4 +210,9 @@ function parseErrorMessage(payload: unknown) {
 
 function toRecord(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === 'object' ? (value as Record<string, unknown>) : undefined;
+}
+
+function envPositiveNumber(name: string, fallback: number) {
+  const value = Number(process.env[name]);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
 }

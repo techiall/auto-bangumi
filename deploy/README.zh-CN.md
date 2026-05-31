@@ -1,18 +1,18 @@
 # 分机器部署
 
-这个部署方式适合把下载和入库拆开：下载节点运行 qBittorrent 和 Web/API 服务，媒体库节点只运行 Agent，并把文件写入本机媒体库目录。
+当下载机运行 qBittorrent 和 Web UI，但最终媒体库在 NAS 或另一台机器上时，使用这个部署方式。Agent 运行在媒体库机器上，从下载节点拉取完成文件，并写入本机媒体库目录。
 
-如果所有服务都在同一台机器上，优先使用根目录的 `compose.yaml`。这里的分机器部署只适合下载节点和媒体库节点不在同一台机器的场景。`deploy/` 下的 compose 文件会直接拉取已发布的 GHCR 镜像，不依赖本地源码构建。
+单机部署优先使用根目录 `compose.yaml`。
 
-## 目录说明
+## 目录
 
-- `deploy/server/`：下载节点，运行 qBittorrent 和 Web/API 服务。
-- `deploy/agent/`：媒体库节点，运行入库 Agent，并把宿主机媒体库目录挂载到容器内的 `/library`。
-- `SERVER_USERNAME` 和 `SERVER_PASSWORD`：Web UI 和远程 Agent 共用的 Basic Auth 登录凭据。
+- `deploy/server/`：下载机，运行 qBittorrent 和 Web/API server。
+- `deploy/agent/`：媒体库机器，只运行 mover agent。
+- `SERVER_USERNAME` 和 `SERVER_PASSWORD` 两端必须一致。
 
-只在可信的 LAN 或 VPN 内开放 Web/API 入口。不要把 qBittorrent 或它的内部文件服务直接暴露到公网。
+Web/API 只建议暴露在可信 LAN 或 VPN 内。不要暴露 qBittorrent 或内部文件服务。
 
-## 1. 配置下载节点
+## 下载机
 
 ```bash
 cd deploy/server
@@ -23,28 +23,18 @@ cp .env.example .env
 
 ```env
 SERVER_USERNAME=admin
-SERVER_PASSWORD=<两端使用同一个密码>
+SERVER_PASSWORD=<两端共用密码>
 ```
 
-可以用下面的命令生成一个随机密码：
-
-```bash
-openssl rand -base64 32
-```
-
-启动下载节点：
+启动：
 
 ```bash
 docker compose up -d
 ```
 
-默认地址：
+Web UI 和 Agent API 都使用 `http://<下载机地址>:3000`。
 
-- Web UI：`http://localhost:3000`
-- Agent API：复用 `http://<下载节点地址>:3000`，路径是 `/api/mover/*`
-- SQLite 状态文件：`deploy/server/db/state.sqlite`
-
-## 2. 配置媒体库节点
+## 媒体库机器
 
 ```bash
 cd deploy/agent
@@ -55,21 +45,16 @@ cp .env.example .env
 
 ```env
 SERVER_USERNAME=admin
-SERVER_PASSWORD=<两端使用同一个密码>
-DOWNLOAD_SERVER_URL=http://<下载节点地址>:3000
+SERVER_PASSWORD=<两端共用密码>
+DOWNLOAD_SERVER_URL=http://<下载机地址>:3000
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```
 
-启动媒体库节点：
+启动：
 
 ```bash
 docker compose up -d
-```
-
-查看日志：
-
-```bash
 docker compose logs -f agent
 ```
 
-Agent 会向下载节点领取可迁移任务，从下载节点拉取已完成文件，并写入 `HOST_LIBRARY_ROOT` 对应的宿主机目录。容器内固定路径是 `/library`。Agent 回报成功后，下载节点会尝试通过 qBittorrent API 删除对应的任务和下载源文件。
+文件入库后，qBittorrent 会继续做种；达到分享率或做种时间限制并停止后，下载节点再删除 qBittorrent 任务和源文件。

@@ -50,7 +50,7 @@ export function DownloadProgress({
 
     try {
       await retryMoveJob(hash);
-      await downloads.refresh({ silent: true });
+      await downloads.refresh({ forceHttp: true, silent: true });
     } catch (caught) {
       setRetryError(asMessage(caught));
     } finally {
