@@ -21,6 +21,14 @@
 - Keep Dockerfiles under `docker/` with `*.Dockerfile` names.
 - Keep Docker images on Node 26 unless explicitly changed.
 
+## Release Notes
+
+- GitHub releases should follow the public release style used by `v1.0.0`, not a terse changelog-only format.
+- Write release notes bilingually: English first, then Chinese.
+- For maintenance releases, include a short release summary, `## What's Changed`, `## Quick Start`, and `## Docker Images`, then the matching Chinese sections.
+- Include versioned GHCR image tags for tagged releases: `server`, `agent`, and `qbittorrent`.
+- Do not publish release notes that only contain `Changes` and `Verification`.
+
 ## Key Files
 
 - `src/server/config/app-config.ts`: server config and qBittorrent defaults.
