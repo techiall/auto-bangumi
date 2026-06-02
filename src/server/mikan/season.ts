@@ -15,7 +15,8 @@ export class SeasonParse {
   }
 
   async parse(): Promise<Season> {
-    const feed = await rssParser.parseString(await fetchWithRetry(this.subscription.rss).then((it) => it.text()));
+    const response = await fetchWithRetry(toCacheBustedRssUrl(this.subscription.rss));
+    const feed = await rssParser.parseString(await response.text());
 
     const episodes = await Promise.all(
       feed.items.filter((episode) => this.matchEpisode(episode)).map((episode) => new EpisodeParse(episode).parse()),
@@ -33,4 +34,10 @@ export class SeasonParse {
     if (!this.subscription.filters?.length) return true;
     return this.subscription.filters.every((match) => (episode.title ?? '').includes(match));
   }
+}
+
+function toCacheBustedRssUrl(rssUrl: string, timestamp = Date.now()) {
+  const url = new URL(rssUrl);
+  url.searchParams.set('t', timestamp.toString());
+  return url.toString();
 }
