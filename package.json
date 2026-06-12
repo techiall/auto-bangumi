@@ -49,7 +49,7 @@
     "vite": "^8.0.16"
   },
   "dependencies": {
-    "@ctrl/qbittorrent": "^9.12.2",
+    "@ctrl/qbittorrent": "^9.13.0",
     "cheerio": "^1.2.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
