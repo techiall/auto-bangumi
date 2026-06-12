@@ -49,6 +49,8 @@
   "downloads.downloadProgressLabel": "{title} download progress",
   "downloads.downloadScope": "Download Scope",
   "downloads.emptyActive": "No active downloads right now.",
+  "downloads.emptyBoardText": "Refresh RSS or pick a subscription to inspect scoped activity.",
+  "downloads.emptyBoardTitle": "No download activity yet",
   "downloads.emptyHistory": "No moved episodes yet.",
   "downloads.emptyMoveJobs": "No files are being moved right now.",
   "downloads.emptySeeding": "No qB seeding episodes right now.",

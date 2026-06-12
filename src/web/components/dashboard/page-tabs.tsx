@@ -19,7 +19,7 @@ export function PageTabs({ activeTab, onChange }: PageTabsProps) {
 
   return (
     <div className="w-full min-w-0 rounded-2xl border border-slate-800 bg-slate-900/70 p-1.5 md:w-auto">
-      <div className="grid gap-1.5 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-1.5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
@@ -29,7 +29,7 @@ export function PageTabs({ activeTab, onChange }: PageTabsProps) {
               key={tab.id}
               type="button"
               className={cn(
-                'flex w-full min-w-0 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/30 md:min-w-36',
+                'flex w-full min-w-0 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/30 sm:px-4 sm:py-2.5 md:min-w-36',
                 active
                   ? 'bg-cyan-400 text-slate-950 shadow-[0_10px_30px_rgba(34,211,238,0.2)]'
                   : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100',

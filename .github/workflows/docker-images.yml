@@ -31,7 +31,7 @@ jobs:
           - image: qbittorrent
             context: docker/qbittorrent
             dockerfile: docker/qbittorrent.Dockerfile
-            description: qBittorrent image preconfigured for Auto Bangumi with an internal download file server.
+            description: Official qBittorrent-nox image preconfigured for Auto Bangumi with an internal download file server.
 
     steps:
       - name: Checkout

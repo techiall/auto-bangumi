@@ -33,6 +33,7 @@ export function DownloadActivityBoard({
   const { locale, t } = useI18n();
   const [showHistory, setShowHistory] = useState(false);
   const { attentionRows, activeRows, moveJobRows, seedingRows, historyRows } = splitDownloadRows(rows);
+  const hasActivityRows = rows.length > 0;
 
   return (
     <Card className="p-5">
@@ -62,84 +63,92 @@ export function DownloadActivityBoard({
           </div>
         ) : null}
 
-        <PrimarySection
-          title={t('downloads.needsAttention')}
-          icon={<ShieldAlert className="size-4" />}
-          rows={attentionRows}
-          emptyText={t('downloads.emptyAttention')}
-          tone="attention"
-          onRetryMove={onRetryMove}
-          retryingMoveHashes={retryingMoveHashes}
-        />
+        {hasActivityRows ? (
+          <>
+            <PrimarySection
+              title={t('downloads.needsAttention')}
+              icon={<ShieldAlert className="size-4" />}
+              rows={attentionRows}
+              emptyText={t('downloads.emptyAttention')}
+              tone="attention"
+              onRetryMove={onRetryMove}
+              retryingMoveHashes={retryingMoveHashes}
+            />
 
-        <PrimarySection
-          title={t('downloads.activeQueue')}
-          icon={<LoaderCircle className={loading ? 'size-4 animate-spin' : 'size-4'} />}
-          rows={activeRows}
-          emptyText={t('downloads.emptyActive')}
-          tone="active"
-          onRetryMove={onRetryMove}
-          retryingMoveHashes={retryingMoveHashes}
-        />
+            <PrimarySection
+              title={t('downloads.activeQueue')}
+              icon={<LoaderCircle className={loading ? 'size-4 animate-spin' : 'size-4'} />}
+              rows={activeRows}
+              emptyText={t('downloads.emptyActive')}
+              tone="active"
+              onRetryMove={onRetryMove}
+              retryingMoveHashes={retryingMoveHashes}
+            />
 
-        <PrimarySection
-          title={t('downloads.moveJobs')}
-          icon={<Truck className="size-4" />}
-          rows={moveJobRows}
-          emptyText={t('downloads.emptyMoveJobs')}
-          tone="move"
-          onRetryMove={onRetryMove}
-          retryingMoveHashes={retryingMoveHashes}
-        />
+            <PrimarySection
+              title={t('downloads.moveJobs')}
+              icon={<Truck className="size-4" />}
+              rows={moveJobRows}
+              emptyText={t('downloads.emptyMoveJobs')}
+              tone="move"
+              onRetryMove={onRetryMove}
+              retryingMoveHashes={retryingMoveHashes}
+            />
 
-        <PrimarySection
-          title={t('downloads.seeding')}
-          icon={<Send className="size-4" />}
-          rows={seedingRows}
-          emptyText={t('downloads.emptySeeding')}
-          tone="seeding"
-          onRetryMove={onRetryMove}
-          retryingMoveHashes={retryingMoveHashes}
-        />
+            <PrimarySection
+              title={t('downloads.seeding')}
+              icon={<Send className="size-4" />}
+              rows={seedingRows}
+              emptyText={t('downloads.emptySeeding')}
+              tone="seeding"
+              onRetryMove={onRetryMove}
+              retryingMoveHashes={retryingMoveHashes}
+            />
 
-        <section className="overflow-hidden rounded-2xl border border-dashed border-slate-800/90 bg-slate-950/28">
-          <button
-            type="button"
-            aria-expanded={showHistory}
-            className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-slate-900/40"
-            onClick={() => setShowHistory((value) => !value)}>
-            <span className="flex min-w-0 items-center gap-3">
-              <span className="grid size-8 shrink-0 place-items-center rounded-xl border border-slate-800 bg-slate-900/80 text-emerald-200">
-                <Archive className="size-4" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-sm font-medium text-slate-200">{t('downloads.movedHistory')}</span>
-                <span className="block truncate text-xs text-slate-500">
-                  {t('downloads.movedTotal', { count: historyRows.length })}
+            <section className="overflow-hidden rounded-2xl border border-dashed border-slate-800/90 bg-slate-950/28">
+              <button
+                type="button"
+                aria-expanded={showHistory}
+                className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-slate-900/40"
+                onClick={() => setShowHistory((value) => !value)}>
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-xl border border-slate-800 bg-slate-900/80 text-emerald-200">
+                    <Archive className="size-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-medium text-slate-200">
+                      {t('downloads.movedHistory')}
+                    </span>
+                    <span className="block truncate text-xs text-slate-500">
+                      {t('downloads.movedTotal', { count: historyRows.length })}
+                    </span>
+                  </span>
                 </span>
-              </span>
-            </span>
-            <span className="shrink-0 text-xs font-medium text-slate-500">
-              {showHistory ? t('common.hide') : t('common.show')}
-            </span>
-          </button>
+                <span className="shrink-0 text-xs font-medium text-slate-500">
+                  {showHistory ? t('common.hide') : t('common.show')}
+                </span>
+              </button>
 
-          {showHistory ? (
-            <div className="border-t border-slate-800/80 bg-slate-950/36 p-3">
-              {historyRows.length ? (
-                <div className="max-h-[34rem] overflow-y-auto pr-1 [scrollbar-color:#334155_transparent]">
-                  <div className="grid gap-2">
-                    {historyRows.map((row) => (
-                      <MovedHistoryRecord key={row.hash} row={row} />
-                    ))}
-                  </div>
+              {showHistory ? (
+                <div className="border-t border-slate-800/80 bg-slate-950/36 p-3">
+                  {historyRows.length ? (
+                    <div className="max-h-[34rem] overflow-y-auto pr-1 [scrollbar-color:#334155_transparent]">
+                      <div className="grid gap-2">
+                        {historyRows.map((row) => (
+                          <MovedHistoryRecord key={row.hash} row={row} />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <EmptySection icon={<CheckCircle2 className="size-4" />} text={t('downloads.emptyHistory')} />
+                  )}
                 </div>
-              ) : (
-                <EmptySection icon={<CheckCircle2 className="size-4" />} text={t('downloads.emptyHistory')} />
-              )}
-            </div>
-          ) : null}
-        </section>
+              ) : null}
+            </section>
+          </>
+        ) : (
+          <EmptyBoard loading={loading} />
+        )}
       </CardContent>
     </Card>
   );
@@ -210,6 +219,24 @@ function EmptySection({ icon, text }: { icon: ReactNode; text: string }) {
     <div className="flex items-center gap-3 rounded-2xl border border-slate-800/80 bg-slate-950/36 px-4 py-5 text-sm text-slate-500">
       <span className="text-slate-600">{icon}</span>
       {text}
+    </div>
+  );
+}
+
+function EmptyBoard({ loading }: { loading: boolean }) {
+  const { t } = useI18n();
+
+  return (
+    <div className="grid min-h-48 place-items-center rounded-2xl border border-dashed border-slate-800/90 bg-slate-950/32 px-6 py-10 text-center">
+      <div className="grid max-w-md justify-items-center gap-3">
+        <span className="grid size-11 place-items-center rounded-2xl border border-slate-800 bg-slate-900/70 text-cyan-200">
+          {loading ? <LoaderCircle className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
+        </span>
+        <div>
+          <div className="text-base font-semibold text-slate-200">{t('downloads.emptyBoardTitle')}</div>
+          <div className="mt-1 text-sm leading-6 text-slate-500">{t('downloads.emptyBoardText')}</div>
+        </div>
+      </div>
     </div>
   );
 }

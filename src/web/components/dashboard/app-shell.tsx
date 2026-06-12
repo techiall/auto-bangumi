@@ -19,7 +19,7 @@ export function AppShell({ activeTab, children, onTabChange, onLogout }: AppShel
   return (
     <div className="app-shell-bg min-h-screen">
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-4 overflow-hidden px-3 py-4 sm:px-4 md:px-6 md:py-5">
-        <header className="relative z-20 flex min-w-0 flex-col gap-4 overflow-visible rounded-3xl border border-slate-800/90 bg-slate-950/72 p-4 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-5">
+        <header className="relative z-20 flex min-w-0 flex-col gap-3 overflow-visible rounded-3xl border border-slate-800/90 bg-slate-950/72 p-3 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur sm:p-4 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:p-5">
           <PageHero />
           <div className="flex min-w-0 flex-col gap-2 md:items-end">
             <div className="relative z-20 flex items-center justify-end gap-2 text-xs text-slate-500">

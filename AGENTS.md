@@ -42,7 +42,7 @@
 - `agent/src/env.ts`: agent env loader.
 - `docker/app.Dockerfile`: combined server and web image.
 - `docker/agent.Dockerfile`: mover agent image.
-- `docker/qbittorrent.Dockerfile`: qBittorrent plus internal file-server image.
+- `docker/qbittorrent.Dockerfile`: official qBittorrent-nox plus internal file-server image.
 
 ## Behavior To Preserve
 

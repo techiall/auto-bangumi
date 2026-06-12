@@ -49,6 +49,8 @@
   "downloads.downloadProgressLabel": "{title} 下载进度",
   "downloads.downloadScope": "下载范围",
   "downloads.emptyActive": "当前没有活跃下载。",
+  "downloads.emptyBoardText": "可以刷新 RSS，或选择某个订阅查看对应下载活动。",
+  "downloads.emptyBoardTitle": "还没有下载活动",
   "downloads.emptyHistory": "还没有转移记录。",
   "downloads.emptyMoveJobs": "当前没有正在转移的文件。",
   "downloads.emptySeeding": "当前没有 qB 做种条目。",

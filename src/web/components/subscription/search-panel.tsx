@@ -57,12 +57,12 @@ export function SearchPanel({
           ) : null}
         </CardHeader>
         <form
-          className="grid min-w-0 gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto]"
+          className="grid min-w-0 grid-cols-2 gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto]"
           onSubmit={(event) => {
             event.preventDefault();
             onSearch();
           }}>
-          <div className="relative min-w-0">
+          <div className="relative col-span-2 min-w-0 md:col-span-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
             <Input
               value={query}

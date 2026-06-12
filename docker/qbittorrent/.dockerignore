@@ -1,4 +1,4 @@
 *
 !10-configure-qbittorrent.sh
+!entrypoint.sh
 !file-export.nginx.conf
-!svc-file-export.run
