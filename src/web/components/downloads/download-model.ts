@@ -12,32 +12,26 @@ export function buildDownloadRows(data: DownloadState): DownloadRow[] {
   const completedHashes = new Set(Object.keys(data.completed));
   const activeRows = Object.entries(data.active)
     .filter(([hash]) => !moveJobHashes.has(hash) && !completedHashes.has(hash))
-    .map(
-      ([hash, episode]): DownloadRow => ({
-        ...episode,
-        hash,
-        state: 'active',
-      }),
-    );
+    .map(([hash, episode]): DownloadRow => ({
+      ...episode,
+      hash,
+      state: 'active',
+    }));
 
   const completedRows = Object.entries(data.completed)
-    .map(
-      ([hash, episode]): CompletedDownloadRow => ({
-        ...episode,
-        hash,
-        state: 'completed',
-      }),
-    )
+    .map(([hash, episode]): CompletedDownloadRow => ({
+      ...episode,
+      hash,
+      state: 'completed',
+    }))
     .sort((first, second) => second.movedAt.localeCompare(first.movedAt));
 
   const moveJobRows = Object.entries(data.moveJobs ?? {})
-    .map(
-      ([hash, job]): MoveJobDownloadRow => ({
-        ...job,
-        hash,
-        state: 'moveJob',
-      }),
-    )
+    .map(([hash, job]): MoveJobDownloadRow => ({
+      ...job,
+      hash,
+      state: 'moveJob',
+    }))
     .sort((first, second) => second.updatedAt.localeCompare(first.updatedAt));
 
   return [...activeRows, ...moveJobRows, ...completedRows];

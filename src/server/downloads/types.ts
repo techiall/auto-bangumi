@@ -23,8 +23,7 @@ export type MoveJobWithStatus = MoveJobRecord & {
 };
 
 export type QbittorrentStatuses =
-  | { statuses: Map<string, QBittorrentTorrentStatus>; error?: never }
-  | { statuses?: never; error: string };
+  { statuses: Map<string, QBittorrentTorrentStatus>; error?: never } | { statuses?: never; error: string };
 
 export interface DownloadWebSocketOptions {
   dbPath: string;
