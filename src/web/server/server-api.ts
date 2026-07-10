@@ -2,12 +2,25 @@ import { readAuthHeader } from './auth';
 
 const serverBaseUrl = process.env.API_BASE_URL ?? 'http://127.0.0.1:3001';
 
+const FORWARDED_REQUEST_HEADERS = ['accept', 'accept-language', 'content-type', 'authorization'] as const;
+
+export async function forwardApiRequest(request: Request) {
+  const incoming = new URL(request.url);
+  return forwardToServer(`${incoming.pathname}${incoming.search}`, request);
+}
+
 export async function forwardToServer(path: string, request?: Request) {
   const url = new URL(path, serverBaseUrl);
-  const headers = new Headers(request?.headers);
-  headers.delete('host');
+  const headers = new Headers();
+
+  for (const name of FORWARDED_REQUEST_HEADERS) {
+    const value = request?.headers.get(name);
+    if (value) headers.set(name, value);
+  }
+
   const authorization = readAuthHeader(request);
   if (authorization && !headers.has('authorization')) headers.set('authorization', authorization);
+
   const body = request && shouldForwardBody(request) ? await request.arrayBuffer() : undefined;
 
   const response = await fetch(url, {

@@ -32,7 +32,7 @@ SERVER_PASSWORD=<两端共用密码>
 docker compose up -d
 ```
 
-Web UI 和 Agent API 都使用 `http://<下载机地址>:3000`。
+Web UI 使用 `http://<下载机地址>:3000`。Agent 应直连 Express API：`http://<下载机地址>:3001`，避免大文件经 Web BFF 二次转发。
 
 ## 媒体库机器
 
@@ -46,7 +46,7 @@ cp .env.example .env
 ```env
 SERVER_USERNAME=<两端共用用户名>
 SERVER_PASSWORD=<两端共用密码>
-DOWNLOAD_SERVER_URL=http://<下载机地址>:3000
+DOWNLOAD_SERVER_URL=http://<下载机地址>:3001
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```
 

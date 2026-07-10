@@ -186,7 +186,9 @@ export const SubscriptionCard = memo(function SubscriptionCard({
           <div className="mt-3 flex flex-wrap justify-between gap-2">
             {confirmDelete ? (
               <div className="flex min-w-0 flex-wrap items-center gap-2">
-                <p className="text-sm text-rose-200">{t('subscriptions.confirmDelete', { title: subscription.title })}</p>
+                <p className="text-sm text-rose-200">
+                  {t('subscriptions.confirmDelete', { title: subscription.title })}
+                </p>
                 <Button
                   variant="danger"
                   size="sm"
@@ -196,7 +198,11 @@ export const SubscriptionCard = memo(function SubscriptionCard({
                   <Trash2 className="mr-2 size-4" />
                   {t('common.confirmDelete')}
                 </Button>
-                <Button variant="outline" size="sm" className="w-fit whitespace-nowrap" onClick={() => setConfirmDelete(false)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-fit whitespace-nowrap"
+                  onClick={() => setConfirmDelete(false)}>
                   {t('common.cancel')}
                 </Button>
               </div>

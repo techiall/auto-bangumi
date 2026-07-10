@@ -1,27 +1,28 @@
-import { loadConfig } from './config/app-config.js';
 import { logger } from './config/logger.js';
 import { QBittorrentApi } from './qbittorrent/api.js';
-import type { QBittorrentTorrentStatus } from './qbittorrent/types.js';
+import { loadConfig } from './config/app-config.js';
 import { withDb } from './state/db.js';
 import type { ActiveEpisode, CompletedEpisode, MoveJobRecord } from './state/db.js';
 import { resolveActiveEpisodeMetadata, resolveCompletedEpisodeMetadata } from './state/episode-metadata.js';
-import { syncMoveJobs } from './move-job-sync.js';
 import type { DownloadState, QbittorrentStatuses } from './downloads/types.js';
+import type { QBittorrentTorrentStatus } from './qbittorrent/types.js';
+
+const QBIT_STATUS_CACHE_MS = Number(process.env.DOWNLOADS_QBIT_CACHE_MS ?? 1500);
 
 export class DownloadService {
+  private qbitCache:
+    | {
+        expiresAt: number;
+        value: QbittorrentStatuses;
+      }
+    | undefined;
+
   constructor(private readonly dbPath: string) {}
 
   async state(options: DownloadStateOptions = {}): Promise<DownloadState> {
-    void syncMoveJobs({
-      dbPath: this.dbPath,
-    }).catch((error: unknown) => {
-      logger.warn(`Move job sync failed: ${(error as Error).message}`);
-    });
-
     const config = await loadConfig(this.dbPath);
     const data = await withDb(this.dbPath, (db) => db.data);
-    const api = new QBittorrentApi(config.qbittorrent);
-    const torrentStatuses = await this.loadQbittorrentStatuses(api);
+    const torrentStatuses = await this.loadQbittorrentStatuses(config);
 
     const state = {
       active: mapRecord(data.active, (hash, episode) =>
@@ -38,12 +39,23 @@ export class DownloadService {
     return options.subscriptionRss ? filterStateBySubscription(state, options.subscriptionRss) : state;
   }
 
-  private async loadQbittorrentStatuses(api: QBittorrentApi) {
-    try {
-      return { statuses: await api.torrentStatusesByHash() };
-    } catch (error) {
-      return { error: (error as Error).message };
+  private async loadQbittorrentStatuses(config: Awaited<ReturnType<typeof loadConfig>>) {
+    const now = Date.now();
+    if (this.qbitCache && this.qbitCache.expiresAt > now) {
+      return this.qbitCache.value;
     }
+
+    const api = new QBittorrentApi(config.qbittorrent);
+    let value: QbittorrentStatuses;
+    try {
+      value = { statuses: await api.torrentStatusesByHash() };
+    } catch (error) {
+      value = { error: (error as Error).message };
+      logger.warn(`Failed to load qBittorrent statuses: ${(error as Error).message}`);
+    }
+
+    this.qbitCache = { expiresAt: now + QBIT_STATUS_CACHE_MS, value };
+    return value;
   }
 }
 

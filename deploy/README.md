@@ -34,7 +34,7 @@ Start:
 docker compose up -d
 ```
 
-The web UI and agent API are both served from `http://<download-machine>:3000`.
+The web UI is served from `http://<download-machine>:3000`. The agent should call the Express API on `http://<download-machine>:3001` so large file transfers skip the web BFF.
 
 ## Library Machine
 
@@ -48,7 +48,7 @@ Edit `.env`:
 ```env
 SERVER_USERNAME=<shared-username>
 SERVER_PASSWORD=<shared-password>
-DOWNLOAD_SERVER_URL=http://<download-machine>:3000
+DOWNLOAD_SERVER_URL=http://<download-machine>:3001
 HOST_LIBRARY_ROOT=/media/Bangumi
 ```
 

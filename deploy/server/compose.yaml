@@ -18,6 +18,8 @@ services:
       - ./db:/usr/src/app/db
     ports:
       - '3000:3000'
+      # Express API for the library agent (avoids proxying large file transfers through the web BFF).
+      - '3001:3001'
     restart: unless-stopped
 
 volumes:

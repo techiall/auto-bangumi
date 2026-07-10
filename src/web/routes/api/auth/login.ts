@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { authCookieHeader } from '~/server/auth';
+import { createSessionCookie } from '~/server/auth';
 import { verifyServerCredentials } from '~/server/server-api';
 
 export const Route = createFileRoute('/api/auth/login')({
@@ -18,7 +18,7 @@ export const Route = createFileRoute('/api/auth/login')({
           { ok: true },
           {
             headers: {
-              'Set-Cookie': authCookieHeader(username, password),
+              'Set-Cookie': createSessionCookie(request),
             },
           },
         );

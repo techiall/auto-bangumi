@@ -75,6 +75,7 @@ export interface AppDb {
 }
 
 let dbQueue: Promise<unknown> = Promise.resolve();
+const openDatabases = new Map<string, AppDb>();
 
 export function createDefaultData(): Data {
   return {
@@ -97,17 +98,24 @@ export async function createDb(dbPath = 'db/state.sqlite'): Promise<AppDb> {
 }
 
 export async function withDb<T>(dbPath: string | undefined, task: (db: AppDb) => T | Promise<T>): Promise<T> {
+  const resolvedPath = path.resolve(dbPath ?? 'db/state.sqlite');
+
   const run = dbQueue.then(async () => {
-    const db = await createDb(dbPath);
-    try {
-      return await task(db);
-    } finally {
-      db.close();
-    }
+    const db = await getOpenDb(resolvedPath);
+    return task(db);
   });
 
   dbQueue = run.catch(() => undefined);
   return run;
+}
+
+async function getOpenDb(resolvedPath: string) {
+  const existing = openDatabases.get(resolvedPath);
+  if (existing) return existing;
+
+  const db = await createDb(resolvedPath);
+  openDatabases.set(resolvedPath, db);
+  return db;
 }
 
 export function isTracked(data: Data, torrent: string) {
@@ -499,14 +507,6 @@ function normalizeMoveJob(job: MoveJobRecord): MoveJobRecord {
 }
 
 function migrateSchema(db: DatabaseSync) {
-  db.exec(`
-    DROP TABLE IF EXISTS metadata;
-    DROP INDEX IF EXISTS idx_active_subscription_rss;
-    DROP INDEX IF EXISTS idx_move_jobs_status;
-    DROP INDEX IF EXISTS idx_completed_subscription_rss;
-    DROP INDEX IF EXISTS idx_subscriptions_archived;
-  `);
-
   if (hasColumn(db, 'move_jobs', 'extension')) {
     db.exec(`
       DROP TABLE IF EXISTS move_jobs_next;
@@ -566,6 +566,13 @@ function migrateSchema(db: DatabaseSync) {
       ALTER TABLE subscriptions_next RENAME TO subscriptions;
     `);
   }
+
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_active_subscription_rss ON active_episodes(subscription_rss);
+    CREATE INDEX IF NOT EXISTS idx_move_jobs_status ON move_jobs(status);
+    CREATE INDEX IF NOT EXISTS idx_completed_subscription_rss ON completed_episodes(subscription_rss);
+    CREATE INDEX IF NOT EXISTS idx_subscriptions_archived ON subscriptions(archived);
+  `);
 }
 
 function hasColumn(db: DatabaseSync, table: string, column: string) {

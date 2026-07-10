@@ -106,7 +106,11 @@ async function fetchHtml(path: string) {
   return fetchWithRetry(`${MIKAN_BASE_URL}${path}`).then((response) => response.text());
 }
 
-function collectBangumiFromContainer($: cheerio.CheerioAPI, container: unknown, results: Map<number, MikanSearchResult>) {
+function collectBangumiFromContainer(
+  $: cheerio.CheerioAPI,
+  container: unknown,
+  results: Map<number, MikanSearchResult>,
+) {
   $(container as never)
     .find('a[href^="/Home/Bangumi/"]')
     .each((_, element) => {
@@ -115,14 +119,11 @@ function collectBangumiFromContainer($: cheerio.CheerioAPI, container: unknown, 
       if (!id || results.has(id)) return;
 
       const title =
-        $(element).attr('title')?.trim() ||
-        $(element).find('.an-text').text().trim() ||
-        $(element).text().trim();
+        $(element).attr('title')?.trim() || $(element).find('.an-text').text().trim() || $(element).text().trim();
       if (!title) return;
 
       const imageUrl =
-        $(element).find('[data-src]').attr('data-src') ||
-        $(element).closest('li').find('[data-src]').attr('data-src');
+        $(element).find('[data-src]').attr('data-src') || $(element).closest('li').find('[data-src]').attr('data-src');
 
       results.set(id, {
         id,

@@ -28,12 +28,16 @@ export function attachDownloadWebSocket(server: Server, options: DownloadWebSock
   wss.on('connection', (client) => {
     let closed = false;
     let inFlight = false;
+    let lastPayload: string | undefined;
 
-    const publish = async () => {
+    const publish = async (force = false) => {
       if (closed || inFlight || client.readyState !== WebSocket.OPEN) return;
       inFlight = true;
       try {
-        client.send(JSON.stringify({ type: 'state', data: await service.state() }));
+        const payload = JSON.stringify({ type: 'state', data: await service.state() });
+        if (!force && payload === lastPayload) return;
+        lastPayload = payload;
+        client.send(payload);
       } catch (error) {
         const message = (error as Error).message;
         logger.warn(`Failed to publish download state over WebSocket: ${message}`);
@@ -48,7 +52,7 @@ export function attachDownloadWebSocket(server: Server, options: DownloadWebSock
     }, intervalMs);
 
     client.on('message', (message) => {
-      if (message.toString() === 'refresh') void publish();
+      if (message.toString() === 'refresh') void publish(true);
     });
 
     client.on('close', () => {
@@ -56,7 +60,7 @@ export function attachDownloadWebSocket(server: Server, options: DownloadWebSock
       clearInterval(timer);
     });
 
-    void publish();
+    void publish(true);
   });
 }
 
