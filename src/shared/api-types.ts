@@ -18,6 +18,19 @@ export interface MikanSearchResult {
   imageUrl?: string;
 }
 
+/** 0–6 = Sun–Sat, 7 = movie, 8 = OVA (Mikan homepage `data-dayofweek`). */
+export type MikanDayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+
+export interface MikanSeasonDayGroup {
+  dayOfWeek: MikanDayOfWeek;
+  items: MikanSearchResult[];
+}
+
+export interface MikanSeasonBrowse {
+  seasonLabel?: string;
+  groups: MikanSeasonDayGroup[];
+}
+
 export interface MikanBangumiGroup {
   id: number;
   name: string;

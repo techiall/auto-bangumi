@@ -14,7 +14,14 @@ import {
 } from '~/lib/api';
 import { useI18n } from '~/lib/i18n';
 import { asMessage, splitCommaList } from '~/lib/subscription';
-import type { AddSeasonPayload, AppConfig, MikanBangumiDetail, MikanSearchResult, UpdateSeasonPayload } from '~/types';
+import type {
+  AddSeasonPayload,
+  AppConfig,
+  MikanBangumiDetail,
+  MikanSearchResult,
+  MikanSeasonBrowse,
+  UpdateSeasonPayload,
+} from '~/types';
 
 const emptyForm: SubscriptionFormState = {
   title: '',
@@ -24,16 +31,21 @@ const emptyForm: SubscriptionFormState = {
   rss: '',
 };
 
+export type SearchResultMode = 'search' | 'season';
+
 export function useSubscriptionManager(enabled = true) {
   const { t } = useI18n();
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<MikanSearchResult[]>([]);
+  const [seasonBrowse, setSeasonBrowse] = useState<MikanSeasonBrowse | null>(null);
+  const [resultMode, setResultMode] = useState<SearchResultMode>('search');
   const [selectedBangumi, setSelectedBangumi] = useState<MikanBangumiDetail | null>(null);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [isConfigLoading, setIsConfigLoading] = useState(true);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isBrowseLoading, setIsBrowseLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const [isRssRefreshing, setIsRssRefreshing] = useState(false);
   const [loadingBangumiId, setLoadingBangumiId] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +62,8 @@ export function useSubscriptionManager(enabled = true) {
 
   useEffect(() => {
     if (!notice) return;
-    const timer = window.setTimeout(() => setNotice(null), 3600);
+    const timeoutMs = notice.kind === 'error' ? 8000 : 3600;
+    const timer = window.setTimeout(() => setNotice(null), timeoutMs);
     return () => window.clearTimeout(timer);
   }, [notice]);
 
@@ -64,6 +77,12 @@ export function useSubscriptionManager(enabled = true) {
     [config],
   );
   const subscriptions = useMemo(() => config?.subscriptions ?? [], [config]);
+  const resultCount = useMemo(() => {
+    if (resultMode === 'season') {
+      return seasonBrowse?.groups.reduce((total, group) => total + group.items.length, 0) ?? 0;
+    }
+    return results.length;
+  }, [resultMode, results.length, seasonBrowse]);
 
   useEffect(() => {
     if (!selectedBangumi) return;
@@ -119,11 +138,29 @@ export function useSubscriptionManager(enabled = true) {
     }
 
     try {
-      const list = isBrowse || !keyword.trim() ? await browseSeason() : await searchMikan(keyword);
-      if (requestId === searchRequestSeq.current) setResults(list);
+      if (isBrowse) {
+        const browse = await browseSeason();
+        if (requestId === searchRequestSeq.current) {
+          setSeasonBrowse(browse);
+          setResults([]);
+          setResultMode('season');
+          setHasSearched(true);
+        }
+      } else {
+        const list = await searchMikan(keyword);
+        if (requestId === searchRequestSeq.current) {
+          setResults(list);
+          setSeasonBrowse(null);
+          setResultMode('search');
+          setHasSearched(true);
+        }
+      }
     } catch (error) {
       if (requestId === searchRequestSeq.current) {
         setResults([]);
+        setSeasonBrowse(null);
+        setResultMode(isBrowse ? 'season' : 'search');
+        setHasSearched(true);
         showNotice(asMessage(error), 'error');
       }
     } finally {
@@ -228,6 +265,7 @@ export function useSubscriptionManager(enabled = true) {
     displayedSubscriptions,
     subscriptions,
     form,
+    hasSearched,
     isBrowseLoading,
     isConfigLoading,
     isRssRefreshing,
@@ -237,7 +275,10 @@ export function useSubscriptionManager(enabled = true) {
     notice,
     pendingSubscriptionKeys,
     query,
+    resultCount,
+    resultMode,
     results,
+    seasonBrowse,
     selectedBangumi,
     selectedGroup,
     selectedGroupId,

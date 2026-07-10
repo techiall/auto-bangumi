@@ -4,6 +4,7 @@ import type {
   DownloadState,
   MikanBangumiDetail,
   MikanSearchResult,
+  MikanSeasonBrowse,
   RetryMoveResult,
   RssRefreshResult,
   UpdateSeasonPayload,
@@ -44,7 +45,7 @@ export function searchMikan(query: string) {
 }
 
 export function browseSeason() {
-  return request<MikanSearchResult[]>('/api/mikan/search');
+  return request<MikanSeasonBrowse>('/api/mikan/season');
 }
 
 export function fetchBangumiDetail(id: number) {

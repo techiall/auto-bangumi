@@ -22,6 +22,11 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!username.trim() || !password) {
+      setError(t('auth.requiredFields'));
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 
@@ -62,6 +67,8 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
               <Input
                 id="username"
                 autoComplete="username"
+                autoFocus
+                required
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
               />
@@ -72,7 +79,7 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
                 id="password"
                 type="password"
                 autoComplete="current-password"
-                autoFocus
+                required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />

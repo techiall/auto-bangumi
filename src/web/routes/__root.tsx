@@ -2,7 +2,10 @@
 import type { ReactNode } from 'react';
 import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
 import { I18nProvider } from '~/lib/i18n';
+import { THEME_STORAGE_KEY } from '~/lib/theme';
 import appCss from '~/styles/app.css?url';
+
+const themeBootScript = `(function(){try{var k=${JSON.stringify(THEME_STORAGE_KEY)};var c=localStorage.getItem(k);var choice=c==='dark'||c==='light'?c:'system';var resolved=choice==='system'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):choice;var r=document.documentElement;r.dataset.theme=resolved;r.dataset.themeChoice=choice;r.style.colorScheme=resolved;}catch(e){}})();`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -11,7 +14,7 @@ export const Route = createRootRoute({
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { name: 'theme-color', media: '(prefers-color-scheme: light)', content: '#f8fafc' },
       { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#020617' },
-      { title: 'Bangumi Manager' },
+      { title: 'Auto Bangumi' },
       { name: 'description', content: 'Search Mikan and update subscriptions from a cleaner web UI.' },
     ],
     links: [
@@ -34,6 +37,7 @@ function RootDocument({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <HeadContent />
       </head>
       <body>

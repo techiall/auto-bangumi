@@ -1,4 +1,11 @@
-export type { MikanBangumiDetail, MikanBangumiGroup, MikanSearchResult } from '../../shared/api-types.js';
+export type {
+  MikanBangumiDetail,
+  MikanBangumiGroup,
+  MikanDayOfWeek,
+  MikanSearchResult,
+  MikanSeasonBrowse,
+  MikanSeasonDayGroup,
+} from '../../shared/api-types.js';
 
 export interface Episode {
   torrent: string;

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { LoginPage } from '~/components/auth/login-page';
 import { AppShell } from '~/components/dashboard/app-shell';
-import type { PageTab } from '~/components/dashboard/page-tabs';
+import { PAGE_TAB_IDS, type PageTab } from '~/components/dashboard/page-tabs';
 import { DownloadProgress } from '~/components/downloads/download-progress';
 import { buildDownloadRows, buildSubscriptionDownloadSummaries } from '~/components/downloads/download-model';
 import { useDownloadState } from '~/components/downloads/use-download-state';
@@ -29,7 +29,8 @@ function HomePage() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [visitedTabs, setVisitedTabs] = useState<Set<PageTab>>(() => new Set([routeTab]));
   const subscriptionManager = useSubscriptionManager(authenticated);
-  const downloads = useDownloadState(authenticated);
+  const downloadsEnabled = authenticated && visitedTabs.has('downloads');
+  const downloads = useDownloadState(downloadsEnabled);
   const downloadRows = useMemo(() => buildDownloadRows(downloads.data), [downloads.data]);
   const downloadSummaries = useMemo(
     () => buildSubscriptionDownloadSummaries(subscriptionManager.subscriptions, downloadRows),
@@ -121,7 +122,11 @@ function HomePage() {
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab} onLogout={() => void signOut()}>
       {visitedTabs.has('subscriptions') ? (
-        <div hidden={activeTab !== 'subscriptions'}>
+        <div
+          id={PAGE_TAB_IDS.subscriptions.panel}
+          role="tabpanel"
+          aria-labelledby={PAGE_TAB_IDS.subscriptions.tab}
+          hidden={activeTab !== 'subscriptions'}>
           <SubscriptionsPage
             manager={subscriptionManager}
             downloadSummaries={downloadSummaries}
@@ -130,7 +135,11 @@ function HomePage() {
         </div>
       ) : null}
       {visitedTabs.has('downloads') ? (
-        <div hidden={activeTab !== 'downloads'}>
+        <div
+          id={PAGE_TAB_IDS.downloads.panel}
+          role="tabpanel"
+          aria-labelledby={PAGE_TAB_IDS.downloads.tab}
+          hidden={activeTab !== 'downloads'}>
           <DownloadProgress
             downloads={downloads}
             subscriptions={subscriptionManager.displayedSubscriptions.map(({ subscription }) => subscription)}

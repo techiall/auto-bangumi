@@ -20,10 +20,14 @@ export function SubscriptionsPage({ downloadSummaries, manager, onViewDownloads 
         <SearchPanel
           query={manager.query}
           results={manager.results}
+          seasonBrowse={manager.seasonBrowse}
+          resultMode={manager.resultMode}
+          resultCount={manager.resultCount}
           selectedBangumiId={manager.selectedBangumi?.id}
           loadingBangumiId={manager.loadingBangumiId}
           isSearchLoading={manager.isSearchLoading}
           isBrowseLoading={manager.isBrowseLoading}
+          hasSearched={manager.hasSearched}
           settingsSlot={
             manager.selectedBangumi ? (
               <SubscriptionSettings

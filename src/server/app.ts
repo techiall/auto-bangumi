@@ -1,7 +1,7 @@
 import express from 'express';
 import { readServerCredentials, requireBasicAuth } from './auth/basic-auth.js';
 import { logger } from './config/logger.js';
-import { getBangumiDetail, searchBangumi } from './mikan/api.js';
+import { browseCurrentSeason, getBangumiDetail, searchBangumi } from './mikan/api.js';
 import { DownloadService } from './downloads.js';
 import { HttpError } from './http-error.js';
 import { MoverJobService } from './mover-jobs.js';
@@ -27,6 +27,10 @@ export function createApp(options: AppOptions = {}) {
   app.get('/api/mikan/search', async (request, response) => {
     const query = String(request.query.q ?? '').trim();
     response.json(await searchBangumi(query));
+  });
+
+  app.get('/api/mikan/season', async (_request, response) => {
+    response.json(await browseCurrentSeason());
   });
 
   app.get('/api/mikan/bangumi/:id', async (request, response) => {

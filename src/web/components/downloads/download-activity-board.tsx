@@ -65,45 +65,49 @@ export function DownloadActivityBoard({
 
         {hasActivityRows ? (
           <>
-            <PrimarySection
-              title={t('downloads.needsAttention')}
-              icon={<ShieldAlert className="size-4" />}
-              rows={attentionRows}
-              emptyText={t('downloads.emptyAttention')}
-              tone="attention"
-              onRetryMove={onRetryMove}
-              retryingMoveHashes={retryingMoveHashes}
-            />
+            {attentionRows.length ? (
+              <PrimarySection
+                title={t('downloads.needsAttention')}
+                icon={<ShieldAlert className="size-4" />}
+                rows={attentionRows}
+                tone="attention"
+                onRetryMove={onRetryMove}
+                retryingMoveHashes={retryingMoveHashes}
+              />
+            ) : null}
 
-            <PrimarySection
-              title={t('downloads.activeQueue')}
-              icon={<LoaderCircle className={loading ? 'size-4 animate-spin' : 'size-4'} />}
-              rows={activeRows}
-              emptyText={t('downloads.emptyActive')}
-              tone="active"
-              onRetryMove={onRetryMove}
-              retryingMoveHashes={retryingMoveHashes}
-            />
+            {activeRows.length ? (
+              <PrimarySection
+                title={t('downloads.activeQueue')}
+                icon={<LoaderCircle className={loading ? 'size-4 animate-spin' : 'size-4'} />}
+                rows={activeRows}
+                tone="active"
+                onRetryMove={onRetryMove}
+                retryingMoveHashes={retryingMoveHashes}
+              />
+            ) : null}
 
-            <PrimarySection
-              title={t('downloads.moveJobs')}
-              icon={<Truck className="size-4" />}
-              rows={moveJobRows}
-              emptyText={t('downloads.emptyMoveJobs')}
-              tone="move"
-              onRetryMove={onRetryMove}
-              retryingMoveHashes={retryingMoveHashes}
-            />
+            {moveJobRows.length ? (
+              <PrimarySection
+                title={t('downloads.moveJobs')}
+                icon={<Truck className="size-4" />}
+                rows={moveJobRows}
+                tone="move"
+                onRetryMove={onRetryMove}
+                retryingMoveHashes={retryingMoveHashes}
+              />
+            ) : null}
 
-            <PrimarySection
-              title={t('downloads.seeding')}
-              icon={<Send className="size-4" />}
-              rows={seedingRows}
-              emptyText={t('downloads.emptySeeding')}
-              tone="seeding"
-              onRetryMove={onRetryMove}
-              retryingMoveHashes={retryingMoveHashes}
-            />
+            {seedingRows.length ? (
+              <PrimarySection
+                title={t('downloads.seeding')}
+                icon={<Send className="size-4" />}
+                rows={seedingRows}
+                tone="seeding"
+                onRetryMove={onRetryMove}
+                retryingMoveHashes={retryingMoveHashes}
+              />
+            ) : null}
 
             <section className="overflow-hidden rounded-2xl border border-dashed border-slate-800/90 bg-slate-950/28">
               <button
@@ -158,7 +162,6 @@ function PrimarySection({
   title,
   icon,
   rows,
-  emptyText,
   tone,
   onRetryMove,
   retryingMoveHashes,
@@ -166,7 +169,6 @@ function PrimarySection({
   title: string;
   icon: ReactNode;
   rows: DownloadRow[];
-  emptyText: string;
   tone: 'attention' | 'active' | 'move' | 'seeding';
   onRetryMove: (hash: string) => void;
   retryingMoveHashes: Set<string>;
@@ -189,27 +191,23 @@ function PrimarySection({
         <div className="text-xs text-slate-500">{rows.length}</div>
       </div>
 
-      {rows.length ? (
-        <div
-          className={
-            (tone === 'active' || tone === 'move' || tone === 'seeding') && rows.length > 3
-              ? 'max-h-[34rem] overflow-y-auto pr-1 [scrollbar-color:#334155_transparent]'
-              : ''
-          }>
-          <div className="grid gap-3">
-            {rows.map((row) => (
-              <DownloadRecord
-                key={row.hash}
-                row={row}
-                onRetryMove={retryMoveHandler}
-                retrying={retryingMoveHashes.has(row.hash)}
-              />
-            ))}
-          </div>
+      <div
+        className={
+          (tone === 'active' || tone === 'move' || tone === 'seeding') && rows.length > 3
+            ? 'max-h-[34rem] overflow-y-auto pr-1 [scrollbar-color:#334155_transparent]'
+            : ''
+        }>
+        <div className="grid gap-3">
+          {rows.map((row) => (
+            <DownloadRecord
+              key={row.hash}
+              row={row}
+              onRetryMove={retryMoveHandler}
+              retrying={retryingMoveHashes.has(row.hash)}
+            />
+          ))}
         </div>
-      ) : (
-        <EmptySection icon={icon} text={emptyText} />
-      )}
+      </div>
     </section>
   );
 }

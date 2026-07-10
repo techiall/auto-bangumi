@@ -1,43 +1,68 @@
 import * as cheerio from 'cheerio';
 import { fetchWithRetry } from '../utils/fetch-with-retry.js';
 import { suggestFolderName } from './anime-title.js';
-import type { MikanBangumiDetail, MikanBangumiGroup, MikanSearchResult } from './types.js';
+import type {
+  MikanBangumiDetail,
+  MikanBangumiGroup,
+  MikanDayOfWeek,
+  MikanSearchResult,
+  MikanSeasonBrowse,
+  MikanSeasonDayGroup,
+} from './types.js';
 
 const MIKAN_BASE_URL = 'https://mikanani.me';
 
 export async function searchBangumi(query: string): Promise<MikanSearchResult[]> {
   const keyword = query.trim();
-  const html = keyword
-    ? await fetchHtml(`/Home/Search?searchstr=${encodeURIComponent(keyword)}`)
-    : await fetchHtml('/');
+  if (!keyword) return [];
+
+  const html = await fetchHtml(`/Home/Search?searchstr=${encodeURIComponent(keyword)}`);
   const $ = cheerio.load(html);
   const results = new Map<number, MikanSearchResult>();
 
   for (const selector of ['.sk-bangumi', '.an-ul']) {
     $(selector).each((_, container) => {
-      $(container)
-        .find('a[href^="/Home/Bangumi/"]')
-        .each((__, element) => {
-          const href = $(element).attr('href');
-          const id = parseBangumiId(href);
-          if (!id || results.has(id)) return;
-
-          const title = $(element).find('.an-text').text().trim() || $(element).text().trim();
-          const imageUrl = $(element).find('[data-src]').attr('data-src');
-
-          if (!title) return;
-
-          results.set(id, {
-            id,
-            title,
-            url: absoluteUrl(href),
-            imageUrl: imageUrl ? absoluteUrl(imageUrl) : undefined,
-          });
-        });
+      collectBangumiFromContainer($, container, results);
     });
   }
 
   return Array.from(results.values());
+}
+
+export async function browseCurrentSeason(now = new Date()): Promise<MikanSeasonBrowse> {
+  const html = await fetchHtml('/');
+  const $ = cheerio.load(html);
+  const groupsByDay = new Map<MikanDayOfWeek, MikanSearchResult[]>();
+
+  $('.sk-bangumi[data-dayofweek]').each((_, container) => {
+    const dayOfWeek = parseDayOfWeek($(container).attr('data-dayofweek'));
+    if (dayOfWeek === undefined) return;
+
+    const items = new Map<number, MikanSearchResult>();
+    collectBangumiFromContainer($, container, items);
+    if (!items.size) return;
+
+    const existing = groupsByDay.get(dayOfWeek) ?? [];
+    for (const item of items.values()) {
+      if (!existing.some((entry) => entry.id === item.id)) existing.push(item);
+    }
+    groupsByDay.set(dayOfWeek, existing);
+  });
+
+  const today = now.getDay() as MikanDayOfWeek;
+  const weekdayOrder = Array.from({ length: 7 }, (_, offset) => ((today + offset) % 7) as MikanDayOfWeek);
+  const groups: MikanSeasonDayGroup[] = [];
+
+  for (const dayOfWeek of [...weekdayOrder, 7, 8] as MikanDayOfWeek[]) {
+    const items = groupsByDay.get(dayOfWeek);
+    if (!items?.length) continue;
+    groups.push({ dayOfWeek, items });
+  }
+
+  return {
+    seasonLabel: parseSeasonLabel($),
+    groups,
+  };
 }
 
 export async function getBangumiDetail(id: number): Promise<MikanBangumiDetail> {
@@ -79,6 +104,53 @@ export async function getBangumiDetail(id: number): Promise<MikanBangumiDetail> 
 
 async function fetchHtml(path: string) {
   return fetchWithRetry(`${MIKAN_BASE_URL}${path}`).then((response) => response.text());
+}
+
+function collectBangumiFromContainer($: cheerio.CheerioAPI, container: unknown, results: Map<number, MikanSearchResult>) {
+  $(container as never)
+    .find('a[href^="/Home/Bangumi/"]')
+    .each((_, element) => {
+      const href = $(element).attr('href');
+      const id = parseBangumiId(href);
+      if (!id || results.has(id)) return;
+
+      const title =
+        $(element).attr('title')?.trim() ||
+        $(element).find('.an-text').text().trim() ||
+        $(element).text().trim();
+      if (!title) return;
+
+      const imageUrl =
+        $(element).find('[data-src]').attr('data-src') ||
+        $(element).closest('li').find('[data-src]').attr('data-src');
+
+      results.set(id, {
+        id,
+        title,
+        url: absoluteUrl(href),
+        imageUrl: imageUrl ? absoluteUrl(imageUrl) : undefined,
+      });
+    });
+}
+
+function parseDayOfWeek(value: string | undefined): MikanDayOfWeek | undefined {
+  if (value === undefined) return undefined;
+  const day = Number(value);
+  if (!Number.isInteger(day) || day < 0 || day > 8) return undefined;
+  return day as MikanDayOfWeek;
+}
+
+function parseSeasonLabel($: cheerio.CheerioAPI) {
+  const label = $('.m-home-tool-left .date-text, #sk-data-nav .date-text')
+    .first()
+    .clone()
+    .children()
+    .remove()
+    .end()
+    .text()
+    .replace(/\s+/g, ' ')
+    .trim();
+  return label || undefined;
 }
 
 function parseBangumiId(href: string | undefined) {

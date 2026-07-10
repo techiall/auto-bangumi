@@ -15,6 +15,7 @@ import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
 import { Route as ApiConfigRouteImport } from './routes/api/config'
 import { Route as ApiRssRefreshRouteImport } from './routes/api/rss/refresh'
 import { Route as ApiMoverJobsRouteImport } from './routes/api/mover/jobs'
+import { Route as ApiMikanSeasonRouteImport } from './routes/api/mikan/season'
 import { Route as ApiMikanSearchRouteImport } from './routes/api/mikan/search'
 import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
@@ -53,6 +54,11 @@ const ApiRssRefreshRoute = ApiRssRefreshRouteImport.update({
 const ApiMoverJobsRoute = ApiMoverJobsRouteImport.update({
   id: '/api/mover/jobs',
   path: '/api/mover/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMikanSeasonRoute = ApiMikanSeasonRouteImport.update({
+  id: '/api/mikan/season',
+  path: '/api/mikan/season',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiMikanSearchRoute = ApiMikanSearchRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/mikan/season': typeof ApiMikanSeasonRoute
   '/api/mover/jobs': typeof ApiMoverJobsRouteWithChildren
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/mikan/season': typeof ApiMikanSeasonRoute
   '/api/mover/jobs': typeof ApiMoverJobsRouteWithChildren
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
   '/api/mikan/search': typeof ApiMikanSearchRoute
+  '/api/mikan/season': typeof ApiMikanSeasonRoute
   '/api/mover/jobs': typeof ApiMoverJobsRouteWithChildren
   '/api/rss/refresh': typeof ApiRssRefreshRoute
   '/api/mikan/bangumi/$id': typeof ApiMikanBangumiIdRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/mikan/search'
+    | '/api/mikan/season'
     | '/api/mover/jobs'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/mikan/search'
+    | '/api/mikan/season'
     | '/api/mover/jobs'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/api/auth/logout'
     | '/api/auth/session'
     | '/api/mikan/search'
+    | '/api/mikan/season'
     | '/api/mover/jobs'
     | '/api/rss/refresh'
     | '/api/mikan/bangumi/$id'
@@ -217,6 +229,7 @@ export interface RootRouteChildren {
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
   ApiMikanSearchRoute: typeof ApiMikanSearchRoute
+  ApiMikanSeasonRoute: typeof ApiMikanSeasonRoute
   ApiMoverJobsRoute: typeof ApiMoverJobsRouteWithChildren
   ApiRssRefreshRoute: typeof ApiRssRefreshRoute
   ApiMikanBangumiIdRoute: typeof ApiMikanBangumiIdRoute
@@ -264,6 +277,13 @@ declare module '@tanstack/react-router' {
       path: '/api/mover/jobs'
       fullPath: '/api/mover/jobs'
       preLoaderRoute: typeof ApiMoverJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/mikan/season': {
+      id: '/api/mikan/season'
+      path: '/api/mikan/season'
+      fullPath: '/api/mikan/season'
+      preLoaderRoute: typeof ApiMikanSeasonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/mikan/search': {
@@ -359,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,
   ApiMikanSearchRoute: ApiMikanSearchRoute,
+  ApiMikanSeasonRoute: ApiMikanSeasonRoute,
   ApiMoverJobsRoute: ApiMoverJobsRouteWithChildren,
   ApiRssRefreshRoute: ApiRssRefreshRoute,
   ApiMikanBangumiIdRoute: ApiMikanBangumiIdRoute,
