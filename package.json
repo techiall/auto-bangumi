@@ -27,7 +27,7 @@
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.0.1",
     "concurrently": "^10.0.1",
-    "eslint": "^10.4.0",
+    "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
     "@fontsource-variable/geist": "^5.2.9",
