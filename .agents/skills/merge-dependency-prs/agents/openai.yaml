@@ -1,4 +1,0 @@
-interface:
-  display_name: "Merge Dependency PRs"
-  short_description: "Verify and safely merge compatible dependency updates."
-  default_prompt: "Review and merge the safe open dependency PRs for Auto Bangumi."
