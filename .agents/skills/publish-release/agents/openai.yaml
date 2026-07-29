@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publish Release"
+  short_description: "Create a verified GitHub release with Docker tags."
+  default_prompt: "Prepare and publish the next Auto Bangumi release."
