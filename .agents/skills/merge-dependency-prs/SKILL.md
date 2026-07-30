@@ -30,7 +30,7 @@ Dependabot covers root npm, `agent/` npm, `/docker` images, and GitHub Actions. 
    - Docker base-image majors under `docker/`;
    - TypeScript, `typescript-eslint`, ESLint, React, Vite majors;
    - uncertain peer-range or package-script breaks.
-   For non-major high-risk updates, check declared peer ranges and package scripts instead of relying on GitHub's `CLEAN` status alone.
+   - For non-major high-risk updates, check declared peer ranges and package scripts instead of relying on GitHub's `CLEAN` status alone.
 
 ## Verify The Candidate Set
 
