@@ -57,6 +57,12 @@ graph LR
 
 ## 本地开发
 
+请先安装 [mise](https://mise.jdx.dev/)，然后安装项目指定的 Node.js 26 运行时：
+
+```bash
+mise install
+```
+
 ```bash
 npm install
 npm --prefix agent install

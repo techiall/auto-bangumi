@@ -59,6 +59,12 @@ graph LR
 
 ## Development
 
+Install [mise](https://mise.jdx.dev/), then install the project's Node.js 26 runtime:
+
+```bash
+mise install
+```
+
 ```bash
 npm install
 npm --prefix agent install
